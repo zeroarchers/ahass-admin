@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { SignIn } from "@/components/sign-in";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,7 @@ export default function Page() {
             <Button type="submit" className="w-full">
               Login
             </Button>
+            <SignIn />
           </div>
         </div>
       </div>

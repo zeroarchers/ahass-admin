@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
-
 import { dashboardConfig } from "@/config/dashboard";
 import { MainNav } from "@/components/main-nav";
 import { DashboardNav } from "@/components/nav";
 import { SiteFooter } from "@/components/site-footer";
 import { UserAccountNav } from "@/components/user-account-nav";
+import { getCurrentUser } from "@/lib/session";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
@@ -13,15 +13,8 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
-  // const user = await getCurrentUser()
-  const user = {
-    name: "User",
-    image: "https://randomuser.me/api/portraits/men/81.jpg",
-    email: "moxaldy@gmail.com",
-  };
-  if (!user) {
-    return notFound();
-  }
+  const user = await getCurrentUser();
+
   return (
     <div className="flex min-h-screen flex-col space-y-6">
       <header className="sticky top-0 z-40 border-b bg-background">
