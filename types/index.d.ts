@@ -62,3 +62,15 @@ export type UserSubscriptionPlan = SubscriptionPlan &
     stripeCurrentPeriodEnd: number;
     isPro: boolean;
   };
+
+export type Content = {
+  sections: {
+    title: string;
+    description: string;
+    cards: {
+      title: string;
+      link: string;
+      icon?: keyof typeof Icons; // Icon should be optional and match Icons keys
+    }[];
+  }[];
+};

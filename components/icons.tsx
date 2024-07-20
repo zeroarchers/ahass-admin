@@ -23,6 +23,7 @@ import {
   Trash,
   User,
   Wrench,
+  Car,
   X,
   ArrowRightToLine,
   ArrowLeftToLineIcon,
@@ -34,6 +35,15 @@ import {
   Presentation,
   BellIcon,
   ClipboardMinus,
+  Store,
+  Users,
+  BadgePercent,
+  LifeBuoy,
+  Archive,
+  ArchiveRestore,
+  Warehouse,
+  CircleDollarSign,
+  BookOpen,
 } from "lucide-react";
 
 export type Icon = typeof LucideIcon;
@@ -71,6 +81,16 @@ export const Icons = {
   board: Presentation,
   reminder: BellIcon,
   report: ClipboardMinus,
+  store: Store,
+  worker: Users,
+  discount: BadgePercent,
+  vehicle: Car,
+  wheel: LifeBuoy,
+  pit: Archive,
+  pitMechanic: ArchiveRestore,
+  warehouse: Warehouse,
+  rekening: CircleDollarSign,
+  openBook: BookOpen,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
