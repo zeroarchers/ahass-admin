@@ -46,9 +46,9 @@ const content: Content = {
   ],
 };
 
-export default function Home() {
+export default function Page() {
   return (
-    <main className="grid grid-cols-1 gap-5">
+    <>
       {content.sections.map((section, sectionIndex) => (
         <Card key={sectionIndex}>
           <CardHeader>
@@ -60,6 +60,6 @@ export default function Home() {
           </CardContent>
         </Card>
       ))}
-    </main>
+    </>
   );
 }

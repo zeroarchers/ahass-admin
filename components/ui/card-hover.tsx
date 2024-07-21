@@ -30,7 +30,7 @@ export const HoverEffect = ({
         const Icon = Icons[item.icon || "arrowRight"];
         return (
           <Link
-            href={item?.link}
+            href={`dashboard${item?.link}`}
             key={item?.link}
             className="relative group  block p-2 h-full w-full"
             onMouseEnter={() => setHoveredIndex(idx)}

@@ -7,9 +7,9 @@ const DynamicPage = ({
 }) => {
   const slug = params.slug;
   return (
-    <main>
+    <>
       <h1 className="font-black text-4xl">{slug}</h1>
-    </main>
+    </>
   );
 };
 
