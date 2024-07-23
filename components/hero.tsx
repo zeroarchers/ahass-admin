@@ -24,9 +24,9 @@ const Hero = () => {
         className="flex flex-col flex-wrap"
       >
         <h1 className="text-2xl px-4 md:text-4xl lg:text-5xl font-bold text-neutral-700 dark:text-white max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto ">
-          Sistem administrasi AHASS untuk <br />
+          Sistem administrasi AHASS yang mementingkan <br />
           <Highlight className="text-black dark:text-white">
-            {"produktifitas dan kebebasan."}
+            {"produktifitas dan pilihan."}
           </Highlight>
         </h1>
         <Link className="text-center" href="/login">
