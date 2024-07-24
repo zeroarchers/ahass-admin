@@ -7,7 +7,7 @@ const publicRoutes = ["/"];
 
 const authRoutes = ["/login"];
 
-const apiAuthPrefix = "/api/auth";
+const apiPrefix = "/api";
 
 export const { auth } = NextAuth(authConfig);
 
@@ -15,7 +15,7 @@ export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
+  const isApiAuthRoute = nextUrl.pathname.startsWith(apiPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoutes = authRoutes.includes(nextUrl.pathname);
 

@@ -46,3 +46,39 @@ model Account {
  
   @@id([provider, providerAccountId])
 }
+
+model SparePart {
+  id                 Int       @id
+  namaSparepart      String
+  namaLokalSparepart String?
+  kodeSparepart      String
+  grupSparepart      String
+  label              String
+  hargaLokal         Int
+  hargaNasional      Int
+  hargaJual          Int
+  hargaJualHET       Int
+  uom                String
+  rak                String?
+  aktif              Boolean
+  nilaiDiskon        Int
+  persentaseDiskon   Int
+  stok               Int
+  grupKodeAHM        String
+  kategoriETD        String?
+  etaTercepat        DateTime
+  etaTerlama         DateTime
+}
+
+model Jasa {
+  kode              String @id
+  nama              String
+  jobType           String
+  jobTypeDesc       String
+  kategoriPekerjaan String
+  hargaJual         Int
+  waktuKerja        Int
+  satuanKerja       String
+  catatan           String?
+  statusAktif       String
+}

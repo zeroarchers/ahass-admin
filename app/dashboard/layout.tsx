@@ -1,7 +1,6 @@
 import { dashboardConfig } from "@/config/dashboard";
 import { MainNav } from "@/components/main-nav";
 import { DashboardNav } from "@/components/nav";
-import { SiteFooter } from "@/components/site-footer";
 import { UserAccountNav } from "@/components/user-account-nav";
 import { auth } from "@/auth";
 
@@ -30,14 +29,15 @@ export default async function DashboardLayout({
         </div>
       </header>
       <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
-        <aside className="hidden w-[200px] flex-col md:flex">
+        <aside className="hidden w-[200px] flex-col md:flex md:fixed">
           <DashboardNav items={dashboardConfig.sidebarNav} />
         </aside>
+
+        <div className="hidden w-[200px] flex-col md:flex" />
         <main className="grid grid-cols-1 gap-5 p-1  overflow-scroll">
           {children}
         </main>
       </div>
-      <SiteFooter className="border-t" />
     </div>
   );
 }
