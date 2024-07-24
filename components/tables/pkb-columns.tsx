@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { Jasa } from "@prisma/client";
+import type { Pkb } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,7 +14,7 @@ import {
 import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<Jasa>[] = [
+export const columns: ColumnDef<Pkb>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -38,59 +38,66 @@ export const columns: ColumnDef<Jasa>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "kode",
-    header: "kode",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("kode")}</div>,
-  },
-  {
-    accessorKey: "nama",
-    header: "nama",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("nama")}</div>,
-  },
-  {
-    accessorKey: "jobType",
-    header: "grup",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("jobType")}</div>
-    ),
-  },
-  {
-    accessorKey: "hargaJual",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="w-full"
-        >
-          Harga Jual
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("hargaJual")}</div>
-    ),
-  },
-  {
-    accessorKey: "waktuKerja",
-    header: "Waktu Kerja",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("waktuKerja")}</div>
-    ),
-  },
-  {
-    accessorKey: "statusAktif",
+    accessorKey: "status",
     header: "status",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("statusAktif")}</div>
+      <div className="capitalize">{row.getValue("status")}</div>
+    ),
+  },
+  {
+    accessorKey: "noPKB",
+    header: "noPKB",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("noPKB")}</div>
+    ),
+  },
+  {
+    accessorKey: "noPolisi",
+    header: "noPolisi",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("noPolisi")}</div>
+    ),
+  },
+  {
+    accessorKey: "soNo",
+    header: "No. Bayar",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("soNo")}</div>,
+  },
+  {
+    accessorKey: "totalFaktur",
+    header: "Total Faktur",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("totalFaktur")}</div>
+    ),
+  },
+  {
+    accessorKey: "tipePembayran",
+    header: "Tipe Pembayaran",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("tipePembayran")}</div>
+    ),
+  },
+  {
+    accessorKey: "tanggal",
+    header: "Tanggal Bayar",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {(row.getValue("tanggal") as Date).toLocaleString()}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "soID",
+    header: "Invoice ID",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("Invoice ID")}</div>
     ),
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const pkb = row.original;
 
       return (
         <DropdownMenu>
@@ -103,13 +110,15 @@ export const columns: ColumnDef<Jasa>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.kode)}
+              onClick={() =>
+                navigator.clipboard.writeText(pkb.pkbID.toString())
+              }
             >
-              Copy kode
+              Copy PKB ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem className="bg-red-400">Delete</DropdownMenuItem>
+            <DropdownMenuItem className="bg-blue-400">Print</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

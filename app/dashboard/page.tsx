@@ -1,6 +1,4 @@
 "use client";
-import { Icons } from "@/components/icons";
-import { Icon } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -10,10 +8,6 @@ import {
 } from "@/components/ui/card";
 
 import type { Content } from "@/types";
-import { cn } from "@/lib/utils";
-import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
-import { useState } from "react";
 import { HoverEffect } from "@/components/ui/card-hover";
 
 const content: Content = {
@@ -22,25 +16,33 @@ const content: Content = {
       title: "Produk",
       description: "Menu utama tentang produk AHASS",
       cards: [
-        { title: "Jasa", link: "/jasa", icon: "service" },
-        { title: "Sparepart", link: "/sparepart", icon: "settings" },
-        { title: "Vendor", link: "/vendor", icon: "store" },
-        { title: "Karyawan", link: "/karyawan", icon: "worker" },
-        { title: "PIT", link: "/pit", icon: "pit" },
-        { title: "PIT Mekanik", link: "/pit-mekanik", icon: "pitMechanic" },
-        { title: "Gudang", link: "/gudang", icon: "warehouse" },
-        { title: "Rekening", link: "/rekening", icon: "rekening" },
-        { title: "SA Talk", link: "/sat-alk", icon: "openBook" },
+        { title: "Jasa", link: "/dashboard/jasa", icon: "service" },
+        { title: "Sparepart", link: "/dashboard/sparepart", icon: "settings" },
+        { title: "Vendor", link: "/dashboard/vendor", icon: "store" },
+        { title: "Karyawan", link: "/dashboard/karyawan", icon: "worker" },
+        { title: "PIT", link: "/dashboard/pit", icon: "pit" },
+        {
+          title: "PIT Mekanik",
+          link: "/dashboard/pit-mekanik",
+          icon: "pitMechanic",
+        },
+        { title: "Gudang", link: "/dashboard/gudang", icon: "warehouse" },
+        { title: "Rekening", link: "/dashboard/rekening", icon: "rekening" },
+        { title: "SA Talk", link: "/dashboard/sat-alk", icon: "openBook" },
       ],
     },
     {
       title: "Customer",
       description: "Menu utama tentang pelanggan AHASS",
       cards: [
-        { title: "Customer", link: "/customer", icon: "user" },
-        { title: "Diskon", link: "/diskon", icon: "discount" },
-        { title: "Kendaraan", link: "/kendaraan", icon: "vehicle" },
-        { title: "Tipe Kendaraan", link: "/tipe-kendaraan", icon: "wheel" },
+        { title: "Customer", link: "/dashboard/customer", icon: "user" },
+        { title: "Diskon", link: "/dashboard/diskon", icon: "discount" },
+        { title: "Kendaraan", link: "/dashboard/kendaraan", icon: "vehicle" },
+        {
+          title: "Tipe Kendaraan",
+          link: "/dashboard/tipe-kendaraan",
+          icon: "wheel",
+        },
       ],
     },
   ],

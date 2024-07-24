@@ -114,7 +114,7 @@ export const columns: ColumnDef<SparePart>[] = [
                 navigator.clipboard.writeText(orirow.kodeSparepart)
               }
             >
-              Detail
+              Copy Kode
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Edit</DropdownMenuItem>

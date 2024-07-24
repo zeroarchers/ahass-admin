@@ -82,3 +82,100 @@ model Jasa {
   catatan           String?
   statusAktif       String
 }
+
+model Karyawan {
+  id                Int         @id @default(autoincrement())
+  kodeKaryawan      String
+  namaKaryawan      String
+  jenisKelamin      String
+  alamat            String
+  cityID            Int
+  provinceID        Int
+  noTelepon         String
+  noHP              String
+  kTP               String
+  tanggalMasuk      DateTime
+  tanggalBerhenti   DateTime
+  areaID            Int
+  email             String
+  catatan           String
+  tempatLahir       String
+  tanggalLahir      DateTime
+  agama             Int
+  berlakuKTP        DateTime
+  kebangsaan        Int
+  statusKawin       Int
+  statusKaryawan    Int
+  statusKomisi      Int
+  tipeKomisi        Int
+  satuanKomisi      String
+  nilaiKomisi       Float
+  statusPIT         Int
+  nik               String
+  aktif             Boolean
+  city              City        @relation(fields: [cityID], references: [id])
+  province          Province    @relation(fields: [provinceID], references: [id])
+  area              Area        @relation(fields: [areaID], references: [id])
+  listJabatan       Jabatan[]
+  listPayroll       Payroll[]
+}
+
+model City {
+  id        Int      @id @default(autoincrement())
+  text      String
+  rowStatus Int
+  flag      Int
+  karyawans Karyawan[]
+}
+
+model Province {
+  id           Int      @id @default(autoincrement())
+  value        String
+  provinceCode String
+  text         String
+  karyawans    Karyawan[]
+}
+
+model Area {
+  id          Int      @id @default(autoincrement())
+  provinceID  Int
+  cityID      Int
+  zipCode     String
+  kelurahan   String
+  kecamatan   String
+  kabupaten   String
+  ahmCode     String
+  bpsCode     String
+  rowStatus   Int
+  karyawans   Karyawan[]
+}
+
+model Jabatan {
+  id        Int      @id @default(autoincrement())
+  jabatanID Int
+  jabatan   String
+  karyawanID Int
+  karyawan  Karyawan @relation(fields: [karyawanID], references: [id])
+}
+
+model Payroll {
+  id         Int      @id @default(autoincrement())
+  payrollID  Int
+  gaji       String
+  nilaiGaji  Float
+  aktif      Boolean
+  karyawanID Int
+  karyawan   Karyawan @relation(fields: [karyawanID], references: [id])
+}
+
+model Pkb {
+  pkbID         Int      @id @default(autoincrement())
+  soID          Int
+  status        String
+  soNo          String
+  noPKB         String
+  noPolisi      String
+  totalFaktur   Float
+  tipePembayran String
+  tanggal       DateTime
+}
