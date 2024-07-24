@@ -3,8 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 
-import { icons, type Icon } from "lucide-react";
-
 import { Icons } from "@/components/icons";
 
 export const HoverEffect = ({
@@ -14,7 +12,7 @@ export const HoverEffect = ({
   items: {
     title: string;
     link: string;
-    icon?: keyof typeof Icons; // Icon should be optional and match Icons keys
+    icon?: keyof typeof Icons;
   }[];
   className?: string;
 }) => {
@@ -39,7 +37,7 @@ export const HoverEffect = ({
             <AnimatePresence>
               {hoveredIndex === idx && (
                 <motion.span
-                  className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block  rounded-3xl"
+                  className="absolute inset-0 h-full w-full bg-red-500 dark:bg-red-800 block  rounded-3xl"
                   layoutId="hoverBackground"
                   initial={{ opacity: 0 }}
                   animate={{
@@ -74,7 +72,7 @@ export const Card = ({
   return (
     <div
       className={cn(
-        "rounded-2xl h-full w-full p-4 overflow-hidden bg-slate-900 border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20",
+        "rounded-2xl h-full w-full p-4 overflow-hidden  border border-transparent dark:border-white/[0.2]  relative z-20",
         className,
       )}
     >
@@ -90,12 +88,7 @@ export const CardTitle = ({
   children: React.ReactNode;
 }) => {
   return (
-    <h1
-      className={cn(
-        "text-zinc-100 font-bold text-2xl tracking-wide",
-        className,
-      )}
-    >
+    <h1 className={cn("font-bold text-2xl tracking-wide", className)}>
       {children}
     </h1>
   );
