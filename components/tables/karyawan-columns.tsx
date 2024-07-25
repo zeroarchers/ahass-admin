@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { Jasa } from "@prisma/client";
+import type { Karyawan } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,7 +14,7 @@ import {
 import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<Jasa>[] = [
+export const columns: ColumnDef<Karyawan>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -39,59 +39,38 @@ export const columns: ColumnDef<Jasa>[] = [
   },
   {
     accessorKey: "kode",
-    header: "kode",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("kode")}</div>,
-  },
-  {
-    accessorKey: "nama",
-    header: "nama",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("nama")}</div>,
-  },
-  {
-    accessorKey: "jobType",
-    header: "grup",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("jobType")}</div>
-    ),
-  },
-  {
-    accessorKey: "hargaJual",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="w-full"
-        >
-          Harga Jual
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("hargaJual")}</div>
-    ),
-  },
-  {
-    accessorKey: "waktuKerja",
-    header: "Waktu Kerja",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("waktuKerja")}</div>
-    ),
-  },
-  {
-    accessorKey: "statusAktif",
-    header: "status",
+    header: "Kode",
     cell: ({ row }) => {
-      const value = row.getValue("statusAktif") ? "active" : "inactive";
-      return <div className="capitalize">{value}</div>;
+      const karyawan = row.original;
+
+      return <div>K{karyawan.id.toString().padStart(4, "0")}</div>;
     },
+  },
+  {
+    accessorKey: "name",
+    header: "Nama",
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "alamat",
+    header: "Alamat",
+    cell: ({ row }) => <div>{row.getValue("alamat")}</div>,
+  },
+  {
+    accessorKey: "kabupaten",
+    header: "Kota",
+    cell: ({ row }) => <div>{row.getValue("kabupaten")}</div>,
+  },
+  {
+    accessorKey: "nohp",
+    header: "No HP",
+    cell: ({ row }) => <div>{row.getValue("nohp")}</div>,
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const karyawan = row.original;
 
       return (
         <DropdownMenu>
@@ -104,7 +83,9 @@ export const columns: ColumnDef<Jasa>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.kode)}
+              onClick={() =>
+                navigator.clipboard.writeText(karyawan.id.toString())
+              }
             >
               Copy kode
             </DropdownMenuItem>

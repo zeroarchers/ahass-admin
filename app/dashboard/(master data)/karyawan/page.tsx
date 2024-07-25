@@ -1,15 +1,15 @@
-import JasaTable from "@/components/dynamic-table";
+import DynamicTable from "@/components/dynamic-table";
 import { prisma } from "@/lib/prisma";
-import { columns } from "@/components/tables/jasa-columns";
-import type { Jasa } from "@prisma/client";
+import { columns } from "@/components/tables/karyawan-columns";
+import type { Karyawan } from "@prisma/client";
 
 export default async function Page() {
-  const data: Jasa[] = await prisma.jasa.findMany();
+  const data: Karyawan[] = await prisma.karyawan.findMany();
 
   return (
     <>
-      <h1 className="font-black text-4xl">Jasa</h1>
-      <JasaTable data={data} filterColumn="nama" columns={columns} />
+      <h1 className="font-black text-4xl">Karyawan</h1>
+      <DynamicTable data={data} filterColumn="name" columns={columns} />
     </>
   );
 }

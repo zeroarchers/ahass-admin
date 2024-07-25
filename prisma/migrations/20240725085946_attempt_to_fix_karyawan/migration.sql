@@ -1,0 +1,18 @@
+-- AlterTable
+ALTER TABLE "Karyawan" ALTER COLUMN "berlaku_hingga" DROP NOT NULL,
+ALTER COLUMN "gaji_pokok" DROP NOT NULL,
+ALTER COLUMN "honda_id" DROP NOT NULL,
+ALTER COLUMN "jabatan" DROP NOT NULL,
+ALTER COLUMN "kesehatan" DROP NOT NULL,
+ALTER COLUMN "level_training" DROP NOT NULL,
+ALTER COLUMN "status_karyawan_tetap" DROP NOT NULL,
+ALTER COLUMN "status_kawin" DROP NOT NULL,
+ALTER COLUMN "status_kebangsaan" DROP NOT NULL,
+ALTER COLUMN "status_pit" DROP NOT NULL,
+ALTER COLUMN "tanggal_berhenti" DROP NOT NULL,
+ALTER COLUMN "tanggal_lahir" DROP NOT NULL,
+ALTER COLUMN "tanggal_masuk" DROP NOT NULL,
+ALTER COLUMN "transport" DROP NOT NULL,
+ALTER COLUMN "tunjangan_jabatan" DROP NOT NULL,
+ALTER COLUMN "uang_harian" DROP NOT NULL,
+ALTER COLUMN "komisi_penjualan" DROP NOT NULL;

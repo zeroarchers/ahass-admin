@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
+import { Plus } from "lucide-react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -31,6 +32,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function DynamicTable({
   data,
@@ -70,7 +73,7 @@ export default function DynamicTable({
 
   return (
     <>
-      <div className="flex items-center py-4">
+      <div className="flex justify-between items-end py-4">
         <Input
           placeholder={`Filter ${filterColumn}...`}
           value={
@@ -81,32 +84,42 @@ export default function DynamicTable({
           }
           className="max-w-sm"
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+        <div>
+          <Link href={`${usePathname()}/create`}>
+            <Button className="me-5">
+              <div className="flex align-center justify-between">
+                <p className="leading-relaxed">Create</p>
+                <Plus />
+              </div>
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>
