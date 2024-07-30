@@ -30,11 +30,11 @@ import { Textarea } from "../ui/textarea";
 import { jasaFormSchema } from "@/schemas";
 import { useEffect } from "react";
 
-interface JasaFormProps {
+interface SparepartFormProps {
   initialValues?: z.infer<typeof jasaFormSchema>;
 }
 
-export function JasaForm({ initialValues }: JasaFormProps) {
+export function SparepartForm({ initialValues }: SparepartFormProps) {
   const form = useForm<z.infer<typeof jasaFormSchema>>({
     resolver: zodResolver(jasaFormSchema),
     defaultValues: initialValues || {

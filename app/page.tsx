@@ -1,5 +1,5 @@
-import Hero from "@/components/hero";
-import { SiteFooter } from "@/components/site-footer";
+import Hero from "@/components/landing/hero";
+import { SiteFooter } from "@/components/landing/site-footer";
 
 export default async function Home() {
   return (
