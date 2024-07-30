@@ -93,7 +93,7 @@ model Karyawan {
   kecamatan           String
   kelurahan           String
   kodepos             String
-  notelp              String
+  notelp              String?
   nohp                String
   email               String?
   catatan             String?
@@ -130,4 +130,21 @@ model Pkb {
   totalFaktur   Float
   tipePembayran String
   tanggal       DateTime
+}
+
+model TipeKendaraanAHM {
+  idTipeKendaraanAHM Int              @id
+  kodeTipeKendaraanAHM String?
+  TipeKendaraans     TipeKendaraan[]
+}
+
+model TipeKendaraan {
+  id                  Int @id
+  idTipeKendaraanAHM  Int
+  tipe                String
+  namaTipe            String
+  cc                  Int
+  model               String
+  aktif               Boolean
+  TipeKendaraanAHM    TipeKendaraanAHM @relation(fields: [idTipeKendaraanAHM], references: [idTipeKendaraanAHM])
 }

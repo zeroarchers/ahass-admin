@@ -1,10 +1,12 @@
 import { dashboardConfig } from "@/config/dashboard";
-import { MainNav } from "@/components/main-nav";
-import { DashboardNav } from "@/components/nav";
-import { UserAccountNav } from "@/components/user-account-nav";
+import { MainNav } from "@/components/navigation/main-nav";
+import { DashboardNav } from "@/components/navigation/nav";
+import { UserAccountNav } from "@/components/navigation/user-account-nav";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
-import { SignOutBtn } from "@/components/sign-out-btn";
+import { SignOutBtn } from "@/components/auth/sign-out-btn";
+import { getUserByEmail } from "@/data/user";
+import GoBackBtn from "@/components/misc/goback-button";
+import { Toaster } from "@/components/ui/sonner";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
@@ -16,11 +18,7 @@ export default async function DashboardLayout({
   const session = await auth();
   const user = session?.user!;
 
-  const user_details = await prisma.user.findUnique({
-    where: {
-      email: user.email!,
-    },
-  });
+  const user_details = await getUserByEmail(user.email!);
 
   if (!user_details?.emailVerified) {
     return (
@@ -53,9 +51,11 @@ export default async function DashboardLayout({
 
         <div></div>
         <main className="grid grid-cols-1 gap-5 p-1 pb-20  overflow-scroll">
+          <GoBackBtn />
           {children}
         </main>
       </div>
+      <Toaster />
     </div>
   );
 }

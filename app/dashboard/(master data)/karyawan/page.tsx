@@ -1,6 +1,6 @@
-import DynamicTable from "@/components/dynamic-table";
+import DynamicTable from "@/components/table/dynamic-table";
 import { prisma } from "@/lib/prisma";
-import { columns } from "@/components/tables/karyawan-columns";
+import { columns } from "@/components/table/columns/karyawan-columns";
 import type { Karyawan } from "@prisma/client";
 
 export default async function Page() {
@@ -9,7 +9,7 @@ export default async function Page() {
   return (
     <>
       <h1 className="font-black text-4xl">Karyawan</h1>
-      <DynamicTable data={data} filterColumn="name" columns={columns} />
+      <DynamicTable data={data} columns={columns} />
     </>
   );
 }

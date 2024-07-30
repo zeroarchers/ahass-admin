@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { KaryawanMain } from "./karyawan-form-main";
@@ -12,72 +12,55 @@ import { Form } from "@/components/ui/form";
 import { KaryawanBiodata } from "./karyawan-form-biodata";
 import { KaryawanStatus } from "./karyawan-form-status";
 import { KaryawanGaji } from "./karyawan-form-gaji";
-import { createKaryawan } from "@/actions/actions";
+import { createKaryawan, updateKaryawan } from "@/actions/actions";
 
-import type { Karyawan } from "@prisma/client";
+import { karyawanFormSchema } from "@/schemas";
+import { toast } from "sonner";
+import { CircularProgress } from "@/components/misc/circular-progress";
 
-export const karyawanFormSchema = z.object({
-  kode: z.string().optional(),
-  name: z.string().min(5, {
-    message: "Nama harus setidaknya 5 karakter.",
-  }),
-  alamat: z.string().min(5, {
-    message: "Alamat harus setidaknya 5 karakter.",
-  }),
-  provinsi: z.string(),
-  kabupaten: z.string(),
-  kecamatan: z.string(),
-  kelurahan: z.string(),
-  kodepos: z.string().min(5, {
-    message: "Alamat harus setidaknya 5 karakter.",
-  }),
-  notelp: z.string().min(5, {
-    message: "Alamat harus setidaknya 5 karakter.",
-  }),
-  nohp: z.string().min(5, {
-    message: "Alamat harus setidaknya 5 karakter.",
-  }),
-  email: z.string().min(5, {
-    message: "Alamat harus setidaknya 5 karakter.",
-  }),
-  catatan: z.string().min(5, {
-    message: "Alamat harus setidaknya 5 karakter.",
-  }),
-  // Biodata
-  noktp: z.string(),
-  tempat_lahir: z.string(),
-  tanggal_lahir: z.coerce.date(),
-  gender: z.enum(["L", "P"]),
-  agama: z.string(),
-  berlaku_hingga: z.coerce.date(),
-  status_kawin: z.enum(["belum", "kawin"]),
-  status_kebangsaan: z.enum(["wni", "wna"]),
-  // Status karyawan
-  status_karyawan_tetap: z.enum(["tetap", "tidak tetap"]),
-  honda_id: z.string(),
-  tanggal_masuk: z.coerce.date(),
-  tanggal_berhenti: z.coerce.date(),
-  jabatan: z.string(),
-  level_training: z.string(),
-  status_pit: z.enum(["pit", "non pit"]),
-  // Komisi dan gaji
-  komisi_penjualan: z.enum([
-    "tidak aktif",
-    "default master data",
-    "semua barang dan jasa",
-  ]),
-  gaji_pokok: z.coerce.number(),
-  tunjangan_jabatan: z.coerce.number(),
-  kesehatan: z.coerce.number(),
-  transport: z.coerce.number(),
-  uang_harian: z.coerce.number(),
-});
+interface KaryawanFormProps {
+  initialValues?: z.infer<typeof karyawanFormSchema>;
+}
 
-export function ProfileForm() {
+export function KaryawanForm({ initialValues }: KaryawanFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const is_edit = initialValues !== undefined;
+  console.log(initialValues?.provinsi);
   const form = useForm<z.infer<typeof karyawanFormSchema>>({
     resolver: zodResolver(karyawanFormSchema),
-    defaultValues: {
+    defaultValues: initialValues || {
       name: "",
+      email: "",
+      agama: "",
+      alamat: "",
+      berlaku_hingga: new Date(),
+      catatan: "",
+      gaji_pokok: 0,
+      honda_id: "",
+      jabatan: "",
+      kabupaten: "",
+      kecamatan: "",
+      kelurahan: "",
+      kesehatan: 0,
+      id: 100,
+      kodepos: "",
+      komisi_penjualan: "tidak aktif",
+      level_training: "",
+      nohp: "",
+      noktp: "",
+      notelp: "",
+      provinsi: "",
+      status_karyawan_tetap: "tetap",
+      status_kawin: "belum",
+      status_kebangsaan: "wni",
+      status_pit: "non pit",
+      tanggal_berhenti: new Date(),
+      tanggal_lahir: new Date(),
+      tanggal_masuk: new Date(),
+      tempat_lahir: "",
+      transport: 0,
+      tunjangan_jabatan: 0,
+      uang_harian: 0,
     },
   });
 
@@ -93,26 +76,50 @@ export function ProfileForm() {
   }
 
   async function onSubmit(values: z.infer<typeof karyawanFormSchema>) {
-    const provinsiName = await fetchPlaceName(
-      `https://www.emsifa.com/api-wilayah-indonesia/api/province/${values.provinsi}.json`,
-    );
-    const kabupatenName = await fetchPlaceName(
-      `https://www.emsifa.com/api-wilayah-indonesia/api/regency/${values.kabupaten}.json`,
-    );
-    const kecamatanName = await fetchPlaceName(
-      `https://www.emsifa.com/api-wilayah-indonesia/api/district/${values.kecamatan}.json`,
-    );
-    const kelurahanName = await fetchPlaceName(
-      `https://www.emsifa.com/api-wilayah-indonesia/api/village/${values.kelurahan}.json`,
-    );
-    const transformedValues: Omit<Karyawan, "id"> = {
+    const isCapitalized = /^[A-Z]+$/.test(values.provinsi);
+    const provinsiName = isCapitalized
+      ? values.provinsi
+      : await fetchPlaceName(
+          `https://www.emsifa.com/api-wilayah-indonesia/api/province/${values.provinsi}.json`,
+        );
+    const kabupatenName = isCapitalized
+      ? values.kabupaten
+      : await fetchPlaceName(
+          `https://www.emsifa.com/api-wilayah-indonesia/api/regency/${values.kabupaten}.json`,
+        );
+    const kecamatanName = isCapitalized
+      ? values.kecamatan
+      : await fetchPlaceName(
+          `https://www.emsifa.com/api-wilayah-indonesia/api/district/${values.kecamatan}.json`,
+        );
+    const kelurahanName = isCapitalized
+      ? values.kelurahan
+      : await fetchPlaceName(
+          `https://www.emsifa.com/api-wilayah-indonesia/api/village/${values.kelurahan}.json`,
+        );
+    const transformedValues = {
       ...values,
       provinsi: provinsiName,
       kabupaten: kabupatenName,
       kecamatan: kecamatanName,
       kelurahan: kelurahanName,
     };
-    await createKaryawan(transformedValues);
+    setIsLoading(true);
+
+    let response: { result: string; description: any };
+    if (is_edit) {
+      response = await updateKaryawan(transformedValues);
+    } else {
+      response = await createKaryawan(transformedValues);
+    }
+    toast(response.result, {
+      description: response.description,
+      action: {
+        label: "Oke!",
+        onClick: () => toast.dismiss,
+      },
+    });
+    setIsLoading(false);
   }
 
   return (
@@ -121,6 +128,7 @@ export function ProfileForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid gap-5 grid-cols-1"
       >
+        <CircularProgress className={isLoading ? "flex" : "hidden"} />
         <KaryawanMain form={form} />
         <KaryawanBiodata form={form} />
         <KaryawanStatus form={form} />

@@ -1,6 +1,6 @@
 import type { Icon } from "lucide-react";
 
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/misc/icons";
 
 export type NavItem = {
   title: string;
@@ -73,4 +73,17 @@ export type Content = {
       icon?: keyof typeof Icons; // Icon should be optional and match Icons keys
     }[];
   }[];
+};
+
+type TipeKendaraanWithAHM = {
+  id: number;
+  idTipeKendaraanAHM: number;
+  tipe: string;
+  namaTipe: string;
+  cc: number;
+  model: string;
+  aktif: boolean;
+  TipeKendaraanAHM: {
+    kodeTipeKendaraanAHM: string | null;
+  };
 };

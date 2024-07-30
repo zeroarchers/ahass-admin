@@ -5,7 +5,7 @@ const DEFAULT_LOGIN_REDIRECT = "/dashboard";
 
 const publicRoutes = ["/"];
 
-const authRoutes = ["/login"];
+const authRoutes = ["/login", "/register"];
 
 const apiPrefix = "/api";
 

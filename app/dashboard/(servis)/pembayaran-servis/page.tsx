@@ -1,6 +1,6 @@
-import DynamicTable from "@/components/dynamic-table";
+import DynamicTable from "@/components/table/dynamic-table";
 import { prisma } from "@/lib/prisma";
-import { columns } from "@/components/tables/pkb-columns";
+import { columns } from "@/components/table/columns/pkb-columns";
 import type { Pkb } from "@prisma/client";
 
 export default async function Page() {
@@ -8,7 +8,7 @@ export default async function Page() {
   return (
     <>
       <h1 className="font-black text-4xl">Pembayaran PKB</h1>
-      <DynamicTable data={data} columns={columns} filterColumn="noPKB" />
+      <DynamicTable data={data} columns={columns} />
     </>
   );
 }

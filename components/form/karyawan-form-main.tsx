@@ -70,40 +70,44 @@ export function KaryawanMain({ form }: { form: any }) {
       <CardContent className="grid md:grid-cols-2 gap-5">
         <FormField
           control={form.control}
-          name="kode"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kode</FormLabel>
-              <FormControl>
-                <Input disabled {...field} />
-              </FormControl>
-              <FormMessage />{" "}
-              <div className="items-top flex space-x-2">
-                <div className="grid gap-1.5 leading-none">
-                  <label
-                    htmlFor="terms1"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Status Aktif:
-                  </label>
+          name="id"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Kode</FormLabel>
+                <FormControl>
+                  <Input disabled={false} {...field} />
+                </FormControl>
+                <FormMessage />{" "}
+                <div className="items-top flex space-x-2">
+                  <div className="grid gap-1.5 leading-none">
+                    <label
+                      htmlFor="terms1"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Status Aktif:
+                    </label>
+                  </div>
+                  <Checkbox id="terms1" />
                 </div>
-                <Checkbox id="terms1" />
-              </div>
-            </FormItem>
-          )}
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
@@ -121,32 +125,35 @@ export function KaryawanMain({ form }: { form: any }) {
         <FormField
           control={form.control}
           name="provinsi"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Provinsi</FormLabel>
-              <Select
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  form.setValue("kabupaten", "");
-                }}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih provinsi karyawan" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {provinces.map((province) => (
-                    <SelectItem key={province.id} value={province.id}>
-                      {province.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Provinsi</FormLabel>
+                <Select
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    form.setValue("kabupaten", "");
+                  }}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={field.value ?? `Pilih provinsi karyawan`}
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {provinces.map((province) => (
+                      <SelectItem key={province.id} value={province.id}>
+                        {province.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
@@ -159,11 +166,12 @@ export function KaryawanMain({ form }: { form: any }) {
                   field.onChange(value);
                   form.setValue("kecamatan", "");
                 }}
-                defaultValue={field.value}
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Pilih kabupaten karyawan" />
+                    <SelectValue
+                      placeholder={field.value ?? `Pilih kabupaten karyawan`}
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -189,11 +197,12 @@ export function KaryawanMain({ form }: { form: any }) {
                   field.onChange(value);
                   form.setValue("kelurahan", "");
                 }}
-                defaultValue={field.value}
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Pilih kecamatan karyawan" />
+                    <SelectValue
+                      placeholder={field.value ?? `Pilih kecamatan karyawan`}
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -214,10 +223,12 @@ export function KaryawanMain({ form }: { form: any }) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Kelurahan</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Pilih kelurahan karyawan" />
+                    <SelectValue
+                      placeholder={field.value ?? `Pilih kelurahan karyawan`}
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>

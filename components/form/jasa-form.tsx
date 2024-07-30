@@ -1,9 +1,8 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -25,32 +24,26 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { createJasa } from "@/actions/actions";
-import type { Jasa } from "@prisma/client";
+import { createJasa, updateJasa } from "@/actions/actions";
 import { Checkbox } from "../ui/checkbox";
 import { Textarea } from "../ui/textarea";
+import { jasaFormSchema } from "@/schemas";
+import { useEffect } from "react";
 
-export const jasaFormSchema = z.object({
-  kode: z.string().min(1, { message: "Kode harus diisi." }),
-  nama: z.string().min(5, { message: "Nama harus setidaknya 5 karakter." }),
-  jobType: z.string().min(1, { message: "Job Type harus diisi." }),
-  jobTypeDesc: z
-    .string()
-    .min(5, { message: "Job Type Desc harus setidaknya 5 karakter." }),
-  kategoriPekerjaan: z
-    .string()
-    .min(1, { message: "Kategori Pekerjaan harus diisi." }),
-  hargaJual: z.coerce.number().min(1, { message: "Harga Jual harus diisi." }),
-  waktuKerja: z.coerce.number().min(1, { message: "Waktu Kerja harus diisi." }),
-  satuanKerja: z.string().min(1, { message: "Satuan Kerja harus diisi." }),
-  catatan: z.string().nullable(), // Adjusted to handle null values
-  statusAktif: z.boolean().default(false),
-});
+import { CircularProgress } from "@/components/misc/circular-progress";
+import { toast } from "sonner";
 
-export function JasaForm() {
+interface JasaFormProps {
+  initialValues?: z.infer<typeof jasaFormSchema>;
+}
+
+export function JasaForm({ initialValues }: JasaFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const is_edit = initialValues !== undefined;
+
   const form = useForm<z.infer<typeof jasaFormSchema>>({
     resolver: zodResolver(jasaFormSchema),
-    defaultValues: {
+    defaultValues: initialValues || {
       kode: "",
       nama: "",
       jobType: "",
@@ -63,10 +56,30 @@ export function JasaForm() {
       statusAktif: false,
     },
   });
+  useEffect(() => {
+    if (initialValues) {
+      form.reset(initialValues);
+    }
+  }, [initialValues, form]);
 
   async function onSubmit(values: z.infer<typeof jasaFormSchema>) {
-    console.log(values);
-    await createJasa(values);
+    setIsLoading(true);
+
+    let response: { result: string; description: any };
+
+    if (is_edit) {
+      response = await updateJasa(values);
+    } else {
+      response = await createJasa(values);
+    }
+    toast(response.result, {
+      description: response.description,
+      action: {
+        label: "Oke!",
+        onClick: () => toast.dismiss,
+      },
+    });
+    setIsLoading(false);
   }
 
   const handleSelectChange = (value: string) => {
@@ -82,6 +95,7 @@ export function JasaForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid gap-5 grid-cols-1"
       >
+        <CircularProgress className={isLoading ? "flex" : "hidden"} />
         <Card>
           <CardHeader>
             <CardTitle>Jasa Form</CardTitle>
@@ -95,7 +109,7 @@ export function JasaForm() {
                   <FormItem>
                     <FormLabel>Kode</FormLabel>
                     <FormControl>
-                      <Input placeholder="Kode" {...field} />
+                      <Input disabled={is_edit} placeholder="Kode" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

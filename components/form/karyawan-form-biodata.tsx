@@ -8,7 +8,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "../ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -56,15 +55,18 @@ export function KaryawanBiodata({ form }: { form: any }) {
         <FormField
           control={form.control}
           name="tanggal_lahir"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tanggal Lahir</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={({ field }) => {
+            field.value = field.value.toISOString().split("T")[0];
+            return (
+              <FormItem>
+                <FormLabel>Tanggal Lahir</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
@@ -116,37 +118,45 @@ export function KaryawanBiodata({ form }: { form: any }) {
         <FormField
           control={form.control}
           name="berlaku_hingga"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Berlaku Hingga</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={({ field }) => {
+            field.value = field.value.toISOString().split("T")[0];
+            return (
+              <FormItem>
+                <FormLabel> Berlaku hingga</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
           name="status_kawin"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status Kawin</FormLabel>
-              <FormControl>
-                <RadioGroup onValueChange={field.onChange}>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="belum" id="belum" />
-                    <Label htmlFor="belum">Belum Kawin</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="kawin" id="kawin" />
-                    <Label htmlFor="kawin">Kawin</Label>
-                  </div>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Status Kawin</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    value={field.value || "belum"}
+                    onValueChange={field.onChange}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="belum" id="belum" />
+                      <Label htmlFor="belum">Belum Kawin</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="kawin" id="kawin" />
+                      <Label htmlFor="kawin">Kawin</Label>
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
@@ -155,7 +165,10 @@ export function KaryawanBiodata({ form }: { form: any }) {
             <FormItem>
               <FormLabel>Status Kebangsaan</FormLabel>
               <FormControl>
-                <RadioGroup onValueChange={field.onChange}>
+                <RadioGroup
+                  value={field.value || "wni"}
+                  onValueChange={field.onChange}
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="wni" id="wni" />
                     <Label htmlFor="wni">WNA</Label>

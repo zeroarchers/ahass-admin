@@ -26,7 +26,10 @@ export function KaryawanStatus({ form }: { form: any }) {
             <FormItem>
               <FormLabel>Status Karyawan Tetap</FormLabel>
               <FormControl>
-                <RadioGroup onValueChange={field.onChange}>
+                <RadioGroup
+                  value={field.value || "tetap"}
+                  onValueChange={field.onChange}
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="tetap" id="tetap" />
                     <Label htmlFor="tetap">Tetap</Label>
@@ -57,28 +60,34 @@ export function KaryawanStatus({ form }: { form: any }) {
         <FormField
           control={form.control}
           name="tanggal_masuk"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tanggal Masuk</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={({ field }) => {
+            field.value = field.value.toISOString().split("T")[0];
+            return (
+              <FormItem>
+                <FormLabel>Tanggal Berhenti</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
           name="tanggal_berhenti"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tanggal Berhenti</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={({ field }) => {
+            field.value = field.value.toISOString().split("T")[0];
+            return (
+              <FormItem>
+                <FormLabel>Tanggal Berhenti</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
@@ -113,7 +122,10 @@ export function KaryawanStatus({ form }: { form: any }) {
             <FormItem>
               <FormLabel>Status Pit</FormLabel>
               <FormControl>
-                <RadioGroup onValueChange={field.onChange}>
+                <RadioGroup
+                  value={field.value || "pit"}
+                  onValueChange={field.onChange}
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="pit" id="pit" />
                     <Label htmlFor="pit">Pit</Label>
