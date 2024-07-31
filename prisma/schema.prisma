@@ -48,26 +48,19 @@ model Account {
 }
 
 model SparePart {
-  id                 Int       @id
+  id                 Int       @id @default(autoincrement())
+
+  kodeSparepart      String @unique
+  aktif              Boolean
   namaSparepart      String
   namaLokalSparepart String?
-  kodeSparepart      String
   grupSparepart      String
-  label              String
   hargaLokal         Int
-  hargaNasional      Int
-  hargaJual          Int
-  hargaJualHET       Int
+  hargaNasional      Int?
   uom                String
-  rak                String?
-  aktif              Boolean
-  nilaiDiskon        Int
-  persentaseDiskon   Int
-  stok               Int
-  grupKodeAHM        String
-  kategoriETD        String?
-  etaTercepat        DateTime
-  etaTerlama         DateTime
+  hargaClaimOli      Int?
+  grupKodeAHM        String?
+  catatan            String?
 }
 
 model Jasa {

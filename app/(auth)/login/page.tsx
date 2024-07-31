@@ -39,8 +39,6 @@ export default function Page() {
   });
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
-
     const { result, description } = await login(values);
     toast(result, {
       description,

@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -24,30 +24,132 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { createJasa, updateJasa } from "@/actions/actions";
+import { createSparepart, updateSparepart } from "@/actions/actions";
 import { Checkbox } from "../ui/checkbox";
 import { Textarea } from "../ui/textarea";
-import { jasaFormSchema } from "@/schemas";
+import { sparepartFormSchema } from "@/schemas";
 import { useEffect } from "react";
+import { toast } from "sonner";
+import { CircularProgress } from "../misc/circular-progress";
 
 interface SparepartFormProps {
-  initialValues?: z.infer<typeof jasaFormSchema>;
+  initialValues?: z.infer<typeof sparepartFormSchema>;
 }
 
+const sparePartOptions = [
+  "OTHER",
+  "HGP",
+  "SPARK PLUG",
+  "TIRE",
+  "OLI",
+  "Engine",
+];
+
+const grupKodeAhmOptions = [
+  "HND-06C",
+  "EXT SERV",
+  "HND-ASB",
+  "HND-43A",
+  "HND-AHS",
+  "HND-01A",
+  "HND-02D",
+  "HND-22A",
+  "HND-01C",
+  "HND-12B",
+  "HND-11Z",
+  "HND-17B",
+  "HND-81A",
+  "HND-05A",
+  "HND-31D",
+  "HND-30A",
+  "HND-X1A",
+  "HND-42A",
+  "HND-TLA",
+  "HND-12A",
+  "HND-03A",
+  "HND-X1Z",
+  "HND-41E",
+  "HND-11D",
+  "HND-08A",
+  "HND-27A",
+  "HND-31C",
+  "HND-02C",
+  "HND-29A",
+  "HND-81B",
+  "HND-31E",
+  "HND-02A",
+  "HND-04A",
+  "HND-TLC",
+  "HND-93A",
+  "HND-X1C",
+  "HND-11A",
+  "HND-X1B",
+  "HND-02Z",
+  "HND-14B",
+  "HND-ASA",
+  "GEN REP",
+  "HND-45A",
+  "HND-31A",
+  "HND-11B",
+  "HND-16A",
+  "HND-10A",
+  "HND-14A",
+  "HND-06B",
+  "HND-21F",
+  "HND-44A",
+  "HND-25A",
+  "HND-21E",
+  "HND-01E",
+  "HND-Y1A",
+  "HND-21D",
+  "HND-28B",
+  "HND-15A",
+  "HND-06A",
+  "HND-23A",
+  "HND-21A",
+  "HND-82A",
+  "HND-ASC",
+  "HND-09A",
+  "HND-11C",
+  "HND-07A",
+  "HND-19A",
+  "HND-24A",
+  "HND-15Z",
+  "HND-17A",
+  "HND-01D",
+  "HND-06D",
+  "HND-01B",
+  "HND-31B",
+  "HND-28A",
+  "HND-13A",
+  "HND-26A",
+  "HND-91A",
+  "HND-02B",
+  "HND-21C",
+  "HND-18A",
+  "HND-41A",
+  "HND-TLB",
+  "HND-11E",
+  "HND-20A",
+];
+
 export function SparepartForm({ initialValues }: SparepartFormProps) {
-  const form = useForm<z.infer<typeof jasaFormSchema>>({
-    resolver: zodResolver(jasaFormSchema),
+  const is_edit = initialValues !== undefined;
+  const [isLoading, setIsLoading] = useState(false);
+  const form = useForm<z.infer<typeof sparepartFormSchema>>({
+    resolver: zodResolver(sparepartFormSchema),
     defaultValues: initialValues || {
-      kode: "",
-      nama: "",
-      jobType: "",
-      jobTypeDesc: "",
-      kategoriPekerjaan: "",
-      hargaJual: 0,
-      waktuKerja: 0,
-      satuanKerja: "",
+      kodeSparepart: "",
+      aktif: false,
+      namaSparepart: "",
+      namaLokalSparepart: null,
+      grupSparepart: "",
+      hargaLokal: 0,
+      hargaNasional: null,
+      uom: "",
+      hargaClaimOli: null,
+      grupKodeAHM: null,
       catatan: null,
-      statusAktif: false,
     },
   });
   useEffect(() => {
@@ -56,22 +158,26 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
     }
   }, [initialValues, form]);
 
-  async function onSubmit(values: z.infer<typeof jasaFormSchema>) {
-    const is_edit = initialValues !== undefined;
+  async function onSubmit(values: z.infer<typeof sparepartFormSchema>) {
+    setIsLoading(true);
+    let response: { result: string; description: any };
+
     if (is_edit) {
-      console.log("updating");
-      await updateJasa(values);
+      response = await updateSparepart(values);
     } else {
-      await createJasa(values);
+      response = await createSparepart(values);
     }
+    if (response) {
+      toast(response.result, {
+        description: response.description,
+        action: {
+          label: "Oke!",
+          onClick: () => toast.dismiss,
+        },
+      });
+    }
+    setIsLoading(false);
   }
-
-  const handleSelectChange = (value: string) => {
-    const [jobType, jobTypeDesc] = value.split(" - ");
-
-    form.setValue("jobType", jobType);
-    form.setValue("jobTypeDesc", jobTypeDesc);
-  };
 
   return (
     <Form {...form}>
@@ -79,20 +185,21 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid gap-5 grid-cols-1"
       >
+        <CircularProgress className={isLoading ? "flex" : "hidden"} />
         <Card>
           <CardHeader>
-            <CardTitle>Jasa Form</CardTitle>
+            <CardTitle>Sparepart Form</CardTitle>
           </CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-5">
             <div className="grid grid-cols-1 gap-y-3">
               <FormField
                 control={form.control}
-                name="kode"
+                name="kodeSparepart"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Kode</FormLabel>
                     <FormControl>
-                      <Input placeholder="Kode" {...field} />
+                      <Input disabled={is_edit} placeholder="Kode" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -100,7 +207,7 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
               />
               <FormField
                 control={form.control}
-                name="statusAktif"
+                name="aktif"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -127,7 +234,7 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
             </div>
             <FormField
               control={form.control}
-              name="nama"
+              name="namaSparepart"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nama</FormLabel>
@@ -140,57 +247,16 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
             />
             <FormField
               control={form.control}
-              name="jobType"
+              name="namaLokalSparepart"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Job Type</FormLabel>
+                  <FormLabel>Nama Lokal</FormLabel>
                   <FormControl>
-                    <Select
-                      onValueChange={handleSelectChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Job Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="LS - Light Service">
-                          LS - Light Service
-                        </SelectItem>
-                        <SelectItem value="C2 - Honda Warranty">
-                          C2 - Honda Warranty
-                        </SelectItem>
-                        <SelectItem value="LR - Light Repair">
-                          LR - Light Repair
-                        </SelectItem>
-                        <SelectItem value="HR - Heavy Repair">
-                          HR - Heavy Repair
-                        </SelectItem>
-                        <SelectItem value="ASS1 - ASS 1 service">
-                          ASS1 - ASS 1 service
-                        </SelectItem>
-                        <SelectItem value="ASS2 - ASS 2 service">
-                          ASS2 - ASS 2 service
-                        </SelectItem>
-                        <SelectItem value="ASS3 - ASS 3 service">
-                          ASS3 - ASS 3 service
-                        </SelectItem>
-                        <SelectItem value="ASS4 - ASS 4 service">
-                          ASS4 - ASS 4 service
-                        </SelectItem>
-                        <SelectItem value="OR+ - Replace Oil">
-                          OR+ - Replace Oil
-                        </SelectItem>
-                        <SelectItem value="CS - Complete Srv">
-                          CS - Complete Srv
-                        </SelectItem>
-                        <SelectItem value="JR - Job Return">
-                          JR - Job Return
-                        </SelectItem>
-                        <SelectItem value="OTHER - Other">
-                          OTHER - Other
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      placeholder="Nama Lokal"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -198,29 +264,29 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
             />
             <FormField
               control={form.control}
-              name="jobTypeDesc"
-              render={({ field }) => (
-                <input type="hidden" value={field.value} />
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="kategoriPekerjaan"
+              name="grupSparepart"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Kategori Pekerjaan</FormLabel>
+                  <FormLabel>Group</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select Kategori Pekerjaan" />
+                        <SelectValue placeholder={field.value} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="PENGGANTIAN">PENGGANTIAN</SelectItem>
-                        <SelectItem value="PERBAIKAN">PERBAIKAN</SelectItem>
-                        <SelectItem value="PERAWATAN">PERAWATAN</SelectItem>
+                        {sparePartOptions.map(
+                          (option: string, index: number) => (
+                            <SelectItem
+                              key={index}
+                              value={option.toLowerCase().replace(/\s+/g, "-")}
+                            >
+                              {option}
+                            </SelectItem>
+                          ),
+                        )}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -230,12 +296,12 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
             />
             <FormField
               control={form.control}
-              name="hargaJual"
+              name="hargaLokal"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Harga Jual</FormLabel>
+                  <FormLabel>Harga Lokal</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Harga Jual" {...field} />
+                    <Input type="number" placeholder="Harga Lokal" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -243,12 +309,28 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
             />
             <FormField
               control={form.control}
-              name="waktuKerja"
+              name="grupSparepart"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Waktu Kerja</FormLabel>
+                  <FormLabel>Group Kode AHM</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Waktu Kerja" {...field} />
+                    <Select defaultValue={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih group" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {grupKodeAhmOptions.map(
+                          (option: string, index: number) => (
+                            <SelectItem
+                              key={index}
+                              value={option.toLowerCase().replace(/\s+/g, "-")}
+                            >
+                              {option}
+                            </SelectItem>
+                          ),
+                        )}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -256,24 +338,60 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
             />
             <FormField
               control={form.control}
-              name="satuanKerja"
+              name="hargaNasional"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Satuan Kerja</FormLabel>
+                  <FormLabel>Harga Nasional (HET)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Harga Nasional"
+                      {...field}
+                      value={field.value || 0}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="uom"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Satuan</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select Satuan Kerja" />
+                        <SelectValue placeholder="Pilih satuan" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Hour">Hour</SelectItem>
-                        <SelectItem value="Minute">Minute</SelectItem>
-                        <SelectItem value="Day">Day</SelectItem>
+                        <SelectItem value="pcs">PCS</SelectItem>
+                        <SelectItem value="set">SET</SelectItem>
                       </SelectContent>
                     </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="hargaClaimOli"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Harga Claim Oli</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Harga Claim Oli"
+                      {...field}
+                      value={field.value || 0}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

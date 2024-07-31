@@ -7,7 +7,9 @@ export default function EditButton({ id }: { id: string }) {
   return (
     <Link href={path}>
       {" "}
-      <DropdownMenuItem className="bg-yellow-400">Edit</DropdownMenuItem>
+      <DropdownMenuItem className="bg-yellow-400 rounded-b-none">
+        Edit
+      </DropdownMenuItem>
     </Link>
   );
 }

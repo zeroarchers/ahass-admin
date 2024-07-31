@@ -17,17 +17,14 @@ export default {
       async authorize(credentials) {
         const validatedFields = loginSchema.safeParse(credentials);
 
-        console.log(validatedFields);
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
 
           const user = await getUserByEmail(email);
 
-          console.log(user);
           if (!user || !user.password) return null;
 
           const passwordMatch = await bcrypt.compare(password, user.password);
-          console.log(password);
           if (passwordMatch) return user;
         }
 

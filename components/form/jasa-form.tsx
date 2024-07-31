@@ -72,13 +72,15 @@ export function JasaForm({ initialValues }: JasaFormProps) {
     } else {
       response = await createJasa(values);
     }
-    toast(response.result, {
-      description: response.description,
-      action: {
-        label: "Oke!",
-        onClick: () => toast.dismiss,
-      },
-    });
+    if (response) {
+      toast(response.result, {
+        description: response.description,
+        action: {
+          label: "Oke!",
+          onClick: () => toast.dismiss,
+        },
+      });
+    }
     setIsLoading(false);
   }
 

@@ -2,10 +2,16 @@
 import { prisma } from "@/lib/prisma";
 import * as z from "zod";
 
-import { jasaFormSchema, karyawanFormSchema } from "@/schemas";
+import {
+  jasaFormSchema,
+  karyawanFormSchema,
+  sparepartFormSchema,
+} from "@/schemas";
 import { getKaryawanById } from "@/data/karyawan";
 import { revalidatePath } from "next/cache";
 import { getJasaById } from "@/data/jasa";
+import { redirect } from "next/navigation";
+import { getSparepartById } from "@/data/sparepart";
 
 export async function createKaryawan(data: z.infer<typeof karyawanFormSchema>) {
   const validatedData = karyawanFormSchema.safeParse(data);
@@ -15,8 +21,8 @@ export async function createKaryawan(data: z.infer<typeof karyawanFormSchema>) {
   }
 
   await prisma.karyawan.create({ data: validatedData.data });
-  revalidatePath("/karyawan");
-  return { result: "Success!", description: "Berhasil menambahkan Karyawan!" };
+  revalidatePath("/dashboard/karyawan");
+  redirect("/dashboard/karyawan");
 }
 
 export async function updateKaryawan(data: z.infer<typeof karyawanFormSchema>) {
@@ -31,8 +37,8 @@ export async function updateKaryawan(data: z.infer<typeof karyawanFormSchema>) {
     },
     data: validatedData.data,
   });
-  revalidatePath("/karyawan");
-  return { result: "Success!", description: "Berhasil menambahkan Karyawan!" };
+  revalidatePath("/dashboard/karyawan");
+  redirect("/dashboard/karyawan");
 }
 
 export async function deleteKaryawan(id: string) {
@@ -46,8 +52,8 @@ export async function deleteKaryawan(id: string) {
       id: parseInt(id),
     },
   });
-  revalidatePath("/karyawan");
-  return { result: "Success!", description: "Berhasil menambahkan Karyawan!" };
+  revalidatePath("/dashboard/karyawan");
+  return { result: "Success!", description: "Berhasil menghapus Karyawan!" };
 }
 
 export async function createJasa(data: z.infer<typeof jasaFormSchema>) {
@@ -58,8 +64,8 @@ export async function createJasa(data: z.infer<typeof jasaFormSchema>) {
   }
 
   await prisma.jasa.create({ data: validatedData.data });
-  revalidatePath("/jasa");
-  return { result: "Success!", description: "Berhasil menambahkan Jasa!" };
+  revalidatePath("/dashboard/jasa");
+  redirect("/dashboard/jasa");
 }
 
 export async function updateJasa(data: z.infer<typeof jasaFormSchema>) {
@@ -75,8 +81,8 @@ export async function updateJasa(data: z.infer<typeof jasaFormSchema>) {
     },
     data,
   });
-  revalidatePath("/jasa");
-  return { result: "Success!", description: "Berhasil memperbarui Jasa!" };
+  revalidatePath("/dashboard/jasa");
+  redirect("/dashboard/jasa");
 }
 
 export async function deleteJasa(kode: string) {
@@ -90,6 +96,54 @@ export async function deleteJasa(kode: string) {
       kode,
     },
   });
-  revalidatePath("/jasa");
-  return { result: "Success!", description: "Berhasil menambahkan Karyawan!" };
+  revalidatePath("/dashboard/jasa");
+  return { result: "Success!", description: "Berhasil menghapus jasa!" };
+}
+
+export async function createSparepart(
+  data: z.infer<typeof sparepartFormSchema>,
+) {
+  const validatedData = sparepartFormSchema.safeParse(data);
+
+  if (!validatedData.success) {
+    return { result: "Error!", description: "Input data tidak valid!" };
+  }
+
+  await prisma.sparePart.create({ data: validatedData.data });
+  revalidatePath("/dashboard/sparepart");
+  redirect("/dashboard/sparepart");
+}
+
+export async function updateSparepart(
+  data: z.infer<typeof sparepartFormSchema>,
+) {
+  const validatedData = sparepartFormSchema.safeParse(data);
+
+  if (!validatedData.success) {
+    return { result: "Error!", description: "Input data tidak valid!" };
+  }
+
+  await prisma.sparePart.update({
+    where: {
+      kodeSparepart: data.kodeSparepart,
+    },
+    data,
+  });
+  revalidatePath("/dashboard/sparepart");
+  redirect("/dashboard/sparepart");
+}
+
+export async function deleteSparepart(kode: string) {
+  const sparepart_exist = !getSparepartById(kode);
+  if (sparepart_exist) {
+    return { result: "Error!", description: "Input data tidak valid!" };
+  }
+
+  await prisma.sparePart.delete({
+    where: {
+      kodeSparepart: kode,
+    },
+  });
+  revalidatePath("/dashboard/sparepart");
+  return { result: "Success!", description: "Berhasil menghapus sparepart!" };
 }

@@ -13,6 +13,8 @@ import {
 import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import EditButton from "../edit-button";
+import DeleteButton from "../delete-button";
+import { deleteSparepart } from "@/actions/actions";
 
 export const columns: ColumnDef<SparePart>[] = [
   {
@@ -73,7 +75,7 @@ export const columns: ColumnDef<SparePart>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("hargaJual")}</div>
+      <div className="text-center">{row.original.hargaLokal}</div>
     ),
   },
   {
@@ -119,7 +121,10 @@ export const columns: ColumnDef<SparePart>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <EditButton id={orirow.kodeSparepart.toString()} />
-            <DropdownMenuItem className="bg-red-400">Delete</DropdownMenuItem>
+            <DeleteButton
+              id={orirow.kodeSparepart}
+              deleteAction={deleteSparepart}
+            />
           </DropdownMenuContent>
         </DropdownMenu>
       );

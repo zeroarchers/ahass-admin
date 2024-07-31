@@ -25,7 +25,6 @@ interface KaryawanFormProps {
 export function KaryawanForm({ initialValues }: KaryawanFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const is_edit = initialValues !== undefined;
-  console.log(initialValues?.provinsi);
   const form = useForm<z.infer<typeof karyawanFormSchema>>({
     resolver: zodResolver(karyawanFormSchema),
     defaultValues: initialValues || {
@@ -112,13 +111,15 @@ export function KaryawanForm({ initialValues }: KaryawanFormProps) {
     } else {
       response = await createKaryawan(transformedValues);
     }
-    toast(response.result, {
-      description: response.description,
-      action: {
-        label: "Oke!",
-        onClick: () => toast.dismiss,
-      },
-    });
+    if (response) {
+      toast(response.result, {
+        description: response.description,
+        action: {
+          label: "Oke!",
+          onClick: () => toast.dismiss,
+        },
+      });
+    }
     setIsLoading(false);
   }
 

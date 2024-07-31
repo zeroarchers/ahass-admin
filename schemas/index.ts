@@ -82,16 +82,29 @@ export const karyawanFormSchema = z.object({
   transport: z.coerce.number().nullable().optional(),
   uang_harian: z.coerce.number().nullable().optional(),
 });
+`
+  kodeSparepart      String @unique
+  aktif              Boolean
+  namaSparepart      String
+  namaLokalSparepart String?
+  grupSparepart      String
+  hargaLokal         Int
+  hargaNasional      Int?
+  uom                String
+  hargaClaimOli      Int?
+  grupKodeAHM        String?
 
+`;
 export const sparepartFormSchema = z.object({
-  kode: z.string().min(1, { message: "Kode harus diisi." }),
-  status: z.boolean(),
-  nama: z.string().min(5, { message: "Nama harus diisi." }),
-  nama_lokal: z.string().nullable().optional(),
-  group: z.string().min(1, { message: "Group harus diisi." }),
-  harga_lokal: z.number(),
-  harga_nasional: z.number().nullable().optional(),
-  satuan: z.string().nullable().optional(),
-  harga_claim_oli: z.number().nullable().optional(),
+  kodeSparepart: z.string().min(1, { message: "Kode harus diisi." }),
+  aktif: z.boolean().default(false),
+  namaSparepart: z.string().min(5, { message: "Nama harus diisi." }),
+  namaLokalSparepart: z.string().nullable().optional(),
+  grupSparepart: z.string().min(1, { message: "Group harus diisi." }),
+  hargaLokal: z.coerce.number(),
+  hargaNasional: z.coerce.number().nullable().optional(),
+  uom: z.string().min(1, { message: "Satuan harus diisi." }),
+  hargaClaimOli: z.coerce.number().nullable().optional(),
+  grupKodeAHM: z.string().nullable().optional(),
   catatan: z.string().nullable().optional(),
 });

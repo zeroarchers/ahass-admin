@@ -40,7 +40,6 @@ export default function Page() {
   });
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
-    console.log(values);
     const { result, description } = await register(values);
     toast(result, {
       description,

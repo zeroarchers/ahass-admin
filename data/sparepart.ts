@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 
-export const getSparepartById = async (id: number) => {
+export const getSparepartById = async (kode: string) => {
   try {
-    const sparepart = await prisma.sparePart.findUnique({
+    const sparepart = await prisma.sparePart.findFirst({
       where: {
-        id,
+        kodeSparepart: kode,
       },
     });
     return sparepart;
