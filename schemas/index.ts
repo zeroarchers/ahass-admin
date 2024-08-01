@@ -104,7 +104,5 @@ export const sparepartFormSchema = z.object({
   hargaLokal: z.coerce.number(),
   hargaNasional: z.coerce.number().nullable().optional(),
   uom: z.string().min(1, { message: "Satuan harus diisi." }),
-  hargaClaimOli: z.coerce.number().nullable().optional(),
   grupKodeAHM: z.string().nullable().optional(),
-  catatan: z.string().nullable().optional(),
 });

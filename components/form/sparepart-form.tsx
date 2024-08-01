@@ -147,9 +147,7 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
       hargaLokal: 0,
       hargaNasional: null,
       uom: "",
-      hargaClaimOli: null,
       grupKodeAHM: null,
-      catatan: null,
     },
   });
   useEffect(() => {
@@ -378,40 +376,38 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="hargaClaimOli"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Harga Claim Oli</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Harga Claim Oli"
-                      {...field}
-                      value={field.value || 0}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="col-span-2">
-              <FormField
-                control={form.control}
-                name="catatan"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Catatan</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} value={field.value ?? ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            {/**/}
+            {/* <FormField */}
+            {/*   name="hargaLokal" */}
+            {/*   render={({}) => ( */}
+            {/*     <FormItem> */}
+            {/*       <FormLabel>Harga Claim Oli</FormLabel> */}
+            {/*       <FormControl> */}
+            {/*         <Input */}
+            {/*           type="number" */}
+            {/*           placeholder="Harga Claim Oli" */}
+            {/*           disabled */}
+            {/*         /> */}
+            {/*       </FormControl> */}
+            {/*       <FormMessage /> */}
+            {/*     </FormItem> */}
+            {/*   )} */}
+            {/* /> */}
+            {/* <div className="col-span-2"> */}
+            {/*   <FormField */}
+            {/*     control={form.control} */}
+            {/*     name="namaSparepart" */}
+            {/*     render={({ field }) => ( */}
+            {/*       <FormItem> */}
+            {/*         <FormLabel>Catatan</FormLabel> */}
+            {/*         <FormControl> */}
+            {/*           <Textarea disabled {...field} value={field.value ?? ""} /> */}
+            {/*         </FormControl> */}
+            {/*         <FormMessage /> */}
+            {/*       </FormItem> */}
+            {/*     )} */}
+            {/*   /> */}
+            {/* </div> */}
           </CardContent>
         </Card>
         <Button type="submit">Submit</Button>

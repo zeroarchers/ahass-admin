@@ -58,9 +58,7 @@ model SparePart {
   hargaLokal         Int
   hargaNasional      Int?
   uom                String
-  hargaClaimOli      Int?
   grupKodeAHM        String?
-  catatan            String?
 }
 
 model Jasa {

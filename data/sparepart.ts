@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { cache } from "react";
 
 export const getSparepartById = async (kode: string) => {
   try {
@@ -12,3 +13,8 @@ export const getSparepartById = async (kode: string) => {
     return null;
   }
 };
+
+export const getAllSparepart = cache(async () => {
+  const sparepart = await prisma.sparePart.findMany();
+  return sparepart;
+});
