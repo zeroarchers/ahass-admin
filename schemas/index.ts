@@ -82,19 +82,7 @@ export const karyawanFormSchema = z.object({
   transport: z.coerce.number().nullable().optional(),
   uang_harian: z.coerce.number().nullable().optional(),
 });
-`
-  kodeSparepart      String @unique
-  aktif              Boolean
-  namaSparepart      String
-  namaLokalSparepart String?
-  grupSparepart      String
-  hargaLokal         Int
-  hargaNasional      Int?
-  uom                String
-  hargaClaimOli      Int?
-  grupKodeAHM        String?
 
-`;
 export const sparepartFormSchema = z.object({
   kodeSparepart: z.string().min(1, { message: "Kode harus diisi." }),
   aktif: z.boolean().default(false),
@@ -105,4 +93,70 @@ export const sparepartFormSchema = z.object({
   hargaNasional: z.coerce.number().nullable().optional(),
   uom: z.string().min(1, { message: "Satuan harus diisi." }),
   grupKodeAHM: z.string().nullable().optional(),
+});
+
+`
+  id                  Int      @id @default(autoincrement())
+  kode                String
+  status              Boolean
+  title               String
+  nama                String
+  noktp               String
+  pekerjaan           String
+  agama               String
+  tanggal_lahir       DateTime?
+  nopassport          String?
+  alamat              String
+  provinsi            String
+  kabupaten           String
+  kecamatan           String
+  kelurahan           String
+  kodepos             String
+  notelp              String?
+  nohp                String
+  email               String?
+  catatan             String?
+  `;
+export const customerFormSchema = z.object({
+  kode: z.string().min(1, { message: "Kode harus diisi." }),
+  status: z.boolean().default(false),
+  title: z.string().min(5, { message: "title harus diisi." }),
+  nama: z.string().min(5, { message: "Nama harus diisi." }),
+  noktp: z.string().min(5, { message: "No. KTP harus diisi." }),
+  pekerjaan: z.string().nullable().optional(),
+  agama: z.string().nullable().optional(),
+  tanggal_lahir: z.coerce.date().nullable().optional(),
+  nopassport: z.string().nullable().optional(),
+  alamat: z.string().min(5, {
+    message: "Alamat harus setidaknya 5 karakter.",
+  }),
+  provinsi: z.string().min(1, {
+    message: "Harus diisi!",
+  }),
+  kabupaten: z.string().min(1, {
+    message: "Harus diisi!",
+  }),
+  kecamatan: z.string().min(1, {
+    message: "Harus diisi!",
+  }),
+  kelurahan: z.string().min(1, {
+    message: "Harus diisi!",
+  }),
+  kodepos: z.string().nullable().optional(),
+  notelp: z.string().min(1, {
+    message: "Nomor Telpon harus setidaknya 5 karakter.",
+  }),
+  nohp: z.string().min(5, {
+    message: "Nomor HP harus setidaknya 5 karakter.",
+  }),
+  email: z.string().nullable().optional(),
+  catatan: z.string().nullable().optional(),
+
+  namaKontakPerson: z.string().nullable().optional(),
+  notelpKontakPerson: z.string().nullable().optional(),
+  nohpKontakPerson: z.string().nullable().optional(),
+
+  alamatKirim: z.string().nullable().optional(),
+  up: z.string().nullable().optional(),
+  noTelpAlamatKirim: z.string().nullable().optional(),
 });

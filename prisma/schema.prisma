@@ -139,3 +139,37 @@ model TipeKendaraan {
   aktif               Boolean
   TipeKendaraanAHM    TipeKendaraanAHM @relation(fields: [idTipeKendaraanAHM], references: [idTipeKendaraanAHM])
 }
+
+
+model Customer {
+  id                  Int      @id @default(autoincrement())
+  kode                String   @unique
+  status              Boolean
+  title               String
+  nama                String
+  noktp               String
+  pekerjaan           String?
+  agama               String?
+  tanggal_lahir       DateTime?
+  nopassport          String?
+
+  alamat              String
+  provinsi            String
+  kabupaten           String
+  kecamatan           String
+  kelurahan           String
+  kodepos             String?
+  notelp              String
+  nohp                String
+  
+  email               String?
+  catatan             String?
+
+  nohpKontakPerson    String?
+  notelpKontakPerson  String?
+  namaKontakPerson    String?
+
+  alamatKirim         String?
+  up                  String?
+  notelpAlamatKirim   String?
+}

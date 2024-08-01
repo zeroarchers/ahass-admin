@@ -5,10 +5,10 @@ import path from "path";
 const prisma = new PrismaClient();
 
 async function main() {
-  const dataPath = path.join(__dirname, "spareparts.json");
+  const dataPath = path.join(__dirname, "../../scraping/customers.json");
   const data = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
 
-  await prisma.sparePart.createMany({
+  await prisma.customer.createMany({
     data: data,
     skipDuplicates: true,
   });
