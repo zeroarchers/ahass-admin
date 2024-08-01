@@ -6,17 +6,25 @@ import type { SparePart } from "@prisma/client";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { page: string };
+  searchParams: { page: string; filter: string; filterColumn: string };
 }) {
   const page = parseInt(searchParams.page) || 1;
+  const filter = searchParams.filter || "";
+  const filterColumn = searchParams.filterColumn || "kodeSparepart";
   const pageSize = 10;
   const offset = (page - 1) * pageSize;
+
+  const where = filter
+    ? { [filterColumn]: { contains: filter, mode: "insensitive" } }
+    : {};
+
   const data: SparePart[] = await prisma.sparePart.findMany({
     skip: offset,
     take: pageSize,
+    where,
   });
 
-  const totalCount = await prisma.sparePart.count();
+  const totalCount = await prisma.sparePart.count({ where });
   const pageCount = Math.ceil(totalCount / pageSize);
 
   return (
@@ -27,6 +35,7 @@ export default async function Page({
         columns={columns}
         currentPage={page}
         pageCount={pageCount}
+        filterColumns={["kodeSparepart", "namaSparepart"]}
       />
     </>
   );

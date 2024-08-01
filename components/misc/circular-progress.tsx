@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-export const CircularProgress = ({ className }: { className: string }) => (
+export const CircularProgress = ({ className }: { className?: string }) => (
   <div
     className={cn(
       className,

@@ -8,7 +8,6 @@ import {
   ColumnFiltersState,
   SortingState,
   VisibilityState,
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -24,16 +23,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import TableTemplate from "./table-template";
 
 export default function DynamicTable({
   data,
@@ -78,7 +70,7 @@ export default function DynamicTable({
 
   return (
     <>
-      <div className="flex justify-between items-end py-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="flex">
           <Input
             placeholder={`Filter ${selectedFilterColumn}...`}
@@ -89,7 +81,7 @@ export default function DynamicTable({
                 .getColumn(selectedFilterColumn)
                 ?.setFilterValue(event.target.value);
             }}
-            className="max-w-sm me-3"
+            className="me-3"
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -117,7 +109,7 @@ export default function DynamicTable({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div>
+        <div className="flex justify-between md:justify-end">
           <Link href={`${usePathname()}/create`}>
             <Button className="me-5">
               <div className="flex align-center justify-between">
@@ -153,54 +145,7 @@ export default function DynamicTable({
         </div>
       </div>
       <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+        <TableTemplate table={table} />
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
