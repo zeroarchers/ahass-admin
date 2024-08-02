@@ -1,4 +1,4 @@
-import { CustomerForm } from "@/components/form/customer-form";
+import { CustomerForm } from "@/components/form/customer/customer-form";
 
 export default async function Page() {
   return (

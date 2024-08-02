@@ -136,6 +136,7 @@ model TipeKendaraan {
   namaTipe            String
   cc                  Int
   model               String
+  commercialName      String?
   aktif               Boolean
   TipeKendaraanAHM    TipeKendaraanAHM @relation(fields: [idTipeKendaraanAHM], references: [idTipeKendaraanAHM])
 }
@@ -172,4 +173,22 @@ model Customer {
   alamatKirim         String?
   up                  String?
   notelpAlamatKirim   String?
+
+  kendaraanAsCustomer Kendaraan[] @relation("CustomerAsCustomer")
+  kendaraanAsPemilik  Kendaraan[] @relation("CustomerAsPemilik")
 }
+
+model Kendaraan {
+    no_polisi           String @id
+    customer Customer @relation(name: "CustomerAsCustomer", fields: [kode_customer], references: [kode])
+    pemilik Customer @relation(name: "CustomerAsPemilik", fields: [kode_pemilik], references: [kode])
+    statusAktif         Boolean
+    kode_customer String
+    kode_pemilik String
+    namaTipeKendaraan String
+    warna            String
+    tahun_rakit String
+    no_rangka   String
+    no_mesin            String
+
+  }

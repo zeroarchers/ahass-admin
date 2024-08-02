@@ -25,8 +25,7 @@ import {
 } from "@/components/ui/select";
 
 import { createSparepart, updateSparepart } from "@/actions/actions";
-import { Checkbox } from "../ui/checkbox";
-import { Textarea } from "../ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { sparepartFormSchema } from "@/schemas";
 import { useEffect } from "react";
 import { toast } from "sonner";

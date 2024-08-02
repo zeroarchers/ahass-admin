@@ -12,3 +12,26 @@ export const getCustomerById = async (kode: string) => {
     return null;
   }
 };
+
+export const getCustomersByName = async (nama: string = "") => {
+  console.log(nama);
+  try {
+    const karyawan = await prisma.customer.findMany({
+      where: {
+        nama: {
+          contains: nama,
+          mode: "insensitive",
+        },
+      },
+      select: {
+        kode: true,
+        nama: true,
+        alamat: true,
+      },
+      take: 10,
+    });
+    return karyawan;
+  } catch {
+    return [];
+  }
+};

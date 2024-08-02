@@ -87,3 +87,19 @@ type TipeKendaraanWithAHM = {
     kodeTipeKendaraanAHM: string | null;
   };
 };
+
+export type KendaraanWithDetails = {
+  no_polisi: string;
+  statusAktif: boolean;
+  kode_customer: string;
+  kode_pemilik: string;
+  namaTipeKendaraan: string;
+  warna: string;
+  tahun_rakit: string;
+  no_rangka: string;
+  no_mesin: string;
+  customer: {
+    nama: string;
+  };
+  tipeKendaraan: string | null; // Changed to string for commercialName
+};

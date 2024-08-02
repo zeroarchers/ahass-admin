@@ -1,8 +1,6 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { Jasa } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -11,13 +9,14 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import EditButton from "../edit-button";
 import DeleteButton from "../delete-button";
-import { deleteJasa } from "@/actions/actions";
+import { deleteKendaraan } from "@/actions/kendaraan";
+import { KendaraanWithDetails } from "@/types";
 
-export const columns: ColumnDef<Jasa>[] = [
+export const columns: ColumnDef<KendaraanWithDetails>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -41,46 +40,47 @@ export const columns: ColumnDef<Jasa>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "kode",
-    header: "Kode",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("kode")}</div>,
+    accessorKey: "no_polisi",
+    header: "No Polisi",
+    cell: ({ row }) => <div>{row.getValue("no_polisi")}</div>,
   },
   {
-    accessorKey: "nama",
-    header: "Nama",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("nama")}</div>,
+    accessorKey: "no_mesin",
+    header: "No Mesin",
+    cell: ({ row }) => <div>{row.getValue("no_mesin")}</div>,
   },
   {
-    accessorKey: "jobType",
-    header: "Grup",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("jobType")}</div>
-    ),
+    accessorKey: "no_rangka",
+    header: "No Rangka",
+    cell: ({ row }) => <div>{row.getValue("no_rangka")}</div>,
   },
   {
-    accessorKey: "hargaJual",
-    header: ({ column }) => {
+    accessorKey: "customer",
+    header: "Customer",
+    cell: ({ row }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="w-full"
-        >
-          Harga Jual
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
+        <div>
+          {(row.getValue("customer") as KendaraanWithDetails["customer"]).nama}
+        </div>
       );
     },
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("hargaJual")}</div>
-    ),
   },
   {
-    accessorKey: "waktuKerja",
-    header: "Waktu Kerja",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("waktuKerja")}</div>
-    ),
+    accessorKey: "tipeKendaraan",
+    header: "Tipe",
+    cell: ({ row }) => {
+      return <div>{row.getValue("tipeKendaraan")}</div>;
+    },
+  },
+  {
+    accessorKey: "warna",
+    header: "Warna",
+    cell: ({ row }) => <div>{row.getValue("warna")}</div>,
+  },
+  {
+    accessorKey: "tahun_rakit",
+    header: "Tahun Rakit",
+    cell: ({ row }) => <div>{row.getValue("tahun_rakit")}</div>,
   },
   {
     accessorKey: "statusAktif",
@@ -94,7 +94,7 @@ export const columns: ColumnDef<Jasa>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const jasa = row.original;
+      const kendaraan = row.original;
 
       return (
         <DropdownMenu>
@@ -107,13 +107,16 @@ export const columns: ColumnDef<Jasa>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(jasa.kode)}
+              onClick={() => navigator.clipboard.writeText(kendaraan.no_polisi)}
             >
-              Copy kode
+              Copy No Polisi
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <EditButton id={jasa.kode.toString()} />
-            <DeleteButton id={jasa.kode} deleteAction={deleteJasa} />
+            <EditButton id={kendaraan.no_polisi} />
+            <DeleteButton
+              id={kendaraan.no_polisi}
+              deleteAction={deleteKendaraan}
+            />
           </DropdownMenuContent>
         </DropdownMenu>
       );

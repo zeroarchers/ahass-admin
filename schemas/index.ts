@@ -95,28 +95,6 @@ export const sparepartFormSchema = z.object({
   grupKodeAHM: z.string().nullable().optional(),
 });
 
-`
-  id                  Int      @id @default(autoincrement())
-  kode                String
-  status              Boolean
-  title               String
-  nama                String
-  noktp               String
-  pekerjaan           String
-  agama               String
-  tanggal_lahir       DateTime?
-  nopassport          String?
-  alamat              String
-  provinsi            String
-  kabupaten           String
-  kecamatan           String
-  kelurahan           String
-  kodepos             String
-  notelp              String?
-  nohp                String
-  email               String?
-  catatan             String?
-  `;
 export const customerFormSchema = z.object({
   kode: z.string().min(1, { message: "Kode harus diisi." }),
   status: z.boolean().default(false),
@@ -159,4 +137,18 @@ export const customerFormSchema = z.object({
   alamatKirim: z.string().nullable().optional(),
   up: z.string().nullable().optional(),
   noTelpAlamatKirim: z.string().nullable().optional(),
+});
+
+export const kendaraanFormSchema = z.object({
+  no_polisi: z.string().min(1, { message: "No. Polisi harus diisi." }),
+  kode_customer: z.string().min(1, { message: "Kode Customer harus diisi." }),
+  kode_pemilik: z.string().min(1, { message: "Kode Pemilik harus diisi." }),
+  no_mesin: z.string().min(1, { message: "No. Mesin harus diisi." }),
+  statusAktif: z.boolean().default(false),
+  warna: z.string().min(1, { message: "Warna harus diisi." }),
+  no_rangka: z.string().min(1, { message: "No. Rangka harus diisi." }),
+  namaTipeKendaraan: z
+    .string()
+    .min(1, { message: "Nama Tipe Kendaraan harus diisi." }),
+  tahun_rakit: z.string().min(4, { message: "Tahun Rakit harus diisi." }),
 });

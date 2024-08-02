@@ -25,8 +25,8 @@ import {
 } from "@/components/ui/select";
 
 import { createJasa, updateJasa } from "@/actions/actions";
-import { Checkbox } from "../ui/checkbox";
-import { Textarea } from "../ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 import { jasaFormSchema } from "@/schemas";
 import { useEffect } from "react";
 

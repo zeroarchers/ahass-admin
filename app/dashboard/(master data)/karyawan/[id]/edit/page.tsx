@@ -1,4 +1,4 @@
-import { KaryawanForm } from "@/components/form/karyawan-form";
+import { KaryawanForm } from "@/components/form/karyawan/karyawan-form";
 import { getKaryawanById } from "@/data/karyawan";
 
 export default async function Page({ params }: { params: { id: number } }) {

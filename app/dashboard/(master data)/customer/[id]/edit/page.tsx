@@ -1,4 +1,4 @@
-import { CustomerForm } from "@/components/form/customer-form";
+import { CustomerForm } from "@/components/form/customer/customer-form";
 import { getCustomerById } from "@/data/customer";
 
 export default async function Page({ params }: { params: { id: number } }) {

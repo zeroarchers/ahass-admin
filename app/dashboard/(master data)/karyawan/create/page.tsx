@@ -1,4 +1,4 @@
-import { KaryawanForm } from "@/components/form/karyawan-form";
+import { KaryawanForm } from "@/components/form/karyawan/karyawan-form";
 
 export default async function Page() {
   return (
