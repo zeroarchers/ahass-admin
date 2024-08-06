@@ -23,7 +23,7 @@ export default async function Page({
     where,
   });
 
-  const totalCount = await prisma.customer.count();
+  const totalCount = await prisma.customer.count({ where });
   const pageCount = Math.ceil(totalCount / pageSize);
 
   return (

@@ -53,7 +53,7 @@ export default async function Page({
         columns={columns}
         currentPage={page}
         pageCount={pageCount}
-        filterColumns={["no_polisi", "tipeKendaraan"]}
+        filterColumns={["no_polisi", "no_mesin", "no_rangka"]}
       />
     </>
   );

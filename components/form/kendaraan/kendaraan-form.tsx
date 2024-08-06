@@ -67,7 +67,7 @@ export function KendaraanForm({ initialValues }: KendaraanFormProps) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid gap-5 grid-cols-1"
       >
-        <KendaraanStnk form={form} />
+        <KendaraanStnk form={form} is_edit={is_edit} />
         <KendaraanTipe form={form} />
         <CircularProgress className={isLoading ? "flex" : "hidden"} />
         <Button type="submit">Submit</Button>

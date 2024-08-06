@@ -24,11 +24,13 @@ import {
 } from "./form";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useDebouncedCallback } from "use-debounce";
+import { Badge } from "./badge";
 
 type ComboboxItem = {
   value: string;
   label: string;
   description?: string;
+  data?: any;
 };
 
 export function Combobox({
@@ -38,6 +40,7 @@ export function Combobox({
   apiEndpoint,
   searchParam = "search",
   itemToComboboxItem,
+  onSelectItem,
 }: {
   form: any;
   label: string;
@@ -45,6 +48,7 @@ export function Combobox({
   apiEndpoint: string;
   searchParam?: string;
   itemToComboboxItem: (item: any) => ComboboxItem;
+  onSelectItem?: (item: any) => void;
 }) {
   const [open, setOpen] = React.useState(false);
   const [items, setItems] = React.useState<ComboboxItem[]>([]);
@@ -111,10 +115,15 @@ export function Combobox({
                         onSelect={() => {
                           form.setValue(name, item.value);
                           setOpen(false);
+                          if (onSelectItem) {
+                            onSelectItem(item);
+                          }
                         }}
                       >
                         {item.label}
-                        {item.description && ` | ${item.description}`}
+                        {item.description && (
+                          <Badge className="ms-3">{item.description}</Badge>
+                        )}
                         <Check
                           className={cn(
                             "ml-auto h-4 w-4",

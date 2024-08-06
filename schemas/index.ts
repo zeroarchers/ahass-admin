@@ -96,9 +96,9 @@ export const sparepartFormSchema = z.object({
 });
 
 export const customerFormSchema = z.object({
-  kode: z.string().min(1, { message: "Kode harus diisi." }),
+  kode: z.string(),
   status: z.boolean().default(false),
-  title: z.string().min(5, { message: "title harus diisi." }),
+  title: z.string().min(1, { message: "title harus diisi." }),
   nama: z.string().min(5, { message: "Nama harus diisi." }),
   noktp: z.string().min(5, { message: "No. KTP harus diisi." }),
   pekerjaan: z.string().nullable().optional(),
@@ -151,4 +151,74 @@ export const kendaraanFormSchema = z.object({
     .string()
     .min(1, { message: "Nama Tipe Kendaraan harus diisi." }),
   tahun_rakit: z.string().min(4, { message: "Tahun Rakit harus diisi." }),
+});
+
+export const jasaModalSchema = z.object({
+  jasa: jasaFormSchema,
+  total_harga_jasa: z.number(),
+  harga_jasa: z.number(),
+  kode_jasa: z.string(),
+  nama_jasa: z.string(),
+  tambahan_harga_jasa: z.number(),
+  persentase_diskon: z.number(),
+  opl: z.enum(["iya", "tidak"]),
+});
+
+export const sparepartModalSchema = z.object({
+  sparepart: sparepartFormSchema,
+  total_harga_sparepart: z.number(),
+  harga_sparepart: z.number(),
+  tambahan_harga_sparepart: z.number(),
+  persentase_diskon: z.number(),
+  quantity: z.number(),
+  nama_sparepart: z.string(),
+  ref_jasa: z.string(),
+});
+
+export const pkbFormSchema = z.object({
+  no_pkb: z.string(),
+  no_antrian: z.string(),
+  tanggal: z.date(),
+  jam_kedatangan_customer: z.date(),
+  no_polisi: z.string().trim(),
+  tipe_antrian: z.enum([
+    "Regular",
+    "Express",
+    "Booking",
+    "Fast Track",
+    "Claim",
+  ]),
+  tipe_kedatangan: z.string(),
+  activity_capacity: z.enum(["Booking Service", "Happy Hour", "Lain Lain"]),
+  pemilik: z.string(),
+  no_hp: z.string(),
+  no_mesin: z.string(),
+  tahun_motor: z.string(),
+  indikator_bensin: z.number().array(),
+  pembawa: z.string(),
+  no_hp_pembawa: z.string(),
+  no_ktp_pembawa: z.string(),
+  alamat_ktp_pembawa: z.string(),
+  alamat_domisili_pembawa: z.string(),
+  kota_pembawa: z.string(),
+  kecamatan_pembawa: z.string(),
+  hubungan_pembawa: z.string(),
+  alasan_ke_ahass: z.string(),
+  dari_dealer_sendiri: z.enum(["iya", "tidak"]),
+  part_bekas_dibawa: z.enum(["iya", "tidak"]),
+  km_sekarang: z.string(),
+  km_berikutnya: z.string(),
+  gudang: z.string(),
+  no_stnk: z.string(),
+  customer_yang_datang: z.enum(["Milik", "Bawa", "Pakai"]),
+  keluhan: z.string().optional(),
+  gejala: z.string().optional(),
+  uang_muka: z.string(),
+  mekanik: z.string(),
+  service_advisor: z.string(),
+  final_inspector: z.string(),
+  estimasi_jam_selesai: z.date(),
+  konfirmasi_pergantian_part: z.enum(["langsung", "konfirmasi"]),
+  jasa: z.array(jasaModalSchema),
+  sparepart: z.array(sparepartModalSchema),
 });

@@ -2,12 +2,16 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { CustomerMain } from "./customer-form-main";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { createCustomer, updateCustomer } from "@/actions/customer";
+import {
+  createCustomer,
+  updateCustomer,
+  getNewCustomerId,
+} from "@/actions/customer";
 import { customerFormSchema } from "@/schemas";
 import { toast } from "sonner";
 import { CircularProgress } from "@/components/misc/circular-progress";
@@ -20,6 +24,9 @@ interface CustomerFormProps {
 
 export function CustomerForm({ initialValues }: CustomerFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+
+  const [kode, setKode] = useState(""); // State to hold the new customer ID
+
   const is_edit = initialValues !== undefined;
   const form = useForm<z.infer<typeof customerFormSchema>>({
     resolver: zodResolver(customerFormSchema),
@@ -46,6 +53,21 @@ export function CustomerForm({ initialValues }: CustomerFormProps) {
     },
   });
 
+  useEffect(() => {
+    async function fetchNewCustomerId() {
+      const newCustomerId = await getNewCustomerId();
+      console.log("New Customer", newCustomerId);
+      form.reset({
+        ...form.getValues(),
+        kode: newCustomerId.toString(),
+      });
+    }
+
+    if (!initialValues) {
+      fetchNewCustomerId();
+    }
+  }, [initialValues, form]);
+
   async function fetchPlaceName(url: string): Promise<string> {
     try {
       const response = await fetch(url);
@@ -58,6 +80,7 @@ export function CustomerForm({ initialValues }: CustomerFormProps) {
   }
 
   async function onSubmit(values: z.infer<typeof customerFormSchema>) {
+    setIsLoading(true);
     const isCapitalized = /^[A-Z]+$/.test(values.provinsi);
     const provinsiName = isCapitalized
       ? values.provinsi
@@ -86,8 +109,6 @@ export function CustomerForm({ initialValues }: CustomerFormProps) {
       kecamatan: kecamatanName,
       kelurahan: kelurahanName,
     };
-    setIsLoading(true);
-
     let response: { result: string; description: any };
     if (is_edit) {
       response = await updateCustomer(transformedValues);

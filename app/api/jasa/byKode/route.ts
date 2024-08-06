@@ -3,19 +3,15 @@ import { prisma } from "@/lib/prisma"; // Adjust this import based on your proje
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const nama_jasa = searchParams.get("nama") || "";
+  const kode_jasa = searchParams.get("kode") || "";
 
-  console.log("API: Received request for name:", nama_jasa);
+  console.log("API: Received request for kode:", kode_jasa);
 
   try {
-    const jasa = await prisma.jasa.findMany({
+    const jasa = await prisma.jasa.findUnique({
       where: {
-        nama: {
-          contains: nama_jasa,
-          mode: "insensitive",
-        },
+        kode: kode_jasa,
       },
-      take: 10,
     });
 
     console.log(jasa);

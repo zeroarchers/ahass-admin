@@ -2,7 +2,8 @@ import { KendaraanForm } from "@/components/form/kendaraan/kendaraan-form";
 import { getKendaraanByNoPolisi } from "@/data/kendaraan";
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const data = await getKendaraanByNoPolisi(params.id);
+  const validNoPolisi = params.id.replace(/-/g, " ").toUpperCase();
+  const data = await getKendaraanByNoPolisi(validNoPolisi);
   if (!data) return <div>Kendaraan tidak ditemukan</div>;
   console.log(data);
   return (

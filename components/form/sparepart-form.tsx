@@ -311,7 +311,10 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
                 <FormItem>
                   <FormLabel>Group Kode AHM</FormLabel>
                   <FormControl>
-                    <Select defaultValue={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Pilih group" />
                       </SelectTrigger>

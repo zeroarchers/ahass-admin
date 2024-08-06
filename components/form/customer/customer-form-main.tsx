@@ -72,15 +72,17 @@ export function CustomerMain({ form }: { form: any }) {
           <FormField
             control={form.control}
             name="kode"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Kode</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Kode</FormLabel>
+                  <FormControl>
+                    <Input disabled {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
           <FormField
             control={form.control}

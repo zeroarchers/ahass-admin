@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { Pkb } from "@prisma/client";
+import type { PKB } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,7 +15,7 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import EditButton from "../edit-button";
 
-export const columns: ColumnDef<Pkb>[] = [
+export const columns: ColumnDef<PKB>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -110,14 +110,12 @@ export const columns: ColumnDef<Pkb>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(pkb.pkbID.toString())
-              }
+              onClick={() => navigator.clipboard.writeText(pkb.id.toString())}
             >
               Copy PKB ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <EditButton id={pkb.pkbID.toString()} />
+            <EditButton id={pkb.id.toString()} />
             <DropdownMenuItem className="bg-blue-400">Print</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

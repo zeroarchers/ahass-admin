@@ -59,6 +59,7 @@ model SparePart {
   hargaNasional      Int?
   uom                String
   grupKodeAHM        String?
+  SparepartPKB       SparepartPKB[]
 }
 
 model Jasa {
@@ -72,6 +73,7 @@ model Jasa {
   satuanKerja       String
   catatan           String?
   statusAktif       Boolean
+  JasaPKB          JasaPKB[]
 }
 
 
@@ -109,18 +111,6 @@ model Karyawan {
   kesehatan           Float?
   transport           Float?
   uang_harian         Float?
-}
-
-model Pkb {
-  pkbID         Int      @id @default(autoincrement())
-  soID          Int
-  status        String
-  soNo          String
-  noPKB         String
-  noPolisi      String
-  totalFaktur   Float
-  tipePembayran String
-  tanggal       DateTime
 }
 
 model TipeKendaraanAHM {
@@ -191,4 +181,80 @@ model Kendaraan {
     no_rangka   String
     no_mesin            String
 
+    pkb PKB[]
+
   }
+
+model PKB {
+  id                       Int      @id @default(autoincrement())
+  no_pkb                   String   @unique
+  no_antrian               String
+  tanggal                  DateTime
+  jam_kedatangan_customer  DateTime
+  no_polisi                String
+  tipe_antrian             String
+  tipe_kedatangan          String
+  activity_capacity        String
+  pemilik                  String
+  no_hp                    String
+  no_mesin                 String
+  tahun_motor              String
+  indikator_bensin         Int[]
+  pembawa                  String
+  no_hp_pembawa            String
+  no_ktp_pembawa           String
+  alamat_ktp_pembawa       String
+  alamat_domisili_pembawa  String
+  kota_pembawa             String
+  kecamatan_pembawa        String
+  hubungan_pembawa         String
+  alasan_ke_ahass          String
+  dari_dealer_sendiri      String
+  part_bekas_dibawa        String
+  km_sekarang              String
+  km_berikutnya            String
+  gudang                   String
+  no_stnk                  String
+  customer_yang_datang     String
+  keluhan                  String?
+  gejala                   String?
+  uang_muka                String
+  mekanik                  String
+  service_advisor          String
+  final_inspector          String
+  estimasi_jam_selesai     DateTime
+  konfirmasi_pergantian_part String
+
+  kendaraan                Kendaraan @relation(fields: [no_polisi], references: [no_polisi])
+  jasaPKB                  JasaPKB[]
+  sparepartPKB             SparepartPKB[]
+}
+
+model JasaPKB {
+  id                    Int      @id @default(autoincrement())
+  pkb                   PKB      @relation(fields: [pkbId], references: [id])
+  pkbId                 Int
+  jasa                  Jasa     @relation(fields: [kode_jasa], references: [kode])
+  kode_jasa             String
+  total_harga_jasa      Float
+  harga_jasa            Float
+  nama_jasa             String
+  tambahan_harga_jasa   Float
+  persentase_diskon     Float
+  opl                   String
+}
+
+model SparepartPKB {
+  id                      Int       @id @default(autoincrement())
+  pkb                     PKB       @relation(fields: [pkbId], references: [id])
+  pkbId                   Int
+  sparepart               SparePart @relation(fields: [kode_sparepart], references: [kodeSparepart])
+  kode_sparepart          String
+  total_harga_sparepart   Float
+  harga_sparepart         Float
+  tambahan_harga_sparepart Float
+  persentase_diskon       Float
+  quantity                Int
+  nama_sparepart          String
+  ref_jasa                String
+}

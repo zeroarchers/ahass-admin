@@ -3,23 +3,31 @@ import { prisma } from "@/lib/prisma"; // Adjust this import based on your proje
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const nama_jasa = searchParams.get("nama") || "";
-
-  console.log("API: Received request for name:", nama_jasa);
+  const no_polisi = searchParams.get("no_polisi") || "";
 
   try {
-    const jasa = await prisma.jasa.findMany({
+    const kendaraan = await prisma.kendaraan.findMany({
       where: {
-        nama: {
-          contains: nama_jasa,
+        no_polisi: {
+          contains: no_polisi,
           mode: "insensitive",
+        },
+      },
+      select: {
+        no_polisi: true,
+        no_mesin: true,
+        tahun_rakit: true,
+        customer: {
+          select: {
+            nama: true,
+            nohp: true,
+          },
         },
       },
       take: 10,
     });
 
-    console.log(jasa);
-    return NextResponse.json(jasa);
+    return NextResponse.json(kendaraan);
   } catch (error) {
     console.error("API: Error fetching kendaraan:", error);
     return NextResponse.json(

@@ -17,6 +17,16 @@ export async function createKendaraan(
     return { result: "Error!", description: "Input data tidak valid!" };
   }
 
+  const existing_data = await prisma.kendaraan.findUnique({
+    where: { no_polisi: validatedData.data.no_polisi },
+  });
+  if (existing_data) {
+    return {
+      result: "Error!",
+      description: "Kendaraan dengan No. Polisi tersebut sudah ada!",
+    };
+  }
+
   await prisma.kendaraan.create({ data: validatedData.data });
   revalidatePath("/dashboard/kendaraan");
   redirect("/dashboard/kendaraan");

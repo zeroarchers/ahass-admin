@@ -48,3 +48,12 @@ export async function deleteCustomer(id: string) {
   revalidatePath("/dashboard/customer");
   return { result: "Success!", description: "Berhasil menghapus Customer!" };
 }
+
+export async function getNewCustomerId() {
+  const maxKode = await prisma.customer.aggregate({
+    _max: {
+      kode: true,
+    },
+  });
+  return parseInt(maxKode._max.kode!) + 1;
+}

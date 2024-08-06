@@ -8,17 +8,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Combobox } from "@/components/ui/combobox";
 import { Checkbox } from "@/components/ui/checkbox";
 
-export function KendaraanStnk({ form }: { form: any }) {
+export function KendaraanStnk({
+  form,
+  is_edit,
+}: {
+  form: any;
+  is_edit: boolean;
+}) {
   return (
     <Card>
       <CardHeader>
@@ -68,6 +67,7 @@ export function KendaraanStnk({ form }: { form: any }) {
         <FormField
           control={form.control}
           name="no_polisi"
+          disabled={is_edit}
           render={({ field }) => (
             <FormItem>
               <FormLabel>No. Polisi</FormLabel>

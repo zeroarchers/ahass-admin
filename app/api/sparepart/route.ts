@@ -3,15 +3,15 @@ import { prisma } from "@/lib/prisma"; // Adjust this import based on your proje
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const nama_jasa = searchParams.get("nama") || "";
+  const kode_sparepart = searchParams.get("kode") || "";
 
-  console.log("API: Received request for name:", nama_jasa);
+  console.log("API: Received request for kode:", kode_sparepart);
 
   try {
-    const jasa = await prisma.jasa.findMany({
+    const jasa = await prisma.sparePart.findMany({
       where: {
-        nama: {
-          contains: nama_jasa,
+        kodeSparepart: {
+          contains: kode_sparepart,
           mode: "insensitive",
         },
       },
@@ -21,9 +21,9 @@ export async function GET(request: NextRequest) {
     console.log(jasa);
     return NextResponse.json(jasa);
   } catch (error) {
-    console.error("API: Error fetching kendaraan:", error);
+    console.error("API: Error fetching sparepart:", error);
     return NextResponse.json(
-      { error: "Failed to fetch customers" },
+      { error: "Failed to fetch sparepart" },
       { status: 500 },
     );
   }

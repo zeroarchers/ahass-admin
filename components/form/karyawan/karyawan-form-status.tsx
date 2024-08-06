@@ -10,6 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function KaryawanStatus({ form }: { form: any }) {
   return (
@@ -95,7 +102,41 @@ export function KaryawanStatus({ form }: { form: any }) {
             <FormItem>
               <FormLabel>Jabatan</FormLabel>
               <FormControl>
-                <Input placeholder="Jabatan" {...field} />
+                <Select
+                  onValueChange={field.onChange} // Use field.onChange to update form value
+                  defaultValue={field.value} // Set the default value from the form field
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Jabatan" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Asisten Mekanik">
+                      Asisten Mekanik
+                    </SelectItem>
+                    <SelectItem value="FrontDesk">FrontDesk</SelectItem>
+                    <SelectItem value="Kepala Bengkel">
+                      Kepala Bengkel
+                    </SelectItem>
+                    <SelectItem value="Kepala Mekanik">
+                      Kepala Mekanik
+                    </SelectItem>
+                    <SelectItem value="Mekanik">Mekanik</SelectItem>
+                    <SelectItem value="Salesman">Salesman</SelectItem>
+                    <SelectItem value="Service Advisor">
+                      Service Advisor
+                    </SelectItem>
+                    <SelectItem value="Staff">Staff</SelectItem>
+                    <SelectItem value="Partman">Partman</SelectItem>
+                    <SelectItem value="Partcounter">Partcounter</SelectItem>
+                    <SelectItem value="Feeder">Feeder</SelectItem>
+                    <SelectItem value="Mekanik Final Inspector">
+                      Mekanik Final Inspector
+                    </SelectItem>
+                    <SelectItem value="Mekanik Claim">Mekanik Claim</SelectItem>
+                    <SelectItem value="Admin">Admin</SelectItem>
+                    <SelectItem value="Cuci Motor">Cuci Motor</SelectItem>
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
