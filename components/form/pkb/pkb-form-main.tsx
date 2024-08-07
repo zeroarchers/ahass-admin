@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/select";
 import { Activity } from "lucide-react";
 import { getKendaraanByNoPolisi } from "@/data/kendaraan";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 const tipe_antrian = ["Regular", "Claim", "Fast Track", "Express", "Booking"];
 
@@ -46,7 +48,13 @@ const tipe_kedatangan = [
 
 const activity_capacity = ["Booking Service", "Happy Hour", "Lain Lain"];
 
-export function PkbFormMain({ form }: { form: any }) {
+export function PkbFormMain({
+  form,
+  is_pendaftaran,
+}: {
+  form: any;
+  is_pendaftaran?: boolean;
+}) {
   useEffect(() => {
     const fetchKendaraanData = async () => {
       const noPolisi = form.watch("no_polisi");
@@ -92,19 +100,61 @@ export function PkbFormMain({ form }: { form: any }) {
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
-        name="jam_kedatangan_customer"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Jam kedatangan customer</FormLabel>
-            <FormControl>
-              <DateTimePicker {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+
+      {is_pendaftaran ? (
+        <FormField
+          control={form.control}
+          name="jam_kedatangan_customer"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Jam kedatangan customer</FormLabel>
+              <FormControl>
+                <DateTimePicker {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      ) : (
+        <FormField
+          control={form.control}
+          name="status_pkb"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status PKB</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  value={field.value}
+                  className="grid grid-cols-2 gap-3"
+                  onValueChange={field.onChange}
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="menunggu" id="menunggu" />
+                    <Label htmlFor="menunggu">Menunggu</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="selesai" id="selesai" />
+                    <Label htmlFor="selesai">Selesai</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="booking" id="booking" />
+                    <Label htmlFor="booking">Booking</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="proses" id="proses" />
+                    <Label htmlFor="proses">Proses</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="batal" id="batal" />
+                    <Label htmlFor="batal">Batal</Label>
+                  </div>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
       <Combobox
         form={form}
         label="No. Polisi"

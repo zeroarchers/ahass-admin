@@ -189,6 +189,7 @@ model PKB {
   id                       Int      @id @default(autoincrement())
   no_pkb                   String   @unique
   no_antrian               String
+  status_pkb               String
   tanggal                  DateTime
   jam_kedatangan_customer  DateTime
   no_polisi                String
@@ -209,21 +210,26 @@ model PKB {
   kecamatan_pembawa        String
   hubungan_pembawa         String
   alasan_ke_ahass          String
-  dari_dealer_sendiri      String
-  part_bekas_dibawa        String
-  km_sekarang              String
-  km_berikutnya            String
+  dari_dealer_sendiri      Boolean
+  part_bekas_dibawa        Boolean
+  km_sekarang              Int
+  km_berikutnya            Int
   gudang                   String
   no_stnk                  String
   customer_yang_datang     String
-  keluhan                  String?
-  gejala                   String?
-  uang_muka                String
+  keluhan                  String
+  gejala                   String
+  uang_muka                Int
   mekanik                  String
   service_advisor          String
   final_inspector          String
   estimasi_jam_selesai     DateTime
-  konfirmasi_pergantian_part String
+  konfirmasi_pergantian_part Boolean
+
+  no_bayar                  String
+  uang_bayar                Int
+  uang_kembalian            Int
+  tipe_pembayaran           String
 
   kendaraan                Kendaraan @relation(fields: [no_polisi], references: [no_polisi])
   jasaPKB                  JasaPKB[]
@@ -232,7 +238,7 @@ model PKB {
 
 model JasaPKB {
   id                    Int      @id @default(autoincrement())
-  pkb                   PKB      @relation(fields: [pkbId], references: [id])
+  pkb                   PKB      @relation(fields: [pkbId], references: [id], onDelete: Cascade)
   pkbId                 Int
   jasa                  Jasa     @relation(fields: [kode_jasa], references: [kode])
   kode_jasa             String
@@ -246,7 +252,7 @@ model JasaPKB {
 
 model SparepartPKB {
   id                      Int       @id @default(autoincrement())
-  pkb                     PKB       @relation(fields: [pkbId], references: [id])
+  pkb                     PKB       @relation(fields: [pkbId], references: [id], onDelete: Cascade)
   pkbId                   Int
   sparepart               SparePart @relation(fields: [kode_sparepart], references: [kodeSparepart])
   kode_sparepart          String

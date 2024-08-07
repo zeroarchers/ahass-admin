@@ -32,13 +32,24 @@ import { JasaModal } from "./pkb-jasa-modal";
 import { Badge } from "@/components/ui/badge";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Combobox } from "@/components/ui/combobox";
-import { createPkb } from "@/actions/pkb";
+import { createPkb, updatePkb } from "@/actions/pkb";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface PendaftaranFormProps {
-  initialValues?: z.infer<any>;
+  initialValues?: z.infer<typeof pkbFormSchema>;
+  is_pendaftaran?: boolean;
 }
 
-export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
+export function PendaftaranForm({
+  initialValues,
+  is_pendaftaran,
+}: PendaftaranFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const is_edit = initialValues !== undefined;
   const [jasaTableData, setJasaTableData] = useState<any[]>([]);
@@ -47,16 +58,29 @@ export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
     new Date(),
   );
 
-  async function onSubmit(values: z.infer<typeof pkbFormSchema>) {
+  async function onSubmit(values: any) {
     setIsLoading(true);
     const validData = {
       ...values,
-      jasa: jasaTableData,
-      sparepart: sparepartTableData,
+      jasaPKB: jasaTableData,
+      sparepartPKB: sparepartTableData,
     };
-    console.log("Jasa from client", validData.jasa);
-    console.log("Sp from client", validData.sparepart);
-    await createPkb(validData);
+    let response: { result: string; description: any };
+
+    if (is_edit) {
+      response = await updatePkb(validData);
+    } else {
+      response = await createPkb(validData);
+    }
+    if (response) {
+      toast(response.result, {
+        description: response.description,
+        action: {
+          label: "Oke!",
+          onClick: () => toast.dismiss,
+        },
+      });
+    }
     setIsLoading(false);
   }
 
@@ -82,28 +106,86 @@ export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
       kecamatan_pembawa: "",
       hubungan_pembawa: "Pemilik",
       alasan_ke_ahass: "",
-      dari_dealer_sendiri: "iya",
-      part_bekas_dibawa: "tidak",
-      km_sekarang: "",
-      km_berikutnya: "",
+      dari_dealer_sendiri: false,
+      part_bekas_dibawa: false,
+      konfirmasi_pergantian_part: true,
+      km_sekarang: 0,
+      km_berikutnya: 0,
       gudang: "",
       no_stnk: "",
       customer_yang_datang: "Milik",
       keluhan: "",
       gejala: "",
-      uang_muka: "0",
+      uang_muka: 0,
       mekanik: "",
       service_advisor: "",
       final_inspector: "",
+      status_pkb: "menunggu",
       indikator_bensin: [50],
-      konfirmasi_pergantian_part: "langsung",
       tanggal: new Date(),
       jam_kedatangan_customer: new Date(),
       estimasi_jam_selesai: new Date(),
-      jasa: [],
-      sparepart: [],
+      jasaPKB: [],
+      sparepartPKB: [],
+      no_bayar: "",
+      uang_bayar: 0,
+      uang_kembalian: 0,
+      tipe_pembayaran: "Cash",
     },
   });
+
+  function generateNoAntrian(
+    tipeAntrian: string,
+    currentQueueCount: number,
+  ): string {
+    const prefix = tipeAntrian.charAt(0).toUpperCase();
+    const queueNumber = (currentQueueCount + 1).toString().padStart(3, "0");
+    return `${prefix}${queueNumber}`;
+  }
+
+  function generateNoPkbAndBayar(currentPkbCount: number): {
+    noPkb: string;
+    noBayar: string;
+  } {
+    const year = new Date().getFullYear().toString().slice(-2);
+    const prefixPkb = "17168-PKB";
+    const prefixBayar = "17168-SOD";
+    const sequenceNumber = currentPkbCount.toString().padStart(6, "0");
+    const noPkb = `${prefixPkb}-${year}${sequenceNumber}`;
+    const noBayar = `${prefixBayar}-${year}${sequenceNumber}`;
+    return { noPkb, noBayar };
+  }
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      const queueCountResponse = await fetch("/api/pkb/queueCount");
+      const pkbCountResponse = await fetch("/api/pkb/pkbCount");
+
+      if (!queueCountResponse.ok) {
+        throw new Error("Failed to fetch queue count");
+      }
+      if (!pkbCountResponse.ok) {
+        throw new Error("Failed to fetch pkb count");
+      }
+
+      // Parse the JSON from the responses
+      const queueCount = await queueCountResponse.json();
+      const pkbCount = await pkbCountResponse.json();
+
+      const newNoAntrian = generateNoAntrian(
+        form.getValues("tipe_antrian"),
+        queueCount,
+      );
+      const { noPkb, noBayar } = generateNoPkbAndBayar(pkbCount);
+
+      form.setValue("no_antrian", newNoAntrian);
+      form.setValue("no_pkb", noPkb);
+      form.setValue("no_bayar", noBayar);
+    };
+
+    if (is_pendaftaran) fetchCounts();
+  }, [form, is_pendaftaran]);
+
   const jasaCalculations = useMemo(() => {
     let jasaGratis = 0;
     let jasaBayar = 0;
@@ -116,7 +198,7 @@ export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
       } else {
         jasaBayar += jasa.total_harga_jasa;
       }
-      estimasiWaktu += jasa.jasa.waktuKerja || 0;
+      estimasiWaktu += jasa.waktuKerja || 0;
     });
 
     return { jasaGratis, jasaBayar, estimasiWaktu };
@@ -164,7 +246,9 @@ export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
   useEffect(() => {
     if (initialValues) {
       form.reset(initialValues);
-      setJasaTableData(initialValues.tableData || []);
+      console.log(initialValues.jasaPKB);
+      setJasaTableData(initialValues.jasaPKB || []);
+      setSparepartTableData(initialValues.sparepartPKB || []);
     }
   }, [initialValues, form]);
 
@@ -176,6 +260,32 @@ export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
     setEstimasiJamSelesai(estimatedCompletionTime);
   }, [jasaCalculations.estimasiWaktu]);
 
+  const [selectedPkb, setSelectedPkb] = useState("");
+
+  useEffect(() => {
+    const fetchPkbData = async () => {
+      if (selectedPkb) {
+        try {
+          const response = await fetch(`/api/pkb?no_pkb=${selectedPkb}`);
+          if (response.ok) {
+            const pkbData = await response.json();
+
+            form.reset(pkbData);
+
+            setJasaTableData(pkbData.jasaPKB || []);
+            setSparepartTableData(pkbData.sparepartPKB || []);
+          } else {
+            console.error("Failed to fetch PKB data");
+          }
+        } catch (error) {
+          console.error("Error fetching PKB data:", error);
+        }
+      }
+    };
+
+    fetchPkbData();
+  }, [selectedPkb, form]);
+
   return (
     <Form {...form}>
       <form
@@ -185,19 +295,52 @@ export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
         <Card>
           <CardHeader></CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-5">
-            <FormField
-              control={form.control}
-              name="no_pkb"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>No. PKB</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {!is_pendaftaran && (
+              <div className="col-span-2">
+                <FormField
+                  control={form.control}
+                  name="no_bayar"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>No. Bayar</FormLabel>
+                      <FormControl>
+                        <Input type="text" {...field} disabled />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+            {is_pendaftaran ? (
+              <FormField
+                control={form.control}
+                name="no_pkb"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>No. PKB</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} disabled />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <Combobox
+                form={form}
+                label="No. PKB"
+                name="no_pkb"
+                apiEndpoint="/api/pkb/all"
+                searchParam="no_pkb"
+                itemToComboboxItem={(pkb) => ({
+                  value: pkb.no_pkb,
+                  label: pkb.no_pkb,
+                  description: pkb.no_polisi,
+                })}
+                onSelectItem={(value) => setSelectedPkb(value.value)}
+              />
+            )}
             <FormField
               control={form.control}
               name="no_antrian"
@@ -205,7 +348,7 @@ export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
                 <FormItem>
                   <FormLabel>No. Antrian</FormLabel>
                   <FormControl>
-                    <Input type="text" {...field} />
+                    <Input type="text" {...field} disabled />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -216,7 +359,7 @@ export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
         <Card>
           <CardHeader></CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-5">
-            <PkbFormMain form={form} />
+            <PkbFormMain form={form} is_pendaftaran={is_pendaftaran} />
             <PkbFormCustomer form={form} />
             <PkbFormSurvey form={form} />
           </CardContent>
@@ -299,26 +442,28 @@ export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Uang Muka</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-5 overflow-x-scroll">
-            <FormField
-              control={form.control}
-              name="uang_muka"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Uang Muka</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
+        {is_pendaftaran && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Uang Muka</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-5 overflow-x-scroll">
+              <FormField
+                control={form.control}
+                name="uang_muka"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Uang Muka</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+        )}
         <div className="grid md:grid-cols-2 gap-5">
           <Card>
             <CardHeader>
@@ -367,19 +512,31 @@ export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
                   })}
                 </Badge>
               </div>
-              <div className="grid gap-3">
-                <p>Total Bayar</p>
-                <Badge className="w-fit">
-                  Rp.{" "}
-                  {totalCalculations.totalBayar.toLocaleString("id-ID", {
-                    minimumFractionDigits: 2,
-                  })}
-                </Badge>
-              </div>
+              {is_pendaftaran ? (
+                <div className="grid gap-3">
+                  <p>Total Bayar</p>
+                  <Badge className="w-fit">
+                    Rp.{" "}
+                    {totalCalculations.totalBayar.toLocaleString("id-ID", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </Badge>
+                </div>
+              ) : (
+                <div className="grid gap-3">
+                  <p>Uang Muka</p>
+                  <Badge className="w-fit">
+                    Rp.{" "}
+                    {form.getValues("uang_muka").toLocaleString("id-ID", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </Badge>
+                </div>
+              )}
             </CardContent>
           </Card>
-          <div className="grid grid-cols-2">
-            <Card className="flex flex-col justify-center align-center text-center  text-xl bg-primary">
+          <div className="flex w-full">
+            <Card className="flex flex-grow flex-col justify-center align-center text-center  text-xl bg-primary">
               <CardHeader className="p-2 font-bold">Est. Biaya</CardHeader>
               <CardContent>
                 <Badge className="text-xl bg-primary-foreground text-primary hover:bg-primary-foreground">
@@ -390,21 +547,85 @@ export function PendaftaranForm({ initialValues }: PendaftaranFormProps) {
                 </Badge>
               </CardContent>
             </Card>
-            <Card className="flex flex-col justify-center align-center text-center  text-xl bg-primary-foreground">
-              <CardHeader className="p-2 font-bold text-primary">
-                Uang Muka
-              </CardHeader>
-              <CardContent>
-                <Badge className="text-xl">
-                  Rp.{" "}
-                  {(form.getValues("uang_muka") || 0).toLocaleString("id-ID", {
-                    minimumFractionDigits: 2,
-                  })}
-                </Badge>
-              </CardContent>
-            </Card>
+            {is_pendaftaran && (
+              <Card className="flex flex-grow flex-col justify-center align-center text-center  text-xl bg-primary-foreground">
+                <CardHeader className="p-2 font-bold text-primary">
+                  Uang Muka
+                </CardHeader>
+                <CardContent>
+                  <Badge className="text-xl">
+                    Rp.{" "}
+                    {(form.getValues("uang_muka") || 0).toLocaleString(
+                      "id-ID",
+                      {
+                        minimumFractionDigits: 2,
+                      },
+                    )}
+                  </Badge>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
+        {!is_pendaftaran && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Uang Bayar & Kembalian</CardTitle>
+            </CardHeader>
+            <CardContent className="grid md:grid-cols-2 gap-5 overflow-x-scroll">
+              <FormField
+                control={form.control}
+                name="uang_bayar"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Uang Bayar</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="uang_kembalian"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Uang Kembalian</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="tipe_pembayaran"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tipe Pembayaran</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Tipe Kedatangan" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="cash">Cash</SelectItem>
+                          <SelectItem value="transfer">Transfer</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+        )}
         <Card>
           <CardHeader>
             <CardTitle>PIC</CardTitle>

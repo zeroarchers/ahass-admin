@@ -1,8 +1,6 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { PKB } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,6 +12,10 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import EditButton from "../edit-button";
+import DeleteButton from "../delete-button";
+import { deletePkb } from "@/actions/pkb";
+import { PKB } from "@prisma/client";
+import Link from "next/link";
 import { generatePDF } from "@/components/misc/invoice-pkb";
 
 export const columns: ColumnDef<PKB>[] = [
@@ -40,66 +42,58 @@ export const columns: ColumnDef<PKB>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "status",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
-    ),
+    accessorKey: "status_pkb",
+    header: "Status PKB",
+    cell: ({ row }) => <div>{row.getValue("status_pkb")}</div>,
   },
   {
-    accessorKey: "noPKB",
-    header: "noPKB",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("noPKB")}</div>
-    ),
+    accessorKey: "mekanik",
+    header: "Nama Mekanik",
+    cell: ({ row }) => <div>{row.getValue("mekanik")}</div>,
   },
   {
-    accessorKey: "noPolisi",
-    header: "noPolisi",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("noPolisi")}</div>
-    ),
+    accessorKey: "pemilik",
+    header: "Nama Pemilik",
+    cell: ({ row }) => <div>{row.getValue("pemilik")}</div>,
   },
   {
-    accessorKey: "soNo",
-    header: "No. Bayar",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("soNo")}</div>,
+    accessorKey: "no_antrian",
+    header: "No Antrian",
+    cell: ({ row }) => <div>{row.getValue("no_antrian")}</div>,
   },
   {
-    accessorKey: "totalFaktur",
-    header: "Total Faktur",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("totalFaktur")}</div>
-    ),
+    accessorKey: "no_pkb",
+    header: "No PKB",
+    cell: ({ row }) => <div>{row.getValue("no_pkb")}</div>,
   },
   {
-    accessorKey: "tipePembayran",
-    header: "Tipe Pembayaran",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("tipePembayran")}</div>
-    ),
+    accessorKey: "no_polisi",
+    header: "No Polisi",
+    cell: ({ row }) => <div>{row.getValue("no_polisi")}</div>,
+  },
+  {
+    accessorKey: "no_mesin",
+    header: "Engine No",
+    cell: ({ row }) => <div>{row.getValue("no_mesin")}</div>,
   },
   {
     accessorKey: "tanggal",
-    header: "Tanggal Bayar",
+    header: "Tanggal",
     cell: ({ row }) => (
-      <div className="capitalize">
-        {(row.getValue("tanggal") as Date).toLocaleString()}
-      </div>
+      <div>{new Date(row.getValue("tanggal")).toLocaleDateString()}</div>
     ),
   },
   {
-    accessorKey: "soID",
-    header: "Invoice ID",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("Invoice ID")}</div>
-    ),
+    accessorKey: "activity_capacity",
+    header: "Jenis Pekerjaan",
+    cell: ({ row }) => <div>{row.getValue("activity_capacity")}</div>,
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       const pkb = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -111,16 +105,18 @@ export const columns: ColumnDef<PKB>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(pkb.id.toString())}
+              onClick={() => navigator.clipboard.writeText(pkb.no_pkb)}
             >
-              Copy PKB ID
+              Copy No PKB
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <EditButton id={pkb.id.toString()} />
+            <EditButton id={pkb.no_pkb} />
+            <DeleteButton id={pkb.no_pkb} deleteAction={deletePkb} />
             <DropdownMenuItem
               onClick={async () => {
-                const response = await fetch(`/api/pkb?no_pkb=${pkb.id}`);
+                const response = await fetch(`/api/pkb?no_pkb=${pkb.no_pkb}`);
                 const pkbData = await response.json();
+                console.log(pkbData);
                 generatePDF(pkbData);
               }}
               className="bg-blue-400"

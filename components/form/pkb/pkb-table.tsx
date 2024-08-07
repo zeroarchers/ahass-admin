@@ -46,6 +46,10 @@ export function GenericPkbTable({
   const [rowSelection, setRowSelection] = React.useState({});
   const [filterValue, setFilterValue] = React.useState("");
 
+  const deleteRow = (row: any) => {
+    setData((prevData) => prevData.filter((item) => item !== row));
+  };
+
   const table = useReactTable({
     data,
     columns,
@@ -62,6 +66,9 @@ export function GenericPkbTable({
       columnFilters,
       columnVisibility,
       rowSelection,
+    },
+    meta: {
+      deleteRow,
     },
   });
 

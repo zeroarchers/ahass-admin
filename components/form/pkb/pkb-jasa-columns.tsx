@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { Jasa } from "@prisma/client";
+import type { JasaPKB } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -13,9 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
-import { deleteJasa } from "@/actions/actions";
 
-export const jasaColumns: ColumnDef<Jasa>[] = [
+export const jasaColumns: ColumnDef<JasaPKB>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -39,24 +38,35 @@ export const jasaColumns: ColumnDef<Jasa>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "kode",
+    accessorKey: "kode_jasa",
     header: "Kode",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("kode")}</div>,
-  },
-  {
-    accessorKey: "nama",
-    header: "Nama",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("nama")}</div>,
-  },
-  {
-    accessorKey: "jobType",
-    header: "Grup",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("jobType")}</div>
+      <div className="capitalize">{row.getValue("kode_jasa")}</div>
     ),
   },
   {
-    accessorKey: "hargaJual",
+    accessorKey: "nama_jasa",
+    header: "Nama",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("nama_jasa")}</div>
+    ),
+  },
+  {
+    accessorKey: "harga_jasa",
+    header: "Harga Jasa",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("harga_jasa")}</div>
+    ),
+  },
+  {
+    accessorKey: "tambahan_harga_jasa",
+    header: "Tambahan Harga Jasa",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("tambahan_harga_jasa")}</div>
+    ),
+  },
+  {
+    accessorKey: "total_harga_jasa",
     header: ({ column }) => {
       return (
         <Button
@@ -64,34 +74,35 @@ export const jasaColumns: ColumnDef<Jasa>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="w-full"
         >
-          Harga Jual
+          Total Harga Jasa
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("hargaJual")}</div>
+      <div className="text-center">{row.getValue("total_harga_jasa")}</div>
     ),
   },
   {
-    accessorKey: "waktuKerja",
-    header: "Waktu Kerja",
+    accessorKey: "persentase_diskon",
+    header: "Persentase Diskon",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("waktuKerja")}</div>
+      <div className="capitalize">{row.getValue("persentase_diskon")}%</div>
     ),
   },
   {
-    accessorKey: "statusAktif",
-    header: "Status",
-    cell: ({ row }) => {
-      const value = row.getValue("statusAktif") ? "active" : "inactive";
-      return <div className="capitalize">{value}</div>;
-    },
+    accessorKey: "opl",
+    header: "OPL",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {(row.getValue("opl") as boolean).toString()}
+      </div>
+    ),
   },
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const jasa = row.original;
 
       return (
@@ -105,15 +116,15 @@ export const jasaColumns: ColumnDef<Jasa>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(jasa.kode)}
+              onClick={() => navigator.clipboard.writeText(jasa.kode_jasa)}
             >
               Copy kode
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(jasa.kode)}
+              onClick={() => table.options.meta?.deleteRow(row.original)}
             >
-              Copy kode
+              Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

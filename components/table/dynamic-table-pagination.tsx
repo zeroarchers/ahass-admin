@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import SearchFilter from "./search-field-ssr";
 import TableTemplate from "./table-template";
 import Pagination from "./pagination";
@@ -30,14 +30,11 @@ import Pagination from "./pagination";
 export default function DynamicTable({
   data,
   columns,
-  currentPage,
   pageCount,
   filterColumns,
 }: {
   data: any[];
   columns: ColumnDef<any>[];
-  onPageChange?: (pageIndex: number) => void;
-  onTotalPagesChange?: (totalPages: number) => void;
   currentPage: number;
   pageCount: number;
   filterColumns: string[];
@@ -71,12 +68,10 @@ export default function DynamicTable({
   });
 
   const totalPages = table.getPageCount();
-  const searchParams = useSearchParams();
 
-  const params = new URLSearchParams(searchParams.toString());
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className="flex justify-between">
         <div className="flex">
           <SearchFilter
             defaultFilterColumn={filterColumns[0]}

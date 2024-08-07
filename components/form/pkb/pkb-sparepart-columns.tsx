@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { SparePart } from "@prisma/client";
+import type { SparepartPKB } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -12,9 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
-import { deleteSparepart } from "@/actions/actions";
 
-export const sparepartColumns: ColumnDef<SparePart>[] = [
+export const sparepartColumns: ColumnDef<SparepartPKB>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -38,28 +37,51 @@ export const sparepartColumns: ColumnDef<SparePart>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "kodeSparepart",
+    accessorKey: "kode_sparepart",
     header: "Kode",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("kodeSparepart")}</div>
+      <div className="capitalize">{row.getValue("kode_sparepart")}</div>
     ),
   },
   {
-    accessorKey: "namaSparepart",
+    accessorKey: "nama_sparepart",
     header: "Nama",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("namaSparepart")}</div>
+      <div className="capitalize">{row.getValue("nama_sparepart")}</div>
     ),
   },
   {
-    accessorKey: "grupSparepart",
-    header: "Grup",
+    accessorKey: "quantity",
+    header: "Quantity",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("grupSparepart")}</div>
+      <div className="capitalize">{row.getValue("quantity")}</div>
     ),
   },
   {
-    accessorKey: "hargaJual",
+    accessorKey: "harga_sparepart",
+    header: "Harga Sparepart",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("harga_sparepart")}</div>
+    ),
+  },
+  {
+    accessorKey: "persentase_diskon",
+    header: "Persentase Diskon",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("persentase_diskon")}</div>
+    ),
+  },
+  {
+    accessorKey: "tambahan_harga_sparepart",
+    header: "Tambahan Harga Sparepart",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("tambahan_harga_sparepart")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "total_harga_sparepart",
     header: ({ column }) => {
       return (
         <Button
@@ -67,37 +89,19 @@ export const sparepartColumns: ColumnDef<SparePart>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="w-full"
         >
-          Harga AHASS
+          Total Harga Sparepart
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="text-center">{row.original.hargaLokal}</div>
-    ),
-  },
-  {
-    accessorKey: "hargaNasional",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="w-full"
-        >
-          Harga Nasional
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("hargaNasional")}</div>
+      <div className="text-center">{row.original.total_harga_sparepart}</div>
     ),
   },
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const orirow = row.original;
 
       return (
@@ -112,18 +116,16 @@ export const sparepartColumns: ColumnDef<SparePart>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() =>
-                navigator.clipboard.writeText(orirow.kodeSparepart)
+                navigator.clipboard.writeText(orirow.kode_sparepart)
               }
             >
               Copy Kode
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(orirow.kodeSparepart)
-              }
+              onClick={() => table.options.meta?.deleteRow(row.original)}
             >
-              Copy Kode
+              Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -4,7 +4,7 @@ export default async function Page() {
   return (
     <>
       <h1 className="font-black text-4xl">Pendaftaran PKB</h1>
-      <PendaftaranForm is_pendaftaran />
+      <PendaftaranForm is_pendaftaran={false} />
     </>
   );
 }
