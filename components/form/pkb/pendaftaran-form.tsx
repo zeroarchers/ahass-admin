@@ -40,6 +40,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PkbFormHeader } from "./pkb-form-header";
+import {
+  calculateJasa,
+  calculateSparepart,
+  calculateTotal,
+  JasaCalculationsCard,
+  PembayaranCard,
+  SparepartCalculationsCard,
+  TotalCalculationsCard,
+} from "./pkb-calculations";
 
 interface PendaftaranFormProps {
   initialValues?: z.infer<typeof pkbFormSchema>;
@@ -65,9 +75,9 @@ export function PendaftaranForm({
       jasaPKB: jasaTableData,
       sparepartPKB: sparepartTableData,
     };
+    console.log(validData);
     let response: { result: string; description: any };
-
-    if (is_edit) {
+    if (is_edit || !is_pendaftaran) {
       response = await updatePkb(validData);
     } else {
       response = await createPkb(validData);
@@ -130,127 +140,31 @@ export function PendaftaranForm({
       no_bayar: "",
       uang_bayar: 0,
       uang_kembalian: 0,
-      tipe_pembayaran: "Cash",
+      tipe_pembayaran: "cash",
     },
   });
 
-  function generateNoAntrian(
-    tipeAntrian: string,
-    currentQueueCount: number,
-  ): string {
-    const prefix = tipeAntrian.charAt(0).toUpperCase();
-    const queueNumber = (currentQueueCount + 1).toString().padStart(3, "0");
-    return `${prefix}${queueNumber}`;
-  }
-
-  function generateNoPkbAndBayar(currentPkbCount: number): {
-    noPkb: string;
-    noBayar: string;
-  } {
-    const year = new Date().getFullYear().toString().slice(-2);
-    const prefixPkb = "17168-PKB";
-    const prefixBayar = "17168-SOD";
-    const sequenceNumber = currentPkbCount.toString().padStart(6, "0");
-    const noPkb = `${prefixPkb}-${year}${sequenceNumber}`;
-    const noBayar = `${prefixBayar}-${year}${sequenceNumber}`;
-    return { noPkb, noBayar };
-  }
-
-  useEffect(() => {
-    const fetchCounts = async () => {
-      const queueCountResponse = await fetch("/api/pkb/queueCount");
-      const pkbCountResponse = await fetch("/api/pkb/pkbCount");
-
-      if (!queueCountResponse.ok) {
-        throw new Error("Failed to fetch queue count");
-      }
-      if (!pkbCountResponse.ok) {
-        throw new Error("Failed to fetch pkb count");
-      }
-
-      // Parse the JSON from the responses
-      const queueCount = await queueCountResponse.json();
-      const pkbCount = await pkbCountResponse.json();
-
-      const newNoAntrian = generateNoAntrian(
-        form.getValues("tipe_antrian"),
-        queueCount,
-      );
-      const { noPkb, noBayar } = generateNoPkbAndBayar(pkbCount);
-
-      form.setValue("no_antrian", newNoAntrian);
-      form.setValue("no_pkb", noPkb);
-      form.setValue("no_bayar", noBayar);
-    };
-
-    if (is_pendaftaran) fetchCounts();
-  }, [form, is_pendaftaran]);
-
-  const jasaCalculations = useMemo(() => {
-    let jasaGratis = 0;
-    let jasaBayar = 0;
-    let estimasiWaktu = 0;
-
-    jasaTableData.forEach((jasa) => {
-      console.log(jasa.total_harga_jasa);
-      if (jasa.total_harga_jasa === 0) {
-        jasaGratis += 1;
-      } else {
-        jasaBayar += jasa.total_harga_jasa;
-      }
-      estimasiWaktu += jasa.waktuKerja || 0;
-    });
-
-    return { jasaGratis, jasaBayar, estimasiWaktu };
-  }, [jasaTableData]);
-
-  const sparepartCalculations = useMemo(() => {
-    let sparepartGratis = 0;
-    let sparepartBayar = 0;
-    let totalKuantitas = 0;
-
-    sparepartTableData.forEach((sparepart) => {
-      const quantity = Number(sparepart.quantity) || 0;
-      if (sparepart.total_harga === 0) {
-        sparepartGratis += sparepart.total_harga_sparepart;
-      } else {
-        sparepartBayar += sparepart.total_harga_sparepart;
-      }
-      totalKuantitas += quantity;
-    });
-
-    return { sparepartGratis, sparepartBayar, totalKuantitas };
-  }, [sparepartTableData]);
-
-  const totalCalculations = useMemo(() => {
-    const subtotalBayar =
-      jasaCalculations.jasaBayar + sparepartCalculations.sparepartBayar;
-    const discountFinal = 0;
-    const totalGratis =
-      jasaCalculations.jasaGratis * 18000 +
-      sparepartCalculations.sparepartGratis * 1000;
-    const ppnPercentage = 11;
-    const nilaiPpn = (subtotalBayar - discountFinal) * (ppnPercentage / 100);
-    const totalBayar = subtotalBayar - discountFinal + nilaiPpn;
-
-    return {
-      subtotalBayar,
-      discountFinal,
-      totalGratis,
-      ppnPercentage,
-      nilaiPpn,
-      totalBayar,
-    };
-  }, [jasaCalculations, sparepartCalculations]);
-
+  const uangMuka = form.getValues("uang_muka");
   useEffect(() => {
     if (initialValues) {
       form.reset(initialValues);
-      console.log(initialValues.jasaPKB);
       setJasaTableData(initialValues.jasaPKB || []);
       setSparepartTableData(initialValues.sparepartPKB || []);
     }
   }, [initialValues, form]);
+
+  const jasaCalculations = useMemo(
+    () => calculateJasa(jasaTableData),
+    [jasaTableData],
+  );
+  const sparepartCalculations = useMemo(
+    () => calculateSparepart(sparepartTableData),
+    [sparepartTableData],
+  );
+  const totalCalculations = useMemo(
+    () => calculateTotal(jasaCalculations, sparepartCalculations, uangMuka),
+    [jasaCalculations, sparepartCalculations, uangMuka],
+  );
 
   useEffect(() => {
     const currentTime = new Date();
@@ -260,102 +174,20 @@ export function PendaftaranForm({
     setEstimasiJamSelesai(estimatedCompletionTime);
   }, [jasaCalculations.estimasiWaktu]);
 
-  const [selectedPkb, setSelectedPkb] = useState("");
-
-  useEffect(() => {
-    const fetchPkbData = async () => {
-      if (selectedPkb) {
-        try {
-          const response = await fetch(`/api/pkb?no_pkb=${selectedPkb}`);
-          if (response.ok) {
-            const pkbData = await response.json();
-
-            form.reset(pkbData);
-
-            setJasaTableData(pkbData.jasaPKB || []);
-            setSparepartTableData(pkbData.sparepartPKB || []);
-          } else {
-            console.error("Failed to fetch PKB data");
-          }
-        } catch (error) {
-          console.error("Error fetching PKB data:", error);
-        }
-      }
-    };
-
-    fetchPkbData();
-  }, [selectedPkb, form]);
-
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid gap-5 grid-cols-1"
       >
-        <Card>
-          <CardHeader></CardHeader>
-          <CardContent className="grid md:grid-cols-2 gap-5">
-            {!is_pendaftaran && (
-              <div className="col-span-2">
-                <FormField
-                  control={form.control}
-                  name="no_bayar"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>No. Bayar</FormLabel>
-                      <FormControl>
-                        <Input type="text" {...field} disabled />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            )}
-            {is_pendaftaran ? (
-              <FormField
-                control={form.control}
-                name="no_pkb"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>No. PKB</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} disabled />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            ) : (
-              <Combobox
-                form={form}
-                label="No. PKB"
-                name="no_pkb"
-                apiEndpoint="/api/pkb/all"
-                searchParam="no_pkb"
-                itemToComboboxItem={(pkb) => ({
-                  value: pkb.no_pkb,
-                  label: pkb.no_pkb,
-                  description: pkb.no_polisi,
-                })}
-                onSelectItem={(value) => setSelectedPkb(value.value)}
-              />
-            )}
-            <FormField
-              control={form.control}
-              name="no_antrian"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>No. Antrian</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} disabled />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
+        <PkbFormHeader
+          form={form}
+          is_pendaftaran={is_pendaftaran}
+          setJasaTableData={setJasaTableData}
+          setSparepartTableData={setSparepartTableData}
+          is_edit={is_edit}
+        />
+
         <Card>
           <CardHeader></CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-5">
@@ -364,6 +196,7 @@ export function PendaftaranForm({
             <PkbFormSurvey form={form} />
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Jasa</CardTitle>
@@ -377,31 +210,9 @@ export function PendaftaranForm({
             />
           </CardContent>
         </Card>
-        <Card className="border-primary">
-          <CardContent className="grid md:grid-cols-3 gap-5 pt-6 text-lg">
-            <div className="grid text-center gap-2">
-              <p>Jasa Gratis</p>
-              <Badge className="text-lg w-fit mx-auto">
-                {jasaCalculations.jasaGratis} Pcs
-              </Badge>
-            </div>
-            <div className="grid text-center gap-2">
-              <p>Jasa Bayar</p>
-              <Badge className="text-lg w-fit mx-auto">
-                Rp.{" "}
-                {jasaCalculations.jasaBayar.toLocaleString("id-ID", {
-                  minimumFractionDigits: 2,
-                })}
-              </Badge>
-            </div>
-            <div className="grid text-center gap-2">
-              <p>Estimasi Waktu Pengerjaan</p>
-              <Badge className="text-lg w-fit mx-auto">
-                {jasaCalculations.estimasiWaktu} Menit
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
+
+        <JasaCalculationsCard jasaCalculations={jasaCalculations} />
+
         <Card>
           <CardHeader>
             <CardTitle>Sparepart</CardTitle>
@@ -417,31 +228,11 @@ export function PendaftaranForm({
             />
           </CardContent>
         </Card>
-        <Card className="border-primary">
-          <CardContent className="grid md:grid-cols-3 gap-5 pt-6 text-lg">
-            <div className="grid text-center gap-2">
-              <p>SparePart Gratis</p>
-              <Badge className="text-lg w-fit mx-auto">
-                {sparepartCalculations.sparepartGratis} Pcs
-              </Badge>
-            </div>
-            <div className="grid text-center gap-2">
-              <p>SparePart Bayar</p>
-              <Badge className="text-lg w-fit mx-auto">
-                Rp.{" "}
-                {sparepartCalculations.sparepartBayar.toLocaleString("id-ID", {
-                  minimumFractionDigits: 2,
-                })}
-              </Badge>
-            </div>
-            <div className="grid text-center gap-2">
-              <p>Total Kuantitas</p>
-              <Badge className="text-lg w-fit mx-auto">
-                {sparepartCalculations.totalKuantitas} pcs
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
+
+        <SparepartCalculationsCard
+          sparepartCalculations={sparepartCalculations}
+        />
+
         {is_pendaftaran && (
           <Card>
             <CardHeader>
@@ -464,168 +255,17 @@ export function PendaftaranForm({
             </CardContent>
           </Card>
         )}
-        <div className="grid md:grid-cols-2 gap-5">
-          <Card>
-            <CardHeader>
-              <CardTitle>Total</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-5 overflow-x-scroll">
-              <div className="grid gap-3">
-                <p>Subtotal Bayar</p>
-                <Badge className="w-fit">
-                  Rp.{" "}
-                  {totalCalculations.subtotalBayar.toLocaleString("id-ID", {
-                    minimumFractionDigits: 2,
-                  })}
-                </Badge>
-              </div>
-              <div className="grid gap-3">
-                <p>Discount Final</p>
-                <Badge className="w-fit">
-                  Rp.{" "}
-                  {totalCalculations.discountFinal.toLocaleString("id-ID", {
-                    minimumFractionDigits: 2,
-                  })}
-                </Badge>
-              </div>
-              <div className="grid gap-3">
-                <p>Total Gratis</p>
-                <Badge className="w-fit">
-                  Rp.{" "}
-                  {totalCalculations.totalGratis.toLocaleString("id-ID", {
-                    minimumFractionDigits: 2,
-                  })}
-                </Badge>
-              </div>
-              <div className="grid gap-3">
-                <p>PPn</p>
-                <Badge className="w-fit">
-                  {totalCalculations.ppnPercentage} %
-                </Badge>
-              </div>
-              <div className="grid gap-3">
-                <p>Nilai PPn</p>
-                <Badge className="w-fit">
-                  Rp.{" "}
-                  {totalCalculations.nilaiPpn.toLocaleString("id-ID", {
-                    minimumFractionDigits: 2,
-                  })}
-                </Badge>
-              </div>
-              {is_pendaftaran ? (
-                <div className="grid gap-3">
-                  <p>Total Bayar</p>
-                  <Badge className="w-fit">
-                    Rp.{" "}
-                    {totalCalculations.totalBayar.toLocaleString("id-ID", {
-                      minimumFractionDigits: 2,
-                    })}
-                  </Badge>
-                </div>
-              ) : (
-                <div className="grid gap-3">
-                  <p>Uang Muka</p>
-                  <Badge className="w-fit">
-                    Rp.{" "}
-                    {form.getValues("uang_muka").toLocaleString("id-ID", {
-                      minimumFractionDigits: 2,
-                    })}
-                  </Badge>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-          <div className="flex w-full">
-            <Card className="flex flex-grow flex-col justify-center align-center text-center  text-xl bg-primary">
-              <CardHeader className="p-2 font-bold">Est. Biaya</CardHeader>
-              <CardContent>
-                <Badge className="text-xl bg-primary-foreground text-primary hover:bg-primary-foreground">
-                  Rp.{" "}
-                  {totalCalculations.totalBayar.toLocaleString("id-ID", {
-                    minimumFractionDigits: 2,
-                  })}
-                </Badge>
-              </CardContent>
-            </Card>
-            {is_pendaftaran && (
-              <Card className="flex flex-grow flex-col justify-center align-center text-center  text-xl bg-primary-foreground">
-                <CardHeader className="p-2 font-bold text-primary">
-                  Uang Muka
-                </CardHeader>
-                <CardContent>
-                  <Badge className="text-xl">
-                    Rp.{" "}
-                    {(form.getValues("uang_muka") || 0).toLocaleString(
-                      "id-ID",
-                      {
-                        minimumFractionDigits: 2,
-                      },
-                    )}
-                  </Badge>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </div>
+
+        <TotalCalculationsCard
+          is_pendaftaran={is_pendaftaran}
+          uangMuka={form.getValues("uang_muka")}
+          totalCalculations={totalCalculations}
+        />
+
         {!is_pendaftaran && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Uang Bayar & Kembalian</CardTitle>
-            </CardHeader>
-            <CardContent className="grid md:grid-cols-2 gap-5 overflow-x-scroll">
-              <FormField
-                control={form.control}
-                name="uang_bayar"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Uang Bayar</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="uang_kembalian"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Uang Kembalian</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="tipe_pembayaran"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipe Pembayaran</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Tipe Kedatangan" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="cash">Cash</SelectItem>
-                          <SelectItem value="transfer">Transfer</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
+          <PembayaranCard form={form} totalCalculations={totalCalculations} />
         )}
+
         <Card>
           <CardHeader>
             <CardTitle>PIC</CardTitle>

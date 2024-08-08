@@ -14,11 +14,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import EditButton from "../edit-button";
 import DeleteButton from "../delete-button";
 import { deletePkb } from "@/actions/pkb";
-import { PKB } from "@prisma/client";
+import type { PKBWithRelations } from "@/types";
 import Link from "next/link";
 import { generatePDF } from "@/components/misc/invoice-pkb";
 
-export const columns: ColumnDef<PKB>[] = [
+export const columns: ColumnDef<PKBWithRelations>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -114,10 +114,8 @@ export const columns: ColumnDef<PKB>[] = [
             <DeleteButton id={pkb.no_pkb} deleteAction={deletePkb} />
             <DropdownMenuItem
               onClick={async () => {
-                const response = await fetch(`/api/pkb?no_pkb=${pkb.no_pkb}`);
-                const pkbData = await response.json();
-                console.log(pkbData);
-                generatePDF(pkbData);
+                console.log(pkb);
+                generatePDF(pkb);
               }}
               className="bg-blue-400"
             >

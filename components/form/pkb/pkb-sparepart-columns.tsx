@@ -103,7 +103,6 @@ export const sparepartColumns: ColumnDef<SparepartPKB>[] = [
     enableHiding: false,
     cell: ({ row, table }) => {
       const orirow = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

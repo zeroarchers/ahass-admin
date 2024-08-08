@@ -1,6 +1,14 @@
 import type { Icon } from "lucide-react";
 
 import { Icons } from "@/components/misc/icons";
+import type {
+  PKB,
+  JasaPKB,
+  SparepartPKB,
+  Jasa,
+  SparePart,
+  Kendaraan,
+} from "@prisma/client";
 
 export type NavItem = {
   title: string;
@@ -102,4 +110,10 @@ export type KendaraanWithDetails = {
     nama: string;
   };
   tipeKendaraan: string | null; // Changed to string for commercialName
+};
+
+export type PKBWithRelations = PKB & {
+  jasaPKB: (JasaPKB & { jasa: Jasa })[];
+  sparepartPKB: (SparepartPKB & { sparepart: SparePart })[];
+  kendaraan: Kendaraan;
 };

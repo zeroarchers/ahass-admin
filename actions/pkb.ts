@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
   const validatedData = pkbFormSchema.safeParse(data);
   if (!validatedData.success) {
+    console.log(validatedData.error);
     return { result: "Error!", description: "Input data tidak valid!" };
   }
   console.log(validatedData);
@@ -66,57 +67,60 @@ export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
 export async function updatePkb(data: z.infer<typeof pkbFormSchema>) {
   const validatedData = pkbFormSchema.safeParse(data);
   if (!validatedData.success) {
+    console.log(validatedData.error);
     return { result: "Error!", description: "Input data tidak valid!" };
   }
 
   const { jasaPKB, sparepartPKB, no_polisi, no_pkb, ...pkbData } =
     validatedData.data;
 
-  try {
-    // Update the PKB record
-    await prisma.pKB.update({
-      where: {
-        no_pkb: no_pkb,
-      },
-      data: {
-        ...pkbData,
-        jasaPKB: {
-          deleteMany: {}, // Delete all existing jasaPKB related to this PKB
-          create: jasaPKB.map((jasaItem) => ({
-            total_harga_jasa: jasaItem.total_harga_jasa,
-            harga_jasa: jasaItem.harga_jasa,
-            kode_jasa: jasaItem.kode_jasa,
-            nama_jasa: jasaItem.nama_jasa,
-            tambahan_harga_jasa: jasaItem.tambahan_harga_jasa,
-            persentase_diskon: jasaItem.persentase_diskon,
-            opl: jasaItem.opl,
-          })),
-        },
-        sparepartPKB: {
-          deleteMany: {}, // Delete all existing sparepartPKB related to this PKB
-          create: sparepartPKB.map((sparepartItem) => ({
-            total_harga_sparepart: sparepartItem.total_harga_sparepart,
-            harga_sparepart: sparepartItem.harga_sparepart,
-            tambahan_harga_sparepart: sparepartItem.tambahan_harga_sparepart,
-            persentase_diskon: sparepartItem.persentase_diskon,
-            quantity: sparepartItem.quantity,
-            nama_sparepart: sparepartItem.nama_sparepart,
-            ref_jasa: sparepartItem.ref_jasa,
-            kode_sparepart: sparepartItem.sparepart.kodeSparepart,
-          })),
-        },
-      },
-    });
+  const existingPKB = await prisma.pKB.findUnique({
+    where: { no_pkb },
+  });
 
-    revalidatePath("/dashboard/pendaftaran-servis");
-    redirect("/dashboard/pendaftaran-servis");
-  } catch (error) {
-    console.error("Error updating PKB:", error);
+  if (!existingPKB) {
     return {
       result: "Error!",
-      description: "Gagal mengupdate PKB. Silakan coba lagi.",
+      description: `PKB record with no_pkb ${no_pkb} not found!`,
     };
   }
+
+  await prisma.pKB.update({
+    where: {
+      no_pkb: no_pkb,
+    },
+    data: {
+      ...pkbData,
+      jasaPKB: {
+        deleteMany: {},
+        create: jasaPKB.map((jasaItem) => ({
+          total_harga_jasa: jasaItem.total_harga_jasa,
+          harga_jasa: jasaItem.harga_jasa,
+          kode_jasa: jasaItem.kode_jasa,
+          nama_jasa: jasaItem.nama_jasa,
+          tambahan_harga_jasa: jasaItem.tambahan_harga_jasa,
+          persentase_diskon: jasaItem.persentase_diskon,
+          opl: jasaItem.opl,
+        })),
+      },
+      sparepartPKB: {
+        deleteMany: {},
+        create: sparepartPKB.map((sparepartItem) => ({
+          total_harga_sparepart: sparepartItem.total_harga_sparepart,
+          harga_sparepart: sparepartItem.harga_sparepart,
+          tambahan_harga_sparepart: sparepartItem.tambahan_harga_sparepart,
+          persentase_diskon: sparepartItem.persentase_diskon,
+          quantity: sparepartItem.quantity,
+          nama_sparepart: sparepartItem.nama_sparepart,
+          ref_jasa: sparepartItem.ref_jasa,
+          kode_sparepart: sparepartItem.sparepart.kodeSparepart,
+        })),
+      },
+    },
+  });
+
+  revalidatePath("/dashboard/pendaftaran-servis");
+  redirect("/dashboard/pendaftaran-servis");
 }
 
 export async function deletePkb(id: string) {

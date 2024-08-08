@@ -12,6 +12,7 @@ export async function GET(request: Request) {
           contains: search || "",
           mode: "insensitive",
         },
+        no_bayar: "",
       },
       select: {
         no_pkb: true,
@@ -19,7 +20,7 @@ export async function GET(request: Request) {
         pemilik: true,
       },
     });
-
+    console.log("nobayar", pkbRecords);
     return NextResponse.json(pkbRecords);
   } catch (error) {
     console.error("API: Error fetching PKB records:", error);

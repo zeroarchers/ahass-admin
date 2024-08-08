@@ -1,11 +1,9 @@
 "use client";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { PKB, JasaPKB, SparepartPKB } from "@prisma/client";
+import type { PKBWithRelations } from "@/types";
 
-export const generatePDF = (
-  pkb: PKB & { jasaPKB: JasaPKB[]; sparepartPKB: SparepartPKB[] },
-) => {
+export const generatePDF = (pkb: PKBWithRelations) => {
   const doc = new jsPDF({ orientation: "landscape", format: [241.3, 139.7] });
 
   // Set font
@@ -45,7 +43,7 @@ export const generatePDF = (
   doc.text(`No. Telp/Hp`, 80, 30);
   doc.text(`No. Rangka/Mesin`, 80, 35);
   doc.text(`Tipe/Warna/Tahun`, 80, 40);
-  doc.text(`: ${pkb.no_mesin}/${pkb.no_mesin}`, 110, 35);
+  doc.text(`: ${pkb.no_mesin}/${pkb.kendaraan.no_rangka}`, 110, 35);
   doc.text(`: ${pkb.tahun_motor}`, 110, 40);
   doc.text(`: ${pkb.no_hp}`, 110, 30);
 
@@ -63,7 +61,7 @@ export const generatePDF = (
     body: pkb.jasaPKB.map((jasa, index) => [
       index + 1,
       jasa.nama_jasa,
-      "15 MIN",
+      jasa.jasa.waktuKerja + " min",
     ]),
   });
 
@@ -79,6 +77,16 @@ export const generatePDF = (
       "PCS",
     ]),
   });
+
+  const total_waktu = pkb.jasaPKB.reduce(
+    (sum, jasa) => sum + jasa.jasa.waktuKerja,
+    0,
+  );
+
+  const total_harga = pkb.sparepartPKB.reduce(
+    (sum, sp) => sum + sp.harga_sparepart,
+    0,
+  );
 
   const startYFooter = (doc as any).lastAutoTable.finalY + 10;
   doc.text(`Mekanik : ${pkb.mekanik}`, 10, startYFooter);
@@ -118,8 +126,8 @@ export const generatePDF = (
   doc.line(170, startYFooter + 45, 195, startYFooter + 45);
   doc.line(170, startYFooter + 45.1, 195, startYFooter + 45.1);
 
-  doc.text(`Estimasi Waktu Kerja : 15 Menit`, 160, startYFooter);
-  doc.text(`Estimasi Biaya : ${pkb.uang_muka}`, 160, startYFooter + 5);
+  doc.text(`Estimasi Waktu Kerja: ${total_waktu} min`, 160, startYFooter);
+  doc.text(`Estimasi Biaya: ${total_harga}`, 160, startYFooter + 5);
 
   // Save the PDF
   doc.save(`invoice_${pkb.no_pkb}.pdf`);

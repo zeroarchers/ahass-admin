@@ -201,7 +201,13 @@ export function SparepartModal({
                   <FormItem>
                     <FormLabel>Quantity</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} placeholder="0" />
+                      <Input
+                        type="number"
+                        min={1}
+                        {...field}
+                        defaultValue={1}
+                        placeholder="1"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

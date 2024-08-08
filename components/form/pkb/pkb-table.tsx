@@ -50,6 +50,10 @@ export function GenericPkbTable({
     setData((prevData) => prevData.filter((item) => item !== row));
   };
 
+  const addItemToTable = (newItem: any) => {
+    setData((prevData) => [...prevData, newItem]);
+  };
+
   const table = useReactTable({
     data,
     columns,
@@ -75,10 +79,6 @@ export function GenericPkbTable({
   const defaultFilter = table.getAllColumns()[1]?.id || "";
   const [selectedFilterColumn, setSelectedFilterColumn] =
     React.useState(defaultFilter);
-
-  const addItemToTable = (newItem: any) => {
-    setData((prevData) => [...prevData, newItem]);
-  };
 
   return (
     <>

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { PKB } from "@prisma/client";
+import type { PKBWithRelations } from "@/types";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,68 +15,50 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import EditButton from "../edit-button";
 import { generatePDF } from "@/components/misc/invoice-pkb";
+import { deletePkb } from "@/actions/pkb";
+import DeleteButton from "../delete-button";
 
-export const columns: ColumnDef<PKB>[] = [
+export const columns: ColumnDef<PKBWithRelations>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
+    accessorKey: "status_pkb",
+    header: "Status",
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="capitalize">{row.getValue("status_pkb")}</div>
     ),
-    enableSorting: false,
-    enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "status",
+    accessorKey: "no_pkb",
+    header: "No PKB",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="capitalize">{row.getValue("no_pkb")}</div>
     ),
   },
   {
-    accessorKey: "noPKB",
-    header: "noPKB",
+    accessorKey: "no_polisi",
+    header: "No Polisi",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("noPKB")}</div>
+      <div className="capitalize">{row.getValue("no_polisi")}</div>
     ),
   },
   {
-    accessorKey: "noPolisi",
-    header: "noPolisi",
+    accessorKey: "no_bayar",
+    header: "No Bayar",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("noPolisi")}</div>
+      <div className="capitalize">{row.getValue("no_bayar")}</div>
     ),
   },
   {
-    accessorKey: "soNo",
-    header: "No. Bayar",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("soNo")}</div>,
-  },
-  {
-    accessorKey: "totalFaktur",
+    accessorKey: "uang_bayar",
     header: "Total Faktur",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("totalFaktur")}</div>
+      <div className="capitalize">{row.getValue("uang_bayar")}</div>
     ),
   },
   {
-    accessorKey: "tipePembayran",
+    accessorKey: "tipe_pembayaran",
     header: "Tipe Pembayaran",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("tipePembayran")}</div>
+      <div className="capitalize">{row.getValue("tipe_pembayaran")}</div>
     ),
   },
   {
@@ -89,10 +71,10 @@ export const columns: ColumnDef<PKB>[] = [
     ),
   },
   {
-    accessorKey: "soID",
-    header: "Invoice ID",
+    accessorKey: "no_pkb",
+    header: "Invoice",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("Invoice ID")}</div>
+      <div className="capitalize">{row.getValue("no_pkb")}</div>
     ),
   },
   {
@@ -119,10 +101,8 @@ export const columns: ColumnDef<PKB>[] = [
             <EditButton id={pkb.id.toString()} />
             <DropdownMenuItem
               onClick={async () => {
-                const response = await fetch(`/api/pkb?no_pkb=${pkb.id}`);
-                const pkbData = await response.json();
-                console.log(pkbData);
-                generatePDF(pkbData);
+                console.log(pkb);
+                generatePDF(pkb);
               }}
               className="bg-blue-400"
             >

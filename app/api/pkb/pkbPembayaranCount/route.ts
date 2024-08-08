@@ -12,6 +12,9 @@ export async function GET() {
         gte: startOfYear,
         lte: endOfYear,
       },
+      no_bayar: {
+        not: "",
+      },
     },
   });
   const init = 0;

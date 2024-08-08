@@ -1,12 +1,8 @@
 import DynamicTable from "@/components/table/dynamic-table-pagination";
 import { prisma } from "@/lib/prisma";
 import { columns } from "@/components/table/columns/pendaftaran-pkb-columns";
-import type { PKB, JasaPKB, SparepartPKB } from "@prisma/client";
 
-type PKBWithRelations = PKB & {
-  jasaPKB: JasaPKB[];
-  sparepartPKB: SparepartPKB[];
-};
+import type { PKBWithRelations } from "@/types";
 
 export default async function Page({
   searchParams,
@@ -49,8 +45,17 @@ export default async function Page({
 
   const data: PKBWithRelations[] = await prisma.pKB.findMany({
     include: {
-      jasaPKB: true,
-      sparepartPKB: true,
+      jasaPKB: {
+        include: {
+          jasa: true,
+        },
+      },
+      sparepartPKB: {
+        include: {
+          sparepart: true,
+        },
+      },
+      kendaraan: true,
     },
     skip: offset,
     take: pageSize,
