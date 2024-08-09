@@ -84,9 +84,13 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
     ),
   },
   {
-    accessorKey: "activity_capacity",
+    accessorKey: "jasaPKB`",
     header: "Jenis Pekerjaan",
-    cell: ({ row }) => <div>{row.getValue("activity_capacity")}</div>,
+    cell: ({ row }) => {
+      const jobTypes = row.original.jasaPKB.map((item) => item.jasa.jobType);
+      const mergedJobTypes = jobTypes.join(", ");
+      return <div>{mergedJobTypes}</div>;
+    },
   },
   {
     id: "actions",

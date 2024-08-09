@@ -103,6 +103,7 @@ export const sparepartColumns: ColumnDef<SparepartPKB>[] = [
     enableHiding: false,
     cell: ({ row, table }) => {
       const orirow = row.original;
+      table.options.meta;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -122,6 +123,7 @@ export const sparepartColumns: ColumnDef<SparepartPKB>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              // @ts-ignore
               onClick={() => table.options.meta?.deleteRow(row.original)}
             >
               Delete

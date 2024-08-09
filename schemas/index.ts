@@ -154,12 +154,12 @@ export const kendaraanFormSchema = z.object({
 });
 
 export const jasaModalSchema = z.object({
-  jasa: jasaFormSchema,
+  jasa: jasaFormSchema.nullable().optional(),
   total_harga_jasa: z.number(),
   harga_jasa: z.number(),
-  kode_jasa: z.string(),
+  kode_jasa: z.string().min(1, "Input kode jasa!"),
   nama_jasa: z.string(),
-  tambahan_harga_jasa: z.number(),
+  tambahan_harga_jasa: z.number().min(0),
   persentase_diskon: z.number(),
   opl: z.string().min(1),
 });
@@ -170,9 +170,9 @@ export const sparepartModalSchema = z.object({
   harga_sparepart: z.number(),
   tambahan_harga_sparepart: z.number(),
   persentase_diskon: z.number(),
-  quantity: z.number(),
+  quantity: z.coerce.number().gt(0, "Kuantitas harus lebih dari 0!"),
   nama_sparepart: z.string(),
-  ref_jasa: z.string(),
+  ref_jasa: z.string().min(1, "Ref jasa harus dipilih!"),
 });
 
 const booleanField = z.union([

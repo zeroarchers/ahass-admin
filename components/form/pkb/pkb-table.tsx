@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {
@@ -12,6 +11,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  TableMeta,
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import TableTemplate from "@/components/table/table-template";
+
+export interface SparepartMeta extends TableMeta<any> {
+  deleteRow: (row: any) => void;
+}
 
 interface GenericPkbTableProps {
   data: any[];

@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useState } from "react";
+import { BaseSyntheticEvent, FormEvent, useEffect, useState } from "react";
 import { sparepartModalSchema } from "@/schemas";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,8 +41,11 @@ export function SparepartModal({
   jasaData: any[];
   initialValues?: any;
 }) {
-  const form = useForm<z.infer<typeof sparepartModalSchema>>({
-    resolver: zodResolver(sparepartModalSchema),
+  const sparepartModalSchemaWithoutSparepart = sparepartModalSchema.omit({
+    sparepart: true,
+  });
+  const form = useForm<z.infer<typeof sparepartModalSchemaWithoutSparepart>>({
+    resolver: zodResolver(sparepartModalSchemaWithoutSparepart),
     defaultValues: initialValues || {
       total_harga_sparepart: 0,
       tambahan_harga_sparepart: 0,
@@ -50,13 +53,21 @@ export function SparepartModal({
       quantity: 0,
     },
   });
+  const handleSubmit = form.handleSubmit;
+
   const [selectedItem, setSelectedItem] = useState<SparePart | null>(null);
+  const [open, setOpen] = useState(false);
+
+  const watch_harga = form.watch("harga_sparepart");
+  const watch_quantity = form.watch("quantity");
+  const watch_tambahan_harga = form.watch("tambahan_harga_sparepart");
+  const watch_persentase_diskon = form.watch("persentase_diskon");
 
   useEffect(() => {
-    const hargaSparepart = form.watch("harga_sparepart") || 0;
-    const quantity = form.watch("quantity") || 0;
-    const tambahanHargaSparepart = form.watch("tambahan_harga_sparepart") || 0;
-    const persentaseDiskon = form.watch("persentase_diskon") || 0;
+    const hargaSparepart = watch_harga;
+    const quantity = watch_quantity || 0;
+    const tambahanHargaSparepart = watch_tambahan_harga || 0;
+    const persentaseDiskon = watch_persentase_diskon || 0;
 
     const totalHarga = (hargaSparepart + tambahanHargaSparepart) * quantity;
     const diskon = (totalHarga * persentaseDiskon) / 100;
@@ -64,23 +75,39 @@ export function SparepartModal({
 
     form.setValue("total_harga_sparepart", finalHarga);
   }, [
-    form.watch("harga_sparepart"),
-    form.watch("quantity"),
-    form.watch("tambahan_harga_sparepart"),
-    form.watch("persentase_diskon"),
+    watch_harga,
+    watch_quantity,
+    watch_tambahan_harga,
+    watch_persentase_diskon,
+    form,
   ]);
 
-  async function handleSubmit() {
-    const values = form.getValues();
-    values.quantity = parseInt(values.quantity.toString());
+  function stopPropagate(
+    callback: (event: FormEvent<HTMLFormElement>) => void,
+  ) {
+    return (e: FormEvent<HTMLFormElement>) => {
+      e.stopPropagation();
+      e.stopPropagation();
+      callback(e);
+    };
+  }
+
+  function onSubmit(data: any, e?: BaseSyntheticEvent) {
+    console.log(data);
+    console.log(e);
     const selected = {
-      ...values,
+      ...data,
       sparepart: selectedItem,
     };
-    onAddItem(selected);
+    const result = sparepartModalSchema.safeParse(selected);
+    if (result.success) {
+      onAddItem(result.data);
+      setOpen(false);
+    }
   }
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default" className="mr-5">
           Tambah Sparepart
@@ -91,157 +118,160 @@ export function SparepartModal({
           <DialogTitle>Tambah Sparepart</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-1 items-center gap-4">
-              <Combobox
-                form={form}
-                label="Kode Sparepart"
-                name="kode_sparepart"
-                apiEndpoint="/api/sparepart"
-                searchParam="kode"
-                itemToComboboxItem={(sparepart: SparePart) => {
-                  return {
-                    value: sparepart.kodeSparepart,
-                    label: sparepart.kodeSparepart,
-                    description: sparepart.namaSparepart?.toString(),
-                    data: sparepart,
-                  };
-                }}
-                onSelectItem={(item) => {
-                  form.setValue("nama_sparepart", item.description);
-                  form.setValue("harga_sparepart", item.data.hargaLokal);
-                  setSelectedItem(item.data);
-                }}
-              />
-              <FormField
-                control={form.control}
-                name="ref_jasa"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ref Jasa</FormLabel>
-                    <FormControl>
-                      <Select
-                        defaultValue={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Pilih Ref Jasa" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {jasaData.map(({ jasa: { nama, kode } }) => {
-                            return (
-                              <SelectItem key={kode} value={kode}>
-                                {nama}
-                              </SelectItem>
-                            );
-                          })}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="nama_sparepart"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nama Sparepart</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} disabled />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="harga_sparepart"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Harga Sparepart</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} placeholder="0" disabled />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="tambahan_harga_sparepart"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tambahan Harga SparePart</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} placeholder="0" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="persentase_diskon"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Persentase Diskon</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} placeholder="0" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="quantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quantity</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min={1}
-                        {...field}
-                        defaultValue={1}
-                        placeholder="1"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="total_harga_sparepart"
-                render={({ field }) => {
-                  return (
+          <form onSubmit={stopPropagate(handleSubmit(onSubmit))}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-1 items-center gap-4">
+                <Combobox
+                  form={form}
+                  label="Kode Sparepart"
+                  name="kode_sparepart"
+                  apiEndpoint="/api/sparepart"
+                  searchParam="kode"
+                  itemToComboboxItem={(sparepart: SparePart) => {
+                    return {
+                      value: sparepart.kodeSparepart,
+                      label: sparepart.kodeSparepart,
+                      description: sparepart.namaSparepart?.toString(),
+                      data: sparepart,
+                    };
+                  }}
+                  onSelectItem={(item) => {
+                    form.setValue("nama_sparepart", item.description);
+                    form.setValue("harga_sparepart", item.data.hargaLokal);
+                    setSelectedItem(item.data);
+                  }}
+                />
+                <FormField
+                  control={form.control}
+                  name="ref_jasa"
+                  render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Total Harga</FormLabel>
+                      <FormLabel>Ref Jasa</FormLabel>
+                      <FormControl>
+                        <Select
+                          defaultValue={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Pilih Ref Jasa" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {jasaData.map(({ jasa: { nama, kode } }) => {
+                              return (
+                                <SelectItem key={kode} value={kode}>
+                                  {nama}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="nama_sparepart"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nama Sparepart</FormLabel>
+                      <FormControl>
+                        <Input type="text" {...field} disabled />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="harga_sparepart"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Harga Sparepart</FormLabel>
                       <FormControl>
                         <Input
                           type="text"
                           {...field}
-                          placeholder="Total Harga"
+                          placeholder="0"
                           disabled
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
-                  );
-                }}
-              />
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="tambahan_harga_sparepart"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tambahan Harga SparePart</FormLabel>
+                      <FormControl>
+                        <Input type="text" {...field} placeholder="0" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="persentase_diskon"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Persentase Diskon</FormLabel>
+                      <FormControl>
+                        <Input type="text" {...field} placeholder="0" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="quantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantity</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={1}
+                          {...field}
+                          defaultValue={1}
+                          placeholder="1"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="total_harga_sparepart"
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Total Harga</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            {...field}
+                            placeholder="Total Harga"
+                            disabled
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+              </div>
             </div>
-          </div>
-          <DialogFooter>
-            <DialogTrigger asChild>
-              <Button type="button" onClick={handleSubmit}>
-                Save changes
-              </Button>
-            </DialogTrigger>
-          </DialogFooter>
+            <DialogFooter>
+              <Button type="submit">Save changes</Button>
+            </DialogFooter>
+          </form>
         </Form>
       </DialogContent>
     </Dialog>

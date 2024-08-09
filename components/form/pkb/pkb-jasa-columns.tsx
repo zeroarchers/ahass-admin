@@ -122,6 +122,7 @@ export const jasaColumns: ColumnDef<JasaPKB>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              // @ts-ignore
               onClick={() => table.options.meta?.deleteRow(row.original)}
             >
               Delete

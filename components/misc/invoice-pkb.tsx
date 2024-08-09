@@ -43,9 +43,13 @@ export const generatePDF = (pkb: PKBWithRelations) => {
   doc.text(`No. Telp/Hp`, 80, 30);
   doc.text(`No. Rangka/Mesin`, 80, 35);
   doc.text(`Tipe/Warna/Tahun`, 80, 40);
-  doc.text(`: ${pkb.no_mesin}/${pkb.kendaraan.no_rangka}`, 110, 35);
-  doc.text(`: ${pkb.tahun_motor}`, 110, 40);
   doc.text(`: ${pkb.no_hp}`, 110, 30);
+  doc.text(`: ${pkb.no_mesin}/${pkb.kendaraan.no_rangka}`, 110, 35);
+  doc.text(
+    `: ${pkb.kendaraan.namaTipeKendaraan}/${pkb.kendaraan.warna}/${pkb.tahun_motor}`,
+    110,
+    40,
+  );
 
   doc.text(`Km`, 170, 30);
   doc.text(`No. Antri`, 170, 35);
@@ -55,7 +59,13 @@ export const generatePDF = (pkb: PKBWithRelations) => {
   autoTable(doc, {
     startY: 50,
     tableWidth: 90,
-    theme: "grid",
+    styles: {
+      lineColor: "#000000",
+      fillColor: "#FFFFFF",
+      textColor: "#000000",
+      lineWidth: 0.3,
+      fontSize: 7,
+    },
     head: [["No", "Nama Jasa", "Waktu"]],
     margin: { left: 10 },
     body: pkb.jasaPKB.map((jasa, index) => [
@@ -69,6 +79,13 @@ export const generatePDF = (pkb: PKBWithRelations) => {
     startY: 50,
     margin: { left: 110 },
     tableWidth: 90,
+    styles: {
+      lineColor: "#000000",
+      fillColor: "#FFFFFF",
+      textColor: "#000000",
+      lineWidth: 0.3,
+      fontSize: 7,
+    },
     head: [["No", "Nama Part", "Qty", "Satuan"]],
     body: pkb.sparepartPKB.map((part, index) => [
       index + 1,
@@ -89,6 +106,9 @@ export const generatePDF = (pkb: PKBWithRelations) => {
   );
 
   const startYFooter = (doc as any).lastAutoTable.finalY + 10;
+
+  doc.setFontSize(7);
+
   doc.text(`Mekanik : ${pkb.mekanik}`, 10, startYFooter);
   doc.text(`Catatan :`, 10, startYFooter + 5);
   doc.text(
@@ -110,24 +130,97 @@ export const generatePDF = (pkb: PKBWithRelations) => {
   doc.text(`Service terakhir tanggal :`, 12, startYFooter + 35);
   doc.text(`Mekanik :`, 60, startYFooter + 35);
 
-  doc.text(`Pemilik/Pembawa`, 110, startYFooter + 20);
-  doc.text(`Service Advisor`, 140, startYFooter + 20);
-  doc.text(`Final Inspector`, 170, startYFooter + 20);
+  doc.setFontSize(8);
 
-  doc.text(pkb.pemilik, 110, startYFooter + 40);
-  doc.line(110, startYFooter + 45, 135, startYFooter + 45);
-  doc.line(110, startYFooter + 45.1, 135, startYFooter + 45.1);
+  const width = 25;
 
-  doc.text(pkb.service_advisor, 140, startYFooter + 40);
-  doc.line(140, startYFooter + 45, 165, startYFooter + 45);
-  doc.line(140, startYFooter + 45.1, 165, startYFooter + 45.1);
+  const createPositionObject = (startX: any) => {
+    const x1 = startX;
+    const x2 = startX + width;
+    const center = (x1 + x2) / 2;
 
-  doc.text(pkb.final_inspector, 170, startYFooter + 40);
-  doc.line(170, startYFooter + 45, 195, startYFooter + 45);
-  doc.line(170, startYFooter + 45.1, 195, startYFooter + 45.1);
+    return { x1, x2, center };
+  };
 
-  doc.text(`Estimasi Waktu Kerja: ${total_waktu} min`, 160, startYFooter);
-  doc.text(`Estimasi Biaya: ${total_harga}`, 160, startYFooter + 5);
+  const positions = {
+    pemilik: createPositionObject(120),
+    sa: createPositionObject(150),
+    fi: createPositionObject(180),
+  };
+
+  doc.text(`Pemilik/Pembawa`, positions.pemilik.center, startYFooter + 20, {
+    align: "center",
+  });
+  doc.text(`Service Advisor`, positions.sa.center, startYFooter + 20, {
+    align: "center",
+  });
+  doc.text(`Final Inspector`, positions.fi.center, startYFooter + 20, {
+    align: "center",
+  });
+
+  doc.text(pkb.pemilik, positions.pemilik.center, startYFooter + 40, {
+    align: "center",
+    maxWidth: width,
+  });
+  doc.line(
+    positions.pemilik.x1,
+    startYFooter + 45,
+    positions.pemilik.x2,
+    startYFooter + 45,
+    "FD",
+  );
+  doc.line(
+    positions.pemilik.x1,
+    startYFooter + 45.1,
+    positions.pemilik.x2,
+    startYFooter + 45,
+    "FD",
+  );
+
+  doc.text(pkb.service_advisor, positions.sa.center, startYFooter + 40, {
+    align: "center",
+    maxWidth: width,
+  });
+  doc.line(
+    positions.sa.x1,
+    startYFooter + 45,
+    positions.sa.x2,
+    startYFooter + 45,
+  );
+  doc.line(
+    positions.sa.x1,
+    startYFooter + 45.1,
+    positions.sa.x2,
+    startYFooter + 45,
+  );
+
+  doc.text(pkb.final_inspector, positions.fi.center, startYFooter + 40, {
+    align: "center",
+    maxWidth: width,
+  });
+
+  doc.line(
+    positions.fi.x1,
+    startYFooter + 45,
+    positions.fi.x2,
+    startYFooter + 45,
+  );
+  doc.line(
+    positions.fi.x1,
+    startYFooter + 45.1,
+    positions.fi.x2,
+    startYFooter + 45,
+  );
+
+  const formattedCurrency = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(total_harga);
+
+  doc.text(`Estimasi Waktu Kerja: ${total_waktu} Menit`, 160, startYFooter);
+  doc.text(`Estimasi Biaya: ${formattedCurrency}`, 160, startYFooter + 5);
 
   // Save the PDF
   doc.save(`invoice_${pkb.no_pkb}.pdf`);

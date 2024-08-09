@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import type { PKBWithRelations } from "@/types";
 import {
   DropdownMenu,
@@ -14,9 +13,7 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import EditButton from "../edit-button";
-import { generatePDF } from "@/components/misc/invoice-pkb";
-import { deletePkb } from "@/actions/pkb";
-import DeleteButton from "../delete-button";
+import { generatePDF } from "@/components/misc/invoice-bayar-pkb";
 
 export const columns: ColumnDef<PKBWithRelations>[] = [
   {
@@ -71,13 +68,6 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
     ),
   },
   {
-    accessorKey: "no_pkb",
-    header: "Invoice",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("no_pkb")}</div>
-    ),
-  },
-  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -103,6 +93,7 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
               onClick={async () => {
                 console.log(pkb);
                 generatePDF(pkb);
+                console.log("Printed");
               }}
               className="bg-blue-400"
             >

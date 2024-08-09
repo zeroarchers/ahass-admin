@@ -1,4 +1,5 @@
 import type { Icon } from "lucide-react";
+import "@tanstack/react-table";
 
 import { Icons } from "@/components/misc/icons";
 import type {
@@ -117,3 +118,10 @@ export type PKBWithRelations = PKB & {
   sparepartPKB: (SparepartPKB & { sparepart: SparePart })[];
   kendaraan: Kendaraan;
 };
+
+declare module "@tanstack/table-core" {
+  interface TableMeta<TData extends RowData> {
+    deleteRow: (row: any) => void;
+    text: string;
+  }
+}
