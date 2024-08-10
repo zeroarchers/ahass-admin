@@ -1,22 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // Adjust this import based on your project structure
+import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const kode_sparepart = searchParams.get("kode") || "";
+  const nama_sparepart = searchParams.get("nama") || "";
 
   try {
-    const jasa = await prisma.sparePart.findMany({
+    const sparepart = await prisma.sparePart.findMany({
       where: {
-        kodeSparepart: {
-          contains: kode_sparepart,
+        namaSparepart: {
+          contains: nama_sparepart,
           mode: "insensitive",
         },
       },
       take: 10,
     });
 
-    return NextResponse.json(jasa);
+    return NextResponse.json(sparepart);
   } catch (error) {
     console.error("API: Error fetching sparepart:", error);
     return NextResponse.json(

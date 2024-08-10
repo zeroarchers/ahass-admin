@@ -126,7 +126,7 @@ export function SparepartModal({
                   label="Kode Sparepart"
                   name="kode_sparepart"
                   apiEndpoint="/api/sparepart"
-                  searchParam="kode"
+                  searchParam="nama"
                   itemToComboboxItem={(sparepart: SparePart) => {
                     return {
                       value: sparepart.kodeSparepart,

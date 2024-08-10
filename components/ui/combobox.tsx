@@ -62,6 +62,7 @@ export function Combobox({
         throw new Error(`Failed to fetch items from ${apiEndpoint}`);
       }
       const data = await response.json();
+      console.log(data);
       setItems(data.map(itemToComboboxItem));
     } catch (error) {
       console.error(`Error loading items from ${apiEndpoint}:`, error);
@@ -98,7 +99,7 @@ export function Combobox({
               </FormControl>
             </PopoverTrigger>
             <PopoverContent className="w-96 p-0">
-              <Command>
+              <Command shouldFilter={false}>
                 <CommandInput
                   placeholder={`Search ${label.toLowerCase()}...`}
                   className="h-9"

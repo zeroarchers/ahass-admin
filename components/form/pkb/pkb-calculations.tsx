@@ -216,7 +216,9 @@ export const TotalCalculationsCard: React.FC<{
     </Card>
     <div className="flex w-full">
       <Card className="flex flex-grow flex-col justify-center align-center text-center  text-xl bg-primary">
-        <CardHeader className="p-2 font-bold">Biaya</CardHeader>
+        <CardHeader className="p-2 font-bold text-primary-foreground">
+          Biaya
+        </CardHeader>
         <CardContent>
           <Badge className="text-xl bg-primary-foreground text-primary hover:bg-primary-foreground">
             Rp.{" "}

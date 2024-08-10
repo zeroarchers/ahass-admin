@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // Adjust this import based on your project structure
+import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -18,10 +18,10 @@ export async function GET(request: NextRequest) {
       take: 10,
     });
 
-    console.log(jasa);
+    // console.log(jasa);
     return NextResponse.json(jasa);
   } catch (error) {
-    console.error("API: Error fetching kendaraan:", error);
+    // console.error("API: Error fetching kendaraan:", error);
     return NextResponse.json(
       { error: "Failed to fetch customers" },
       { status: 500 },
