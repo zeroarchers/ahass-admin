@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { columns } from "@/components/table/columns/pendaftaran-pkb-columns";
 
 import type { PKBWithRelations } from "@/types";
+import { getItemsWithDate } from "@/data/table";
 
 export default async function Page({
   searchParams,
@@ -43,29 +44,15 @@ export default async function Page({
     }
   }
 
-  const data: PKBWithRelations[] = await prisma.pKB.findMany({
-    include: {
-      jasaPKB: {
-        include: {
-          jasa: true,
-        },
-      },
-      sparepartPKB: {
-        include: {
-          sparepart: true,
-        },
-      },
-      kendaraan: true,
-    },
-    skip: offset,
-    take: pageSize,
-    where,
-    orderBy: {
-      tanggal: "desc",
-    },
-  });
+  const { data, totalCount } = await getItemsWithDate<PKBWithRelations>(
+    "pKB",
+    page,
+    filter,
+    filterColumn,
+    startDate,
+    endDate,
+  );
 
-  const totalCount = await prisma.pKB.count({ where });
   const pageCount = Math.ceil(totalCount / pageSize);
 
   return (

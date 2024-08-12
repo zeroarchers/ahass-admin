@@ -1,8 +1,8 @@
 import DynamicTable from "@/components/table/dynamic-table-pagination";
-import { prisma } from "@/lib/prisma";
 import { columns } from "@/components/table/columns/bayar-pkb-columns";
 
 import type { PKBWithRelations } from "@/types";
+import { getItemsWithDate } from "@/data/table";
 
 export default async function Page({
   searchParams,
@@ -25,48 +25,23 @@ export default async function Page({
     ? new Date(searchParams.endDate)
     : undefined;
   const pageSize = 10;
-  const offset = (page - 1) * pageSize;
 
   let where: any = {};
 
-  if (filter) {
-    where[filterColumn] = { contains: filter, mode: "insensitive" };
-  }
   where.no_bayar = {
     not: "",
   };
-  if (startDate || endDate) {
-    where.tanggal = {};
-    if (startDate) {
-      where.tanggal.gte = startDate;
-    }
-    if (endDate) {
-      where.tanggal.lte = endDate; }
-  }
 
-  const data: PKBWithRelations[] = await prisma.pKB.findMany({
-    include: {
-      jasaPKB: {
-        include: {
-          jasa: true,
-        },
-      },
-      sparepartPKB: {
-        include: {
-          sparepart: true,
-        },
-      },
-      kendaraan: true,
-    },
-    skip: offset,
-    take: pageSize,
+  const { data, totalCount } = await getItemsWithDate<PKBWithRelations>(
+    "pKB",
+    page,
+    filter,
+    filterColumn,
+    startDate,
+    endDate,
     where,
-    orderBy: {
-      tanggal: "desc",
-    },
-  });
+  );
 
-  const totalCount = await prisma.pKB.count({ where });
   const pageCount = Math.ceil(totalCount / pageSize);
 
   return (

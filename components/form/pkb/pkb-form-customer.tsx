@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   FormControl,
   FormField,
@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 
 const hubungan_pembawa = [
   "Pemilik",
@@ -26,6 +27,45 @@ const hubungan_pembawa = [
 ];
 
 export function PkbFormCustomer({ form }: { form: any }) {
+  const watch_pembawa = form.watch("pembawa");
+  useEffect(() => {
+    const fetchKendaraanData = async () => {
+      if (watch_pembawa) {
+        try {
+          const response = await fetch(
+            `/api/customer?nama=${encodeURIComponent(watch_pembawa)}`,
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch kendaraan data");
+          }
+
+          const pembawa = await response.json();
+          console.log(pembawa);
+          const nohp_pembawa = pembawa[0].nohp;
+          const no_ktp_pembawa = pembawa[0].noktp;
+          const alamat_ktp_pembawa = pembawa[0].alamat;
+          const alamat_domisili_pembawa = pembawa[0].alamatKirim;
+          const kota_pembawa = pembawa[0].kabupaten;
+          const kecamatan_pembawa = pembawa[0].kecamatan;
+
+          form.setValue("no_hp_pembawa", nohp_pembawa);
+          form.setValue("no_ktp_pembawa", no_ktp_pembawa);
+          form.setValue("alamat_ktp_pembawa", alamat_ktp_pembawa);
+          form.setValue(
+            "alamat_domisili_pembawa",
+            alamat_domisili_pembawa || alamat_ktp_pembawa,
+          );
+          form.setValue("kota_pembawa", kota_pembawa);
+          form.setValue("kecamatan_pembawa", kecamatan_pembawa);
+        } catch (error) {
+          console.error("Error fetching kendaraan data:", error);
+        }
+      }
+    };
+
+    fetchKendaraanData();
+  }, [form, watch_pembawa]);
+
   return (
     <>
       <FormField
@@ -100,22 +140,17 @@ export function PkbFormCustomer({ form }: { form: any }) {
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
+      <Combobox
+        form={form}
+        label="Nama Pembawa"
         name="pembawa"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Nama Pembawa</FormLabel>
-            <FormControl>
-              <Input
-                type="text"
-                placeholder="Masukan Nama Pembawa"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+        apiEndpoint="/api/customer"
+        searchParam="nama"
+        itemToComboboxItem={(customer) => ({
+          value: customer.nama,
+          label: customer.nama,
+          description: customer.alamat,
+        })}
       />
       <FormField
         control={form.control}

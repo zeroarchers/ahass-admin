@@ -29,17 +29,9 @@ import { jasaColumns } from "./pkb-jasa-columns";
 import { GenericPkbTable } from "./pkb-table";
 import { SparepartModal } from "./pkb-sparepart-modal";
 import { JasaModal } from "./pkb-jasa-modal";
-import { Badge } from "@/components/ui/badge";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Combobox } from "@/components/ui/combobox";
 import { createPkb, updatePkb } from "@/actions/pkb";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { PkbFormHeader } from "./pkb-form-header";
 import {
   calculateJasa,
@@ -114,7 +106,7 @@ export function PendaftaranForm({
       kota_pembawa: "",
       kecamatan_pembawa: "",
       hubungan_pembawa: "Pemilik",
-      alasan_ke_ahass: "",
+      alasan_ke_ahass: "Inisiatif Sendiri",
       dari_dealer_sendiri: false,
       part_bekas_dibawa: false,
       konfirmasi_pergantian_part: true,

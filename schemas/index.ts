@@ -209,7 +209,7 @@ export const pkbFormSchema = z.object({
   km_sekarang: z.coerce.number().min(0),
   km_berikutnya: z.coerce.number().min(0),
   gudang: z.string().min(1),
-  no_stnk: z.string().min(1),
+  no_stnk: z.string(),
   customer_yang_datang: z.string().min(1),
   status_pkb: z.string().min(1),
   keluhan: z.string().min(1),

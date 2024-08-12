@@ -1,7 +1,8 @@
 import DynamicTable from "@/components/table/dynamic-table-pagination";
-import { prisma } from "@/lib/prisma";
 import { columns } from "@/components/table/columns/kendaraan-columns";
-import type { KendaraanWithDetails } from "@/types";
+import { getItems } from "@/data/table";
+import { Kendaraan } from "@prisma/client";
+import { getAllTipekendaraan } from "@/data/tipe-kendaraan";
 
 export default async function Page({
   searchParams,
@@ -12,36 +13,32 @@ export default async function Page({
   const filter = searchParams.filter || "";
   const filterColumn = searchParams.filterColumn || "kodeSparepart";
   const pageSize = 10;
-  const offset = (page - 1) * pageSize;
 
-  const where = filter
-    ? { [filterColumn]: { contains: filter, mode: "insensitive" } }
-    : {};
-
-  const kendaraanData = await prisma.kendaraan.findMany({
-    include: {
-      customer: {
-        select: {
-          nama: true,
-        },
-      }, // Include customer data
+  const include = {
+    customer: {
+      select: {
+        nama: true,
+      },
     },
-    skip: offset,
-    take: pageSize,
-    where,
-  });
+  };
 
-  const tipeKendaraanData = await prisma.tipeKendaraan.findMany();
-  const tipeKendaraanMap = new Map(
-    tipeKendaraanData.map((tipe) => [tipe.namaTipe, tipe.commercialName]),
+  const { data, totalCount } = await getItems<Kendaraan>(
+    "kendaraan",
+    page,
+    filter,
+    filterColumn,
+    include,
   );
 
-  // Merge TipeKendaraan data with Kendaraan data
-  const mergedData: KendaraanWithDetails[] = kendaraanData.map((kendaraan) => ({
+  const tipeKendaraanData: any = await getAllTipekendaraan();
+  const tipeKendaraanMap = new Map(
+    tipeKendaraanData.map((tipe: any) => [tipe.namaTipe, tipe.commercialName]),
+  );
+
+  const mergedData: any = data.map((kendaraan) => ({
     ...kendaraan,
     tipeKendaraan: tipeKendaraanMap.get(kendaraan.namaTipeKendaraan) || null,
   }));
-  const totalCount = await prisma.kendaraan.count({ where });
   const pageCount = Math.ceil(totalCount / pageSize);
 
   return (

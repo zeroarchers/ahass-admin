@@ -1,11 +1,9 @@
 import DynamicTable from "@/components/table/dynamic-table";
-import { prisma } from "@/lib/prisma";
 import { columns } from "@/components/table/columns/karyawan-columns";
-import type { Karyawan } from "@prisma/client";
+import { getAllKaryawan } from "@/data/karyawan";
 
 export default async function Page() {
-  const data: Karyawan[] = await prisma.karyawan.findMany();
-
+  const data: any = await getAllKaryawan();
   return (
     <>
       <h1 className="font-black text-4xl">Karyawan</h1>

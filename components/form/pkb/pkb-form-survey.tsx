@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   FormControl,
   FormField,
@@ -31,6 +31,15 @@ const alasan_ke_ahass = [
 ];
 
 export function PkbFormSurvey({ form }: { form: any }) {
+  const watch_km_sekarang = form.watch("km_sekarang");
+
+  useEffect(() => {
+    if (watch_km_sekarang) {
+      const kmBerikutnya = parseInt(watch_km_sekarang, 10) + 2000;
+      form.setValue("km_berikutnya", kmBerikutnya);
+    }
+  }, [watch_km_sekarang, form]);
+
   return (
     <>
       <FormField
@@ -162,7 +171,7 @@ export function PkbFormSurvey({ form }: { form: any }) {
             <FormItem>
               <FormLabel>Kilometer Sekarang</FormLabel>
               <FormControl>
-                <Input type="text" {...field} />
+                <Input type="number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -175,7 +184,7 @@ export function PkbFormSurvey({ form }: { form: any }) {
             <FormItem>
               <FormLabel>Kilometer Berikutnya</FormLabel>
               <FormControl>
-                <Input type="text" {...field} />
+                <Input type="number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -189,7 +198,14 @@ export function PkbFormSurvey({ form }: { form: any }) {
           <FormItem>
             <FormLabel>Gudang Ahass</FormLabel>
             <FormControl>
-              <Input type="text" {...field} />
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Alasan Ke Ahass" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="GD01">GD01 - GUDANG AHASS</SelectItem>
+                </SelectContent>
+              </Select>
             </FormControl>
             <FormMessage />
           </FormItem>

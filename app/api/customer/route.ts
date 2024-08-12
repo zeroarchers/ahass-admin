@@ -17,7 +17,12 @@ export async function GET(request: NextRequest) {
         id: true,
         kode: true,
         nama: true,
+        nohp: true,
+        noktp: true,
         alamat: true,
+        alamatKirim: true,
+        kabupaten: true,
+        kecamatan: true,
       },
       take: 10,
     });

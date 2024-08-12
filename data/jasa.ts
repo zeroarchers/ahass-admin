@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
 
 export const getJasaById = async (id: string) => {
   try {
@@ -12,3 +13,7 @@ export const getJasaById = async (id: string) => {
     return null;
   }
 };
+
+export const getAllJasa = unstable_cache(async () => {
+  return await prisma.jasa.findMany();
+});

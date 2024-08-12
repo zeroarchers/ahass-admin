@@ -1,7 +1,7 @@
 import DynamicTable from "@/components/table/dynamic-table-pagination";
-import { prisma } from "@/lib/prisma";
 import { columns } from "@/components/table/columns/sparepart-columns";
 import type { SparePart } from "@prisma/client";
+import { getItems } from "@/data/table";
 
 export default async function Page({
   searchParams,
@@ -12,19 +12,13 @@ export default async function Page({
   const filter = searchParams.filter || "";
   const filterColumn = searchParams.filterColumn || "kodeSparepart";
   const pageSize = 10;
-  const offset = (page - 1) * pageSize;
 
-  const where = filter
-    ? { [filterColumn]: { contains: filter, mode: "insensitive" } }
-    : {};
-
-  const data: SparePart[] = await prisma.sparePart.findMany({
-    skip: offset,
-    take: pageSize,
-    where,
-  });
-
-  const totalCount = await prisma.sparePart.count({ where });
+  const { data, totalCount } = await getItems<SparePart>(
+    "sparePart",
+    page,
+    filter,
+    filterColumn,
+  );
   const pageCount = Math.ceil(totalCount / pageSize);
 
   return (

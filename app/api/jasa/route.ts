@@ -12,6 +12,10 @@ export async function GET(request: NextRequest) {
           contains: nama_jasa,
           mode: "insensitive",
         },
+        kode: {
+          contains: nama_jasa,
+          mode: "insensitive",
+        },
       },
       take: 10,
     });

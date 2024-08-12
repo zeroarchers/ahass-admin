@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   FormControl,
   FormField,
@@ -7,9 +6,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Combobox } from "@/components/ui/combobox";
-import { Checkbox } from "@/components/ui/checkbox";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import {
   Select,
@@ -18,8 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Activity } from "lucide-react";
-import { getKendaraanByNoPolisi } from "@/data/kendaraan";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
@@ -55,14 +50,13 @@ export function PkbFormMain({
   form: any;
   is_pendaftaran?: boolean;
 }) {
+  const watch_no_polisi = form.watch("no_polisi");
   useEffect(() => {
     const fetchKendaraanData = async () => {
-      const noPolisi = form.watch("no_polisi");
-
-      if (noPolisi) {
+      if (watch_no_polisi) {
         try {
           const response = await fetch(
-            `/api/kendaraan?no_polisi=${encodeURIComponent(noPolisi)}`,
+            `/api/kendaraan?no_polisi=${encodeURIComponent(watch_no_polisi)}`,
           );
           if (!response.ok) {
             throw new Error("Failed to fetch kendaraan data");
@@ -83,7 +77,7 @@ export function PkbFormMain({
     };
 
     fetchKendaraanData();
-  }, [form.watch("no_polisi")]);
+  }, [form, watch_no_polisi]);
 
   return (
     <>

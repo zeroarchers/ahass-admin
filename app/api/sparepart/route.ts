@@ -12,6 +12,10 @@ export async function GET(request: NextRequest) {
           contains: nama_sparepart,
           mode: "insensitive",
         },
+        kodeSparepart: {
+          contains: nama_sparepart,
+          mode: "insensitive",
+        },
       },
       take: 10,
     });

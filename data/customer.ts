@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { Customer } from "@prisma/client";
+import { unstable_cache } from "next/cache";
 
 export const getCustomerById = async (kode: string) => {
   try {
@@ -34,3 +36,33 @@ export const getCustomersByName = async (nama: string = "") => {
     return [];
   }
 };
+
+export const getCustomers = unstable_cache(
+  async (
+    page: number,
+    filter: string,
+    filterColumn: string,
+  ): Promise<Customer[]> => {
+    const pageSize = 10;
+    const offset = (page - 1) * pageSize;
+    const where = filter
+      ? { [filterColumn]: { contains: filter, mode: "insensitive" } }
+      : {};
+
+    return prisma.customer.findMany({
+      skip: offset,
+      take: pageSize,
+      where,
+    });
+  },
+);
+
+export const getCustomerCount = unstable_cache(
+  async (filter: string, filterColumn: string): Promise<number> => {
+    const where = filter
+      ? { [filterColumn]: { contains: filter, mode: "insensitive" } }
+      : {};
+
+    return prisma.customer.count({ where });
+  },
+);
