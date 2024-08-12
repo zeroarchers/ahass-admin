@@ -121,7 +121,6 @@ export const columns: ColumnDef<PKB>[] = [
               onClick={async () => {
                 const response = await fetch(`/api/pkb?no_pkb=${pkb.id}`);
                 const pkbData = await response.json();
-                console.log(pkbData);
                 generatePDF(pkbData);
               }}
               className="bg-blue-400"

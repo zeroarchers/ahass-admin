@@ -93,8 +93,6 @@ export function SparepartModal({
   }
 
   function onSubmit(data: any, e?: BaseSyntheticEvent) {
-    console.log(data);
-    console.log(e);
     const selected = {
       ...data,
       sparepart: selectedItem,

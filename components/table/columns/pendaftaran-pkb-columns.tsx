@@ -118,7 +118,6 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
             <DeleteButton id={pkb.no_pkb} deleteAction={deletePkb} />
             <DropdownMenuItem
               onClick={async () => {
-                console.log(pkb);
                 generatePDF(pkb);
               }}
               className="bg-blue-400"

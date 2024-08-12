@@ -84,8 +84,6 @@ export function JasaModal({
   }
 
   function onSubmit(data: any, e?: BaseSyntheticEvent) {
-    console.log(data);
-    console.log(e);
     const selected = {
       ...data,
       jasa: selectedItem,

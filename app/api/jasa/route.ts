@@ -5,8 +5,6 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const nama_jasa = searchParams.get("nama") || "";
 
-  console.log("API: Received request for name:", nama_jasa);
-
   try {
     const jasa = await prisma.jasa.findMany({
       where: {

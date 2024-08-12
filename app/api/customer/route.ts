@@ -5,8 +5,6 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const nama = searchParams.get("nama") || "";
 
-  console.log("API: Received request for name:", nama);
-
   try {
     const customers = await prisma.customer.findMany({
       where: {
@@ -26,7 +24,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(customers);
   } catch (error) {
-    console.error("API: Error fetching customers:", error);
     return NextResponse.json(
       { error: "Failed to fetch customers" },
       { status: 500 },

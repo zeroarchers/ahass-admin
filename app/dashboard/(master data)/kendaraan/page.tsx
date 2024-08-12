@@ -43,7 +43,6 @@ export default async function Page({
   }));
   const totalCount = await prisma.kendaraan.count({ where });
   const pageCount = Math.ceil(totalCount / pageSize);
-  console.log(mergedData);
 
   return (
     <>

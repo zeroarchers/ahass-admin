@@ -59,7 +59,6 @@ export function KendaraanForm({ initialValues }: KendaraanFormProps) {
       no_mesin: "",
     },
   });
-  console.log(initialValues);
 
   return (
     <Form {...form}>

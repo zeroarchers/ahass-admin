@@ -9,10 +9,8 @@ import { redirect } from "next/navigation";
 export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
   const validatedData = pkbFormSchema.safeParse(data);
   if (!validatedData.success) {
-    console.log(validatedData.error);
     return { result: "Error!", description: "Input data tidak valid!" };
   }
-  console.log(validatedData);
   const { jasaPKB, sparepartPKB, no_polisi, ...pkbData } = validatedData.data;
 
   const existingVehicle = await prisma.kendaraan.findFirst({
@@ -23,7 +21,6 @@ export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
     },
   });
 
-  console.log(existingVehicle);
   if (!existingVehicle) {
     return {
       result: "Error!",
@@ -67,7 +64,6 @@ export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
 export async function updatePkb(data: z.infer<typeof pkbFormSchema>) {
   const validatedData = pkbFormSchema.safeParse(data);
   if (!validatedData.success) {
-    console.log(validatedData.error);
     return { result: "Error!", description: "Input data tidak valid!" };
   }
 
@@ -124,7 +120,6 @@ export async function updatePkb(data: z.infer<typeof pkbFormSchema>) {
 }
 
 export async function deletePkb(id: string) {
-  console.log("deleting", id);
   try {
     await prisma.pKB.delete({
       where: {
@@ -134,7 +129,6 @@ export async function deletePkb(id: string) {
     revalidatePath("/dashboard/pendaftaran-servis");
     return { result: "Success!", description: "Berhasil menghapus PKB!" };
   } catch (error) {
-    console.error("Error deleting PKB:", error);
     return {
       result: "Error!",
       description: "Gagal menghapus PKB. Silakan coba lagi.",

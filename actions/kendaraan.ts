@@ -11,7 +11,6 @@ export async function createKendaraan(
   data: z.infer<typeof kendaraanFormSchema>,
 ) {
   const validatedData = kendaraanFormSchema.safeParse(data);
-  console.log(validatedData);
 
   if (!validatedData.success) {
     return { result: "Error!", description: "Input data tidak valid!" };

@@ -56,7 +56,6 @@ export function CustomerForm({ initialValues }: CustomerFormProps) {
   useEffect(() => {
     async function fetchNewCustomerId() {
       const newCustomerId = await getNewCustomerId();
-      console.log("New Customer", newCustomerId);
       form.reset({
         ...form.getValues(),
         kode: newCustomerId.toString(),

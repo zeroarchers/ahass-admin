@@ -62,7 +62,6 @@ export function Combobox({
         throw new Error(`Failed to fetch items from ${apiEndpoint}`);
       }
       const data = await response.json();
-      console.log(data);
       setItems(data.map(itemToComboboxItem));
     } catch (error) {
       console.error(`Error loading items from ${apiEndpoint}:`, error);

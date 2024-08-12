@@ -9,7 +9,6 @@ export async function GET(request: NextRequest) {
     const pkb = await getpkbById(no_pkb);
     return NextResponse.json(pkb);
   } catch (error) {
-    console.error("API: Error fetching kendaraan:", error);
     return NextResponse.json(
       { error: "Failed to fetch customers" },
       { status: 500 },

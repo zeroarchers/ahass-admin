@@ -75,7 +75,6 @@ export function PendaftaranForm({
       jasaPKB: jasaTableData,
       sparepartPKB: sparepartTableData,
     };
-    console.log(validData);
     let response: { result: string; description: any };
     if (is_edit || !is_pendaftaran) {
       response = await updatePkb(validData);

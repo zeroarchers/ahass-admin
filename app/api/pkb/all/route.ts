@@ -20,10 +20,8 @@ export async function GET(request: Request) {
         pemilik: true,
       },
     });
-    console.log("nobayar", pkbRecords);
     return NextResponse.json(pkbRecords);
   } catch (error) {
-    console.error("API: Error fetching PKB records:", error);
     return NextResponse.json(
       { error: "Failed to fetch PKB records" },
       { status: 500 },

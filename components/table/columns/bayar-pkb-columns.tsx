@@ -91,9 +91,7 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
             <EditButton id={pkb.id.toString()} />
             <DropdownMenuItem
               onClick={async () => {
-                console.log(pkb);
                 generatePDF(pkb);
-                console.log("Printed");
               }}
               className="bg-blue-400"
             >

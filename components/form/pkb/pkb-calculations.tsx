@@ -23,7 +23,6 @@ export const calculateJasa = (jasaTableData: any[]) => {
   let estimasiWaktu = 0;
 
   if (jasaTableData.length > 0) {
-    console.log(jasaTableData);
     jasaTableData.forEach((jasaPKB) => {
       if (jasaPKB.total_harga_jasa === 0) {
         jasaGratis += 1;

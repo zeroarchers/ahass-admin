@@ -16,7 +16,6 @@ export async function GET() {
       },
     },
   });
-  console.log(queueCountForToday);
 
   return NextResponse.json(queueCountForToday);
 }

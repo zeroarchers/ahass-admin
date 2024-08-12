@@ -29,7 +29,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(kendaraan);
   } catch (error) {
-    console.error("API: Error fetching kendaraan:", error);
     return NextResponse.json(
       { error: "Failed to fetch customers" },
       { status: 500 },
