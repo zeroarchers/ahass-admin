@@ -110,7 +110,7 @@ export type KendaraanWithDetails = {
   customer: {
     nama: string;
   };
-  tipeKendaraan: string | null; // Changed to string for commercialName
+  tipeKendaraan: string | null;
 };
 
 export type PKBWithRelations = PKB & {

@@ -112,7 +112,7 @@ export function PendaftaranForm({
       konfirmasi_pergantian_part: true,
       km_sekarang: 0,
       km_berikutnya: 0,
-      gudang: "",
+      gudang: "GD01",
       no_stnk: "",
       customer_yang_datang: "Milik",
       keluhan: "",

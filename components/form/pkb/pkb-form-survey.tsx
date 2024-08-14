@@ -200,7 +200,7 @@ export function PkbFormSurvey({ form }: { form: any }) {
             <FormControl>
               <Select onValueChange={field.onChange} value={field.value}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select Alasan Ke Ahass" />
+                  <SelectValue placeholder="Select Gudang" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="GD01">GD01 - GUDANG AHASS</SelectItem>
@@ -233,7 +233,7 @@ export function PkbFormSurvey({ form }: { form: any }) {
             <FormControl>
               <Select onValueChange={field.onChange} value={field.value}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select Alasan Ke Ahass" />
+                  <SelectValue placeholder="Select Status Customer Yang Datang" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Milik">Milik</SelectItem>

@@ -5,6 +5,7 @@ import * as z from "zod";
 import { pkbFormSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { generateNoPkb } from "@/lib/generate";
 
 export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
   const validatedData = pkbFormSchema.safeParse(data);
@@ -116,7 +117,8 @@ export async function updatePkb(data: z.infer<typeof pkbFormSchema>) {
   });
 
   revalidatePath("/dashboard/pendaftaran-servis");
-  redirect("/dashboard/pendaftaran-servis");
+  revalidatePath("/dashboard/pembayaran-servis");
+  redirect("/dashboard/servis");
 }
 
 export async function deletePkb(id: string) {
@@ -133,5 +135,50 @@ export async function deletePkb(id: string) {
       result: "Error!",
       description: "Gagal menghapus PKB. Silakan coba lagi.",
     };
+  }
+}
+
+export async function updatePkbStatus(noPkb: string[], newStatus: string) {
+  try {
+    await prisma.pKB.updateMany({
+      where: { no_pkb: { in: noPkb } },
+      data: { status_pkb: newStatus },
+    });
+
+    if (newStatus === "selesai") {
+      const pkbsToUpdate = await prisma.pKB.findMany({
+        where: {
+          no_pkb: { in: noPkb },
+          no_bayar: "",
+        },
+      });
+
+      for (const pkb of pkbsToUpdate) {
+        const currentPembayaranCount = await prisma.pKB.count({
+          where: { no_bayar: { not: "" } },
+        });
+
+        const newNoBayar = generateNoPkb(currentPembayaranCount + 1, "SOD");
+
+        await prisma.pKB.update({
+          where: { no_pkb: pkb.no_pkb },
+          data: { no_bayar: newNoBayar },
+        });
+      }
+    }
+
+    revalidatePath("/dashboard/pendaftaran-servis");
+    revalidatePath("/dashboard/pembayaran-servis");
+    // return {
+    //   result: "Success!",
+    //   description: `Berhasil merubah ${noPkb.length} PKB menjadi ${newStatus}!`,
+    // };
+  } catch (error) {
+    console.error("Failed to update PKB status:", error);
+    revalidatePath("/dashboard/pendaftaran-servis");
+    // return {
+    //   result: "Error!",
+    //   description: `Gagal merubah ${noPkb.length} PKB menjadi ${newStatus}!`,
+    // };
   }
 }

@@ -15,7 +15,6 @@ import EditButton from "../edit-button";
 import DeleteButton from "../delete-button";
 import { deletePkb } from "@/actions/pkb";
 import type { PKBWithRelations } from "@/types";
-import Link from "next/link";
 import { generatePDF } from "@/components/misc/invoice-pkb";
 
 export const columns: ColumnDef<PKBWithRelations>[] = [

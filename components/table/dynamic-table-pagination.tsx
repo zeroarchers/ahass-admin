@@ -27,18 +27,29 @@ import SearchFilter from "./search-field-ssr";
 import TableTemplate from "./table-template";
 import Pagination from "./pagination";
 
-export default function DynamicTable({
-  data,
-  columns,
-  pageCount,
-  filterColumns,
-}: {
+type StatusButton = {
+  label: string;
+  action: string;
+};
+
+interface DynamicTableProps {
   data: any[];
   columns: ColumnDef<any>[];
   currentPage: number;
   pageCount: number;
   filterColumns: string[];
-}) {
+  statusButtons?: StatusButton[];
+  onStatusChange?: (action: string, selectedIds: string[]) => Promise<void>;
+}
+
+export default function DynamicTable({
+  data,
+  columns,
+  pageCount,
+  filterColumns,
+  statusButtons,
+  onStatusChange,
+}: DynamicTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -67,11 +78,21 @@ export default function DynamicTable({
     },
   });
 
+  const path = usePathname();
+
+  if (!data || data.length === 0) return <p>Loading...</p>;
+
   const totalPages = table.getPageCount();
+
+  const handleStatusChange = async (action: string) => {
+    const selectedRows = table.getSelectedRowModel().rows;
+    const selectedIds = selectedRows.map((row) => row.original.no_pkb);
+    if (onStatusChange) await onStatusChange(action, selectedIds);
+  };
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <div className="flex">
           <SearchFilter
             defaultFilterColumn={filterColumns[0]}
@@ -79,7 +100,7 @@ export default function DynamicTable({
           />
         </div>
         <div className="flex justify-between lg:justify-end">
-          <Link href={`${usePathname()}/create`}>
+          <Link href={`${path}/create`}>
             <Button className="me-5">
               <div className="flex align-center justify-between">
                 <p className="leading-relaxed">Create</p>
@@ -113,6 +134,43 @@ export default function DynamicTable({
           </DropdownMenu>
         </div>
       </div>
+      {statusButtons && statusButtons.length > 0 && (
+        <div className="flex justify-between w-full items-center mb-4 space-x-2">
+          <div className="flex space-x-2">
+            {statusButtons.map((button, index) => {
+              if (index <= statusButtons.length / 2) {
+                return (
+                  <Button
+                    key={index}
+                    onClick={() => handleStatusChange(button.action)}
+                  >
+                    {button.label}
+                  </Button>
+                );
+              }
+              return null;
+            })}
+          </div>
+
+          <div className="flex space-x-2">
+            {statusButtons.map((button, index) => {
+              if (index > statusButtons.length / 2) {
+                return (
+                  <Button
+                    key={index}
+                    onClick={() => handleStatusChange(button.action)}
+                    className="justify-self-end border-primary"
+                    variant="outline"
+                  >
+                    {button.label}
+                  </Button>
+                );
+              }
+              return null;
+            })}
+          </div>
+        </div>
+      )}
       <div className="rounded-md border">
         <TableTemplate table={table} />
       </div>

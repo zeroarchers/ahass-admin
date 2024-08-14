@@ -6,7 +6,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (data === null) return <div>PKB tidak ditemukan</div>;
   return (
     <>
-      <h1 className="font-black text-4xl">Pendaftaran PKB</h1>
+      <h1 className="font-black text-4xl">Pembayaran PKB</h1>
       <PendaftaranForm initialValues={data} is_pendaftaran={false} />
     </>
   );

@@ -72,6 +72,7 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const pkb = row.original;
+      const id = pkb.no_pkb.toString();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -82,13 +83,11 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(pkb.id.toString())}
-            >
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(id)}>
               Copy PKB ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <EditButton id={pkb.id.toString()} />
+            <EditButton id={id} />
             <DropdownMenuItem
               onClick={async () => {
                 generatePDF(pkb);

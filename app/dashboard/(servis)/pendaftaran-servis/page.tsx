@@ -1,9 +1,17 @@
-import DynamicTable from "@/components/table/dynamic-table-pagination";
-import { prisma } from "@/lib/prisma";
 import { columns } from "@/components/table/columns/pendaftaran-pkb-columns";
 
 import type { PKBWithRelations } from "@/types";
 import { getItemsWithDate } from "@/data/table";
+import { updatePkbStatus } from "@/actions/pkb";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+const TableContent = dynamic(
+  () => import("@/components/table/table-contents"),
+  {
+    loading: () => <p>Loading table content...</p>,
+  },
+);
 
 export default async function Page({
   searchParams,
@@ -26,23 +34,6 @@ export default async function Page({
     ? new Date(searchParams.endDate)
     : undefined;
   const pageSize = 10;
-  const offset = (page - 1) * pageSize;
-
-  let where: any = {};
-
-  if (filter) {
-    where[filterColumn] = { contains: filter, mode: "insensitive" };
-  }
-
-  if (startDate || endDate) {
-    where.tanggal = {};
-    if (startDate) {
-      where.tanggal.gte = startDate;
-    }
-    if (endDate) {
-      where.tanggal.lte = endDate;
-    }
-  }
 
   const { data, totalCount } = await getItemsWithDate<PKBWithRelations>(
     "pKB",
@@ -55,16 +46,40 @@ export default async function Page({
 
   const pageCount = Math.ceil(totalCount / pageSize);
 
+  const statusButtons = [
+    { label: "Proses", action: "proses" },
+    { label: "Pause", action: "menunggu" },
+    { label: "Selesai", action: "selesai" },
+    { label: "Batal Setelah Service", action: "batal" },
+    { label: "Batal PKB", action: "batal" },
+  ];
+
+  async function handleStatusChange(action: string, selectedIds: string[]) {
+    "use server";
+    console.log(action, selectedIds);
+    await updatePkbStatus(selectedIds, action);
+  }
+
   return (
     <>
       <h1 className="font-black text-4xl">Pendaftaran PKB</h1>
-      <DynamicTable
-        data={data}
-        columns={columns}
-        currentPage={page}
-        pageCount={pageCount}
-        filterColumns={["no_pkb", "no_polisi", "pemilik", "mekanik"]}
-      />
+      <Suspense fallback={<div>Loading table...</div>}>
+        <TableContent
+          data={data}
+          columns={columns}
+          currentPage={page}
+          pageCount={pageCount}
+          filterColumns={[
+            "no_pkb",
+            "no_polisi",
+            "pemilik",
+            "mekanik",
+            "tanggal",
+          ]}
+          statusButtons={statusButtons}
+          onStatusChange={handleStatusChange}
+        />
+      </Suspense>
     </>
   );
 }

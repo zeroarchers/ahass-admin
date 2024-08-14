@@ -9,6 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
+import { generateNoPkb } from "@/lib/generate";
 
 export function PkbFormHeader({
   form,
@@ -32,14 +33,6 @@ export function PkbFormHeader({
     const prefix = tipeAntrian.charAt(0).toUpperCase();
     const queueNumber = (currentQueueCount + 1).toString().padStart(3, "0");
     return `${prefix}${queueNumber}`;
-  }
-
-  function generateNoPkb(currentPkbCount: number, kodeChars: string) {
-    const year = new Date().getFullYear().toString().slice(-2);
-    const prefixPkb = `17168-${kodeChars}`;
-    const sequenceNumber = currentPkbCount.toString().padStart(6, "0");
-    const noPkb = `${prefixPkb}-${year}${sequenceNumber}`;
-    return noPkb;
   }
 
   const fetchPembayaranCounts = async () => {
@@ -132,7 +125,7 @@ export function PkbFormHeader({
             />
           </div>
         )}
-        {is_pendaftaran ? (
+        {is_pendaftaran || (!is_pendaftaran && is_edit) ? (
           <FormField
             control={form.control}
             name="no_pkb"
