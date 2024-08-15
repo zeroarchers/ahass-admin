@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -78,7 +79,6 @@ export function JasaModal({
   ) {
     return (e: FormEvent<HTMLFormElement>) => {
       e.stopPropagation();
-      e.stopPropagation();
       callback(e);
     };
   }
@@ -105,6 +105,7 @@ export function JasaModal({
       <DialogContent className="sm:max-w-[425px] h-5/6 overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Tambah Jasa</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={stopPropagate(handleSubmit(onSubmit))}>

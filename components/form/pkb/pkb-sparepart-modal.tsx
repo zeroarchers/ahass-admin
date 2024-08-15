@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -51,6 +52,8 @@ export function SparepartModal({
       tambahan_harga_sparepart: 0,
       persentase_diskon: 0,
       quantity: 0,
+      harga_sparepart: 0,
+      nama_sparepart: "",
     },
   });
   const handleSubmit = form.handleSubmit;
@@ -73,7 +76,7 @@ export function SparepartModal({
     const diskon = (totalHarga * persentaseDiskon) / 100;
     const finalHarga = totalHarga - diskon;
 
-    form.setValue("total_harga_sparepart", finalHarga);
+    if (quantity != 0) form.setValue("total_harga_sparepart", finalHarga);
   }, [
     watch_harga,
     watch_quantity,
@@ -86,7 +89,6 @@ export function SparepartModal({
     callback: (event: FormEvent<HTMLFormElement>) => void,
   ) {
     return (e: FormEvent<HTMLFormElement>) => {
-      e.stopPropagation();
       e.stopPropagation();
       callback(e);
     };
@@ -114,6 +116,7 @@ export function SparepartModal({
       <DialogContent className="sm:max-w-[425px] h-5/6 overflow-y-scroll">
         <DialogHeader>
           <DialogTitle>Tambah Sparepart</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={stopPropagate(handleSubmit(onSubmit))}>
@@ -146,10 +149,7 @@ export function SparepartModal({
                     <FormItem>
                       <FormLabel>Ref Jasa</FormLabel>
                       <FormControl>
-                        <Select
-                          defaultValue={field.value}
-                          onValueChange={field.onChange}
-                        >
+                        <Select onValueChange={field.onChange}>
                           <SelectTrigger>
                             <SelectValue placeholder="Pilih Ref Jasa" />
                           </SelectTrigger>
@@ -189,9 +189,11 @@ export function SparepartModal({
                       <FormLabel>Harga Sparepart</FormLabel>
                       <FormControl>
                         <Input
-                          type="text"
+                          type="number"
+                          min={0}
                           {...field}
                           placeholder="0"
+                          value={field.value ?? ""}
                           disabled
                         />
                       </FormControl>
@@ -206,7 +208,12 @@ export function SparepartModal({
                     <FormItem>
                       <FormLabel>Tambahan Harga SparePart</FormLabel>
                       <FormControl>
-                        <Input type="text" {...field} placeholder="0" />
+                        <Input
+                          type="number"
+                          min={0}
+                          {...field}
+                          placeholder="0"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -219,7 +226,12 @@ export function SparepartModal({
                     <FormItem>
                       <FormLabel>Persentase Diskon</FormLabel>
                       <FormControl>
-                        <Input type="text" {...field} placeholder="0" />
+                        <Input
+                          type="number"
+                          min={0}
+                          {...field}
+                          placeholder="0"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -236,7 +248,6 @@ export function SparepartModal({
                           type="number"
                           min={1}
                           {...field}
-                          defaultValue={1}
                           placeholder="1"
                         />
                       </FormControl>
@@ -253,9 +264,10 @@ export function SparepartModal({
                         <FormLabel>Total Harga</FormLabel>
                         <FormControl>
                           <Input
-                            type="text"
+                            type="number"
                             {...field}
                             placeholder="Total Harga"
+                            value={field.value ?? ""}
                             disabled
                           />
                         </FormControl>

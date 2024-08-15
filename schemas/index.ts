@@ -166,10 +166,10 @@ export const jasaModalSchema = z.object({
 
 export const sparepartModalSchema = z.object({
   sparepart: sparepartFormSchema,
-  total_harga_sparepart: z.number(),
-  harga_sparepart: z.number(),
-  tambahan_harga_sparepart: z.number(),
-  persentase_diskon: z.number(),
+  total_harga_sparepart: z.coerce.number(),
+  harga_sparepart: z.coerce.number(),
+  tambahan_harga_sparepart: z.coerce.number(),
+  persentase_diskon: z.coerce.number(),
   quantity: z.coerce.number().gt(0, "Kuantitas harus lebih dari 0!"),
   nama_sparepart: z.string(),
   ref_jasa: z.string().min(1, "Ref jasa harus dipilih!"),
