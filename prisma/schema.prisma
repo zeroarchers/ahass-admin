@@ -230,6 +230,7 @@ model PKB {
   uang_bayar                Int
   uang_kembalian            Int
   tipe_pembayaran           String
+  tanggal_bayar             DateTime?
 
   kendaraan                Kendaraan @relation(fields: [no_polisi], references: [no_polisi])
   jasaPKB                  JasaPKB[]

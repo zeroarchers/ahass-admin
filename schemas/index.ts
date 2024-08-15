@@ -219,6 +219,7 @@ export const pkbFormSchema = z.object({
   service_advisor: z.string().min(1),
   final_inspector: z.string().min(1),
   estimasi_jam_selesai: z.coerce.date(),
+  tanggal_bayar: z.coerce.date().nullable().optional(),
   jasaPKB: z.array(jasaModalSchema),
   sparepartPKB: z.array(sparepartModalSchema),
 

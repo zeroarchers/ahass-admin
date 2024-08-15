@@ -1,17 +1,9 @@
+import DynamicTable from "@/components/table/dynamic-table-pagination";
 import { columns } from "@/components/table/columns/pendaftaran-pkb-columns";
 
 import type { PKBWithRelations } from "@/types";
 import { getItemsWithDate } from "@/data/table";
 import { updatePkbStatus } from "@/actions/pkb";
-import { Suspense } from "react";
-import dynamic from "next/dynamic";
-
-const TableContent = dynamic(
-  () => import("@/components/table/table-contents"),
-  {
-    loading: () => <p>Loading table content...</p>,
-  },
-);
 
 export default async function Page({
   searchParams,
@@ -56,30 +48,21 @@ export default async function Page({
 
   async function handleStatusChange(action: string, selectedIds: string[]) {
     "use server";
-    console.log(action, selectedIds);
     await updatePkbStatus(selectedIds, action);
   }
 
   return (
     <>
       <h1 className="font-black text-4xl">Pendaftaran PKB</h1>
-      <Suspense fallback={<div>Loading table...</div>}>
-        <TableContent
-          data={data}
-          columns={columns}
-          currentPage={page}
-          pageCount={pageCount}
-          filterColumns={[
-            "no_pkb",
-            "no_polisi",
-            "pemilik",
-            "mekanik",
-            "tanggal",
-          ]}
-          statusButtons={statusButtons}
-          onStatusChange={handleStatusChange}
-        />
-      </Suspense>
+      <DynamicTable
+        data={data}
+        columns={columns}
+        currentPage={page}
+        pageCount={pageCount}
+        filterColumns={["no_pkb", "no_polisi", "pemilik", "mekanik", "tanggal"]}
+        statusButtons={statusButtons}
+        onStatusChange={handleStatusChange}
+      />
     </>
   );
 }

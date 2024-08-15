@@ -12,8 +12,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
-import EditButton from "../edit-button";
 import { generatePDF } from "@/components/misc/invoice-bayar-pkb";
+import BayarButton from "../bayar-button";
+import { getPkbByIdClient } from "@/lib/pkb-getter";
 
 export const columns: ColumnDef<PKBWithRelations>[] = [
   {
@@ -59,13 +60,17 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
     ),
   },
   {
-    accessorKey: "tanggal",
+    accessorKey: "tanggal_bayar",
     header: "Tanggal Bayar",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {(row.getValue("tanggal") as Date).toLocaleString()}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const preDate = row.getValue("tanggal_bayar");
+
+      const formattedDate = preDate
+        ? new Date(preDate as string | number | Date).toLocaleString()
+        : "Belum Bayar";
+
+      return <div className="capitalize">{formattedDate}</div>;
+    },
   },
   {
     id: "actions",
@@ -87,12 +92,14 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
               Copy PKB ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <EditButton id={id} />
+            <BayarButton id={id} />
             <DropdownMenuItem
               onClick={async () => {
-                generatePDF(pkb);
+                const pkbDetail = await getPkbByIdClient(id);
+                if (pkbDetail != null) generatePDF(pkbDetail);
               }}
               className="bg-blue-400"
+              disabled={pkb.tanggal_bayar === null}
             >
               Print
             </DropdownMenuItem>

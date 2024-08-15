@@ -3,15 +3,6 @@ import { columns } from "@/components/table/columns/bayar-pkb-columns";
 
 import type { PKBWithRelations } from "@/types";
 import { getItemsWithDate } from "@/data/table";
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
-
-const TableContent = dynamic(
-  () => import("@/components/table/table-contents"),
-  {
-    loading: () => <p>Loading table content...</p>,
-  },
-);
 
 export default async function Page({
   searchParams,
@@ -48,27 +39,18 @@ export default async function Page({
     endDate,
     where,
   );
-
   const pageCount = Math.ceil(totalCount / pageSize);
 
   return (
     <>
       <h1 className="font-black text-4xl">Pembayaran PKB</h1>
-      <Suspense fallback={<div>Loading table...</div>}>
-        <TableContent
-          data={data}
-          columns={columns}
-          currentPage={page}
-          pageCount={pageCount}
-          filterColumns={[
-            "no_pkb",
-            "no_polisi",
-            "pemilik",
-            "mekanik",
-            "tanggal",
-          ]}
-        />
-      </Suspense>
+      <DynamicTable
+        data={data}
+        columns={columns}
+        currentPage={page}
+        pageCount={pageCount}
+        filterColumns={["no_pkb", "no_polisi", "pemilik", "mekanik", "tanggal"]}
+      />
     </>
   );
 }

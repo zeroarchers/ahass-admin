@@ -29,60 +29,72 @@ export const getItems = unstable_cache(
   },
 );
 
-export const getItemsWithDate = async <T>(
-  model: keyof typeof prisma,
-  page: number,
-  filter: string,
-  filterColumn: string,
-  startDate?: Date,
-  endDate?: Date,
-  additionalWhere: Record<string, any> = {},
-): Promise<{ data: T[]; totalCount: number }> => {
-  const pageSize = 10;
-  const offset = (page - 1) * pageSize;
-  let where: any = { ...additionalWhere };
+export const getItemsWithDate = unstable_cache(
+  async <T>(
+    model: keyof typeof prisma,
+    page: number,
+    filter: string,
+    filterColumn: string,
+    startDate?: Date,
+    endDate?: Date,
+    additionalWhere: Record<string, any> = {},
+  ): Promise<{ data: T[]; totalCount: number }> => {
+    const pageSize = 10;
+    const offset = (page - 1) * pageSize;
+    let where: any = { ...additionalWhere };
 
-  if (filter) {
-    where[filterColumn] = { contains: filter, mode: "insensitive" };
-  }
-
-  if (startDate || endDate) {
-    where.tanggal = {};
-    if (startDate) {
-      where.tanggal.gte = startDate;
+    if (filter) {
+      where[filterColumn] = { contains: filter, mode: "insensitive" };
     }
-    if (endDate) {
-      where.tanggal.lte = endDate;
+
+    if (startDate || endDate) {
+      where.tanggal = {};
+      if (startDate) {
+        where.tanggal.gte = startDate;
+      }
+      if (endDate) {
+        where.tanggal.lte = endDate;
+      }
     }
-  }
 
-  const [data, { _count }] = await Promise.all([
-    (prisma[model] as any).findMany({
-      include: {
-        jasaPKB: {
-          include: {
-            jasa: true,
+    const [data, { _count }] = await Promise.all([
+      (prisma[model] as any).findMany({
+        select: {
+          status_pkb: true,
+          mekanik: true,
+          pemilik: true,
+          no_antrian: true,
+          no_pkb: true,
+          no_polisi: true,
+          no_mesin: true,
+          tanggal_bayar: true,
+          tanggal: true,
+          jasaPKB: {
+            select: {
+              jasa: {
+                select: {
+                  jobType: true,
+                },
+              },
+            },
           },
+          uang_bayar: true,
+          tipe_pembayaran: true,
+          no_bayar: true,
         },
-        sparepartPKB: {
-          include: {
-            sparepart: true,
-          },
+        skip: offset,
+        take: pageSize,
+        where,
+        orderBy: {
+          tanggal: "desc",
         },
-        kendaraan: true,
-      },
-      skip: offset,
-      take: pageSize,
-      where,
-      orderBy: {
-        tanggal: "desc",
-      },
-    }),
-    (prisma[model] as any).aggregate({
-      where,
-      _count: true,
-    }),
-  ]);
+      }),
+      (prisma[model] as any).aggregate({
+        where,
+        _count: true,
+      }),
+    ]);
 
-  return { data, totalCount: _count };
-};
+    return { data, totalCount: _count };
+  },
+);

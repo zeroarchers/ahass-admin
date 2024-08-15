@@ -34,11 +34,12 @@ export const generatePDF = (pkb: PKBWithRelations) => {
   doc.text(`No Polisi`, 10, 30);
   doc.text(`Pemilik`, 10, 35);
   doc.text(`Alamat`, 10, 40);
-  doc.text(`Keluhan`, 10, 45);
-  doc.text(`: ${pkb.keluhan || "-"}`, 30, 45);
   doc.text(`: ${pkb.pemilik}`, 30, 35);
   doc.text(`: ${pkb.no_polisi}`, 30, 30);
-  doc.text(`: ${pkb.alamat_ktp_pembawa}`, 30, 40);
+  doc.text(`: ${pkb.alamat_ktp_pembawa}`, 30, 40, {
+    maxWidth: 50,
+    align: "left",
+  });
 
   doc.text(`No. Telp/Hp`, 80, 30);
   doc.text(`No. Rangka/Mesin`, 80, 35);
@@ -53,9 +54,11 @@ export const generatePDF = (pkb: PKBWithRelations) => {
 
   doc.text(`Km`, 170, 30);
   doc.text(`No. Antri`, 170, 35);
+  doc.text(`Keluhan`, 170, 40);
   doc.text(`: ${pkb.km_sekarang}`, 190, 30);
   doc.text(`: ${pkb.no_antrian}`, 190, 35);
 
+  doc.text(`: ${pkb.keluhan || "-"}`, 190, 40);
   autoTable(doc, {
     startY: 50,
     tableWidth: 90,

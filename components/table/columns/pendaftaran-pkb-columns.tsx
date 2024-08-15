@@ -16,6 +16,7 @@ import DeleteButton from "../delete-button";
 import { deletePkb } from "@/actions/pkb";
 import type { PKBWithRelations } from "@/types";
 import { generatePDF } from "@/components/misc/invoice-pkb";
+import { getPkbByIdClient } from "@/lib/pkb-getter";
 
 export const columns: ColumnDef<PKBWithRelations>[] = [
   {
@@ -117,7 +118,8 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
             <DeleteButton id={pkb.no_pkb} deleteAction={deletePkb} />
             <DropdownMenuItem
               onClick={async () => {
-                generatePDF(pkb);
+                const pkbDetail = await getPkbByIdClient(pkb.no_pkb);
+                if (pkbDetail != null) generatePDF(pkbDetail);
               }}
               className="bg-blue-400"
             >

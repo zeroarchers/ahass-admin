@@ -4,9 +4,12 @@ export const CircularProgress = ({ className }: { className?: string }) => (
   <div
     className={cn(
       className,
-      "fixed bg-black opacity-50 z-20 justify-center items-center top-0 left-0 w-screen h-screen",
+      "fixed  z-50 justify-center items-center top-0 left-0 w-screen h-screen",
     )}
   >
-    <Loader2 className="w-20 h-20 animate-spin" />
+    <Loader2
+      color="#dc2626"
+      className="border-foreground opacity-100 w-20 h-20 animate-spin"
+    />
   </div>
 );

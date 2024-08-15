@@ -40,7 +40,6 @@ export function PkbFormCustomer({ form }: { form: any }) {
           }
 
           const pembawa = await response.json();
-          console.log(pembawa);
           const nohp_pembawa = pembawa[0].nohp;
           const no_ktp_pembawa = pembawa[0].noktp;
           const alamat_ktp_pembawa = pembawa[0].alamat;

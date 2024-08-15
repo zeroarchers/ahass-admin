@@ -62,6 +62,9 @@ export function PendaftaranForm({
 
   async function onSubmit(values: any) {
     setIsLoading(true);
+    if (!is_pendaftaran) {
+      values.tanggal_bayar = new Date();
+    }
     const validData = {
       ...values,
       jasaPKB: jasaTableData,
@@ -300,26 +303,28 @@ export function PendaftaranForm({
             />
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>ETA</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-5 overflow-x-scroll">
-            <FormField
-              control={form.control}
-              name="estimasi_jam_selesai"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Estimasi Jam Selesai</FormLabel>
-                  <FormControl>
-                    <DateTimePicker {...field} value={estimasiJamSelesai} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
+        {!is_edit && (
+          <Card>
+            <CardHeader>
+              <CardTitle>ETA</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-5 overflow-x-scroll">
+              <FormField
+                control={form.control}
+                name="estimasi_jam_selesai"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Estimasi Jam Selesai</FormLabel>
+                    <FormControl>
+                      <DateTimePicker {...field} value={estimasiJamSelesai} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+        )}
         <CircularProgress className={isLoading ? "flex" : "hidden"} />
         <Button type="submit">Submit</Button>
       </form>

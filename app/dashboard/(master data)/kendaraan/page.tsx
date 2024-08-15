@@ -14,7 +14,7 @@ export default async function Page({
   const filterColumn = searchParams.filterColumn || "kodeSparepart";
   const pageSize = 10;
 
-  const include = {
+  const select = {
     customer: {
       select: {
         nama: true,
@@ -27,7 +27,7 @@ export default async function Page({
     page,
     filter,
     filterColumn,
-    include,
+    select,
   );
 
   const tipeKendaraanData: any = await getAllTipekendaraan();

@@ -25,7 +25,7 @@ export const generatePDF = (pkb: PKBWithRelations) => {
   doc.text("Tanggal", 150, 20);
 
   doc.text(`: ${pkb.no_bayar}`, 170, 15);
-  doc.text(`: ${new Date(pkb.tanggal).toLocaleTimeString()}`, 170, 20);
+  doc.text(`: ${new Date(pkb.tanggal_bayar).toLocaleTimeString()}`, 170, 20);
 
   doc.line(10, 25, 200, 25);
   doc.line(10, 25.1, 200, 25.1);
