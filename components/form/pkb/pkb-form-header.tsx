@@ -38,6 +38,7 @@ export function PkbFormHeader({
   const fetchPembayaranCounts = useCallback(async () => {
     const pkbPembayaranCountResponse = await fetch(
       "/api/pkb/pkbPembayaranCount",
+      { cache: "no-store" },
     );
     if (!pkbPembayaranCountResponse.ok) {
       throw new Error("Failed to fetch pkb bayar count");
@@ -53,7 +54,9 @@ export function PkbFormHeader({
     const fetchPkbData = async () => {
       if (selectedPkb) {
         try {
-          const response = await fetch(`/api/pkb?no_pkb=${selectedPkb}`);
+          const response = await fetch(`/api/pkb?no_pkb=${selectedPkb}`, {
+            cache: "no-store",
+          });
           if (response.ok) {
             const pkbData = await response.json();
 
@@ -82,8 +85,8 @@ export function PkbFormHeader({
 
   useEffect(() => {
     const fetchCounts = async () => {
-      const queueCountResponse = await fetch("/api/pkb/queueCount");
-      const pkbCountResponse = await fetch("/api/pkb/pkbCount");
+      const queueCountResponse = await fetch("/api/pkb/queueCount", { cache: "no-store" });
+      const pkbCountResponse = await fetch("/api/pkb/pkbCount", { cache: "no-store" });
 
       if (!queueCountResponse.ok) {
         throw new Error("Failed to fetch queue count");
