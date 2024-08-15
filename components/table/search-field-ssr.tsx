@@ -53,7 +53,7 @@ export default function SearchFilter({
       startDate: startDate,
       endDate: endDate,
     });
-  }, [date, handleFilter]);
+  }, [date, filterValue, handleFilter, selectedFilterColumn]);
 
   return (
     <div className="flex items-center space-x-2">

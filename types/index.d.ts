@@ -118,10 +118,3 @@ export type PKBWithRelations = PKB & {
   sparepartPKB: (SparepartPKB & { sparepart: SparePart })[];
   kendaraan: Kendaraan;
 };
-
-declare module "@tanstack/table-core" {
-  interface TableMeta<TData extends RowData> {
-    deleteRow: (row: any) => void;
-    text: string;
-  }
-}

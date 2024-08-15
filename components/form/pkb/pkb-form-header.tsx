@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   FormControl,
   FormField,
@@ -35,7 +35,7 @@ export function PkbFormHeader({
     return `${prefix}${queueNumber}`;
   }
 
-  const fetchPembayaranCounts = async () => {
+  const fetchPembayaranCounts = useCallback(async () => {
     const pkbPembayaranCountResponse = await fetch(
       "/api/pkb/pkbPembayaranCount",
     );
@@ -47,7 +47,7 @@ export function PkbFormHeader({
 
     const noPkbBayar = generateNoPkb(pkbPembayaranCount, "SOD");
     form.setValue("no_bayar", noPkbBayar);
-  };
+  }, [form]);
 
   useEffect(() => {
     const fetchPkbData = async () => {
@@ -72,7 +72,13 @@ export function PkbFormHeader({
     };
 
     fetchPkbData();
-  }, [selectedPkb, form]);
+  }, [
+    selectedPkb,
+    form,
+    setJasaTableData,
+    setSparepartTableData,
+    fetchPembayaranCounts,
+  ]);
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -102,7 +108,7 @@ export function PkbFormHeader({
       if (is_pendaftaran) fetchCounts();
       else fetchPembayaranCounts();
     }
-  }, [form, is_pendaftaran]);
+  }, [fetchPembayaranCounts, form, is_edit, is_pendaftaran]);
 
   return (
     <Card>
