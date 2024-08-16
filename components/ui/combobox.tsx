@@ -76,72 +76,74 @@ export function Combobox({
     <FormField
       control={form.control}
       name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild className="w-full">
-              <FormControl>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  className={cn(
-                    !field.value && "text-muted-foreground",
-                    "justify-between",
-                  )}
-                >
-                  {field.value
-                    ? items.find((item) => item.value === field.value)?.label
-                    : `Select ${label}`}
-                  <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </FormControl>
-            </PopoverTrigger>
-            <PopoverContent className="w-96 p-0">
-              <Command shouldFilter={false}>
-                <CommandInput
-                  placeholder={`Search ${label.toLowerCase()}...`}
-                  className="h-9"
-                  onValueChange={(search) => {
-                    loadItems(search);
-                  }}
-                />
-                <CommandList>
-                  <CommandGroup>
-                    {items.map((item) => (
-                      <CommandItem
-                        value={item.label}
-                        key={item.value}
-                        onSelect={() => {
-                          form.setValue(name, item.value);
-                          setOpen(false);
-                          if (onSelectItem) {
-                            onSelectItem(item);
-                          }
-                        }}
-                      >
-                        {item.label}
-                        {item.description && (
-                          <Badge className="ms-3">{item.description}</Badge>
-                        )}
-                        <Check
-                          className={cn(
-                            "ml-auto h-4 w-4",
-                            item.value === field.value
-                              ? "opacity-100"
-                              : "opacity-0",
+      render={({ field }) => {
+        const item = items.find((item) => item.value === field.value)?.label;
+        const displayValue = item || field.value;
+        return (
+          <FormItem>
+            <FormLabel>{label}</FormLabel>
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild className="w-full">
+                <FormControl>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn(
+                      !field.value && "text-muted-foreground",
+                      "justify-between",
+                    )}
+                  >
+                    {field.value ? displayValue : `Select ${label}`}
+                    <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </FormControl>
+              </PopoverTrigger>
+              <PopoverContent className="w-96 p-0">
+                <Command shouldFilter={false}>
+                  <CommandInput
+                    placeholder={`Search ${label.toLowerCase()}...`}
+                    className="h-9"
+                    onValueChange={(search) => {
+                      loadItems(search);
+                    }}
+                  />
+                  <CommandList>
+                    <CommandGroup>
+                      {items.map((item, index) => (
+                        <CommandItem
+                          value={item.label}
+                          key={index}
+                          onSelect={() => {
+                            form.setValue(name, item.value);
+                            setOpen(false);
+                            if (onSelectItem) {
+                              onSelectItem(item);
+                            }
+                          }}
+                        >
+                          {item.label}
+                          {item.description && (
+                            <Badge className="ms-3">{item.description}</Badge>
                           )}
-                        />
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          <FormMessage />
-        </FormItem>
-      )}
+                          <Check
+                            className={cn(
+                              "ml-auto h-4 w-4",
+                              item.value === field.value
+                                ? "opacity-100"
+                                : "opacity-0",
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            <FormMessage />
+          </FormItem>
+        );
+      }}
     />
   );
 }

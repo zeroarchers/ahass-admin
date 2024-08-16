@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 
 export const getpkbById = async (id: string) => {
   try {
-    console.log(id);
     const pkb = await prisma.pKB.findUnique({
       where: {
         no_pkb: id,
@@ -23,7 +22,6 @@ export const getpkbById = async (id: string) => {
     });
     return pkb;
   } catch {
-    console.log("bruh");
     return null;
   }
 };

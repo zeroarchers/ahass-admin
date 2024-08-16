@@ -8,14 +8,20 @@ export async function GET(request: NextRequest) {
   try {
     const jasa = await prisma.jasa.findMany({
       where: {
-        nama: {
-          contains: nama_jasa,
-          mode: "insensitive",
-        },
-        kode: {
-          contains: nama_jasa,
-          mode: "insensitive",
-        },
+        OR: [
+          {
+            nama: {
+              contains: nama_jasa,
+              mode: "insensitive",
+            },
+          },
+          {
+            kode: {
+              contains: nama_jasa,
+              mode: "insensitive",
+            },
+          },
+        ],
       },
       take: 10,
     });

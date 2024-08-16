@@ -62,14 +62,16 @@ export function PkbFormMain({
             throw new Error("Failed to fetch kendaraan data");
           }
           const kendaraan = await response.json();
-          const nama_pemilik = kendaraan[0].customer.nama;
-          const nohp_pemilik = kendaraan[0].customer.nohp;
+          const nama_pemilik = kendaraan[0].pemilik.nama;
+          const nohp_pemilik = kendaraan[0].pemilik.nohp;
           const no_mesin = kendaraan[0].no_mesin;
           const tahun_rakit = kendaraan[0].tahun_rakit;
+          const nama_pembawa = kendaraan[0].customer.nama;
           form.setValue("pemilik", nama_pemilik);
           form.setValue("no_hp", nohp_pemilik);
           form.setValue("no_mesin", no_mesin);
           form.setValue("tahun_motor", tahun_rakit);
+          form.setValue("pembawa", nama_pembawa);
         } catch (error) {
           console.error("Error fetching kendaraan data:", error);
         }

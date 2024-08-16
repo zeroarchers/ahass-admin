@@ -8,14 +8,20 @@ export async function GET(request: NextRequest) {
   try {
     const sparepart = await prisma.sparePart.findMany({
       where: {
-        namaSparepart: {
-          contains: nama_sparepart,
-          mode: "insensitive",
-        },
-        kodeSparepart: {
-          contains: nama_sparepart,
-          mode: "insensitive",
-        },
+        OR: [
+          {
+            namaSparepart: {
+              contains: nama_sparepart,
+              mode: "insensitive",
+            },
+          },
+          {
+            kodeSparepart: {
+              contains: nama_sparepart,
+              mode: "insensitive",
+            },
+          },
+        ],
       },
       take: 10,
     });

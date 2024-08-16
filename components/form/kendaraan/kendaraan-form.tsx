@@ -59,7 +59,6 @@ export function KendaraanForm({ initialValues }: KendaraanFormProps) {
       no_mesin: "",
     },
   });
-
   return (
     <Form {...form}>
       <form

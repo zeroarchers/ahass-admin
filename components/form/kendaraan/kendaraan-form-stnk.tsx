@@ -67,7 +67,6 @@ export function KendaraanStnk({
         <FormField
           control={form.control}
           name="no_polisi"
-          disabled={is_edit}
           render={({ field }) => (
             <FormItem>
               <FormLabel>No. Polisi</FormLabel>
@@ -75,6 +74,7 @@ export function KendaraanStnk({
                 <Input
                   type="text"
                   placeholder="Masukan No. Polisi"
+                  disabled={is_edit}
                   {...field}
                 />
               </FormControl>

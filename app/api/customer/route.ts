@@ -3,16 +3,21 @@ import { prisma } from "@/lib/prisma"; // Adjust this import based on your proje
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const nama = searchParams.get("nama") || "";
+  const nama = searchParams.get("nama");
+  const kode = searchParams.get("kode");
 
+  const where: any = {};
+
+  if (nama) {
+    where.nama = { contains: nama, mode: "insensitive" };
+  }
+
+  if (kode) {
+    where.kode = { contains: kode, mode: "insensitive" };
+  }
   try {
     const customers = await prisma.customer.findMany({
-      where: {
-        nama: {
-          contains: nama,
-          mode: "insensitive",
-        },
-      },
+      where,
       select: {
         id: true,
         kode: true,

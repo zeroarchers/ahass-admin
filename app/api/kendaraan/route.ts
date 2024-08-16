@@ -20,6 +20,11 @@ export async function GET(request: NextRequest) {
         customer: {
           select: {
             nama: true,
+          },
+        },
+        pemilik: {
+          select: {
+            nama: true,
             nohp: true,
           },
         },
