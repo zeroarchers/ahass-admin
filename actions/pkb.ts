@@ -5,19 +5,26 @@ import * as z from "zod";
 import { pkbFormSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { generateNoPkb } from "@/lib/generate";
+import {
+  generateNoAntrian,
+  generateNoBayar,
+  generateNoPkb,
+} from "@/lib/generate";
 
 export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
   const validatedData = pkbFormSchema.safeParse(data);
   if (!validatedData.success) {
     return { result: "Error!", description: "Input data tidak valid!" };
   }
-  const { jasaPKB, sparepartPKB, no_polisi, ...pkbData } = validatedData.data;
+  const { jasaPKB, sparepartPKB, no_polisi, no_antrian, no_pkb, ...pkbData } =
+    validatedData.data;
 
+  console.log(no_polisi);
   const existingVehicle = await prisma.kendaraan.findFirst({
     where: {
       no_polisi: {
         contains: no_polisi,
+        mode: "insensitive",
       },
     },
   });
@@ -29,9 +36,18 @@ export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
     };
   }
 
+  const new_no_pkb = await generateNoPkb({ ahassId: "17168" }); // ahass id is manual because it hasn't been implemented yet.
+  const new_no_antrian = await generateNoAntrian(pkbData.tipe_antrian);
+  console.log("old PKB", no_pkb);
+  console.log("old Antrian", no_antrian);
+  console.log("New PKB", new_no_pkb);
+  console.log("NEw Antrian", new_no_antrian);
+
   await prisma.pKB.create({
     data: {
       ...pkbData,
+      no_pkb: no_pkb ?? new_no_pkb,
+      no_antrian: no_antrian ?? new_no_antrian,
       no_polisi: existingVehicle.no_polisi,
       jasaPKB: {
         create: jasaPKB.map((jasaItem) => ({
@@ -68,26 +84,47 @@ export async function updatePkb(data: z.infer<typeof pkbFormSchema>) {
     return { result: "Error!", description: "Input data tidak valid!" };
   }
 
-  const { jasaPKB, sparepartPKB, no_polisi, no_pkb, ...pkbData } =
-    validatedData.data;
+  const {
+    jasaPKB,
+    sparepartPKB,
+    no_polisi,
+    no_pkb,
+    no_antrian,
+    no_bayar,
+    ...pkbData
+  } = validatedData.data;
 
-  const existingPKB = await prisma.pKB.findUnique({
-    where: { no_pkb },
-  });
+  let new_no_bayar: any;
 
-  if (!existingPKB) {
-    return {
-      result: "Error!",
-      description: `PKB record with no_pkb ${no_pkb} not found!`,
-    };
+  if (no_pkb) {
+    const existingPKB = await prisma.pKB.findUnique({
+      where: { no_pkb },
+    });
+    if (!existingPKB) {
+      return {
+        result: "Error!",
+        description: `PKB record with no_pkb ${no_pkb} not found!`,
+      };
+    }
+    if (existingPKB.status_pkb === "selesai") {
+      if (pkbData.uang_kembalian >= 0) {
+        new_no_bayar = await generateNoBayar({ ahassId: "17168" });
+      } else {
+        return {
+          result: "Error!",
+          description: `Pembayran kurang ${pkbData.uang_kembalian}`,
+        };
+      }
+    }
   }
 
   await prisma.pKB.update({
     where: {
-      no_pkb: no_pkb,
+      no_pkb: no_pkb!,
     },
     data: {
       ...pkbData,
+      no_bayar: new_no_bayar ?? no_bayar,
       jasaPKB: {
         deleteMany: {},
         create: jasaPKB.map((jasaItem) => ({
@@ -144,28 +181,6 @@ export async function updatePkbStatus(noPkb: string[], newStatus: string) {
       where: { no_pkb: { in: noPkb } },
       data: { status_pkb: newStatus },
     });
-
-    if (newStatus === "selesai") {
-      const pkbsToUpdate = await prisma.pKB.findMany({
-        where: {
-          no_pkb: { in: noPkb },
-          no_bayar: "",
-        },
-      });
-
-      for (const pkb of pkbsToUpdate) {
-        const currentPembayaranCount = await prisma.pKB.count({
-          where: { no_bayar: { not: "" } },
-        });
-
-        const newNoBayar = generateNoPkb(currentPembayaranCount + 1, "SOD");
-
-        await prisma.pKB.update({
-          where: { no_pkb: pkb.no_pkb },
-          data: { no_bayar: newNoBayar },
-        });
-      }
-    }
 
     revalidatePath("/dashboard/pendaftaran-servis");
     revalidatePath("/dashboard/pembayaran-servis");

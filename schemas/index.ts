@@ -181,8 +181,8 @@ const booleanField = z.union([
 ]);
 
 export const pkbFormSchema = z.object({
-  no_pkb: z.string().min(1),
-  no_antrian: z.string().min(1),
+  no_pkb: z.string().nullable().optional(),
+  no_antrian: z.string().nullable().optional(),
   tanggal: z.coerce.date(),
   jam_kedatangan_customer: z.coerce.date(),
   no_polisi: z.string().min(1).trim(),
@@ -219,11 +219,11 @@ export const pkbFormSchema = z.object({
   service_advisor: z.string().min(1),
   final_inspector: z.string().min(1),
   estimasi_jam_selesai: z.coerce.date(),
-  tanggal_bayar: z.coerce.date().nullable().optional(),
   jasaPKB: z.array(jasaModalSchema),
   sparepartPKB: z.array(sparepartModalSchema),
 
-  no_bayar: z.string(),
+  tanggal_bayar: z.coerce.date().nullable().optional(),
+  no_bayar: z.string().nullable().optional(),
   uang_bayar: z.coerce.number(),
   uang_kembalian: z.coerce.number(),
   tipe_pembayaran: z.string().min(1),

@@ -26,11 +26,17 @@ const hubungan_pembawa = [
   "Supir/atasan",
 ];
 
-export function PkbFormCustomer({ form }: { form: any }) {
+export function PkbFormCustomer({
+  form,
+  is_edit,
+}: {
+  form: any;
+  is_edit: boolean;
+}) {
   const watch_pembawa = form.watch("pembawa");
   useEffect(() => {
     const fetchKendaraanData = async () => {
-      if (watch_pembawa) {
+      if (watch_pembawa && !is_edit) {
         try {
           const response = await fetch(
             `/api/customer?nama=${encodeURIComponent(watch_pembawa)}`,

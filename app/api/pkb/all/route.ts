@@ -12,7 +12,7 @@ export async function GET(request: Request) {
           contains: search || "",
           mode: "insensitive",
         },
-        no_bayar: "",
+        status_pkb: "selesai",
       },
       select: {
         no_pkb: true,

@@ -91,8 +91,6 @@ export function PendaftaranForm({
   const form = useForm<z.infer<typeof pkbFormSchema>>({
     resolver: zodResolver(pkbFormSchema),
     defaultValues: initialValues || {
-      no_pkb: "",
-      no_antrian: "",
       no_polisi: "",
       tipe_antrian: "Regular",
       tipe_kedatangan: "Walk-in AHASS / Non Promotion",
@@ -131,7 +129,6 @@ export function PendaftaranForm({
       estimasi_jam_selesai: new Date(),
       jasaPKB: [],
       sparepartPKB: [],
-      no_bayar: "",
       uang_bayar: 0,
       uang_kembalian: 0,
       tipe_pembayaran: "cash",
@@ -186,7 +183,7 @@ export function PendaftaranForm({
           <CardHeader></CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-5">
             <PkbFormMain form={form} is_pendaftaran={is_pendaftaran} />
-            <PkbFormCustomer form={form} />
+            <PkbFormCustomer form={form} is_edit={is_edit} />
             <PkbFormSurvey form={form} />
           </CardContent>
         </Card>

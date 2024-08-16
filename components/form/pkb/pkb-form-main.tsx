@@ -157,11 +157,13 @@ export function PkbFormMain({
         name="no_polisi"
         apiEndpoint="/api/kendaraan"
         searchParam="no_polisi"
-        itemToComboboxItem={(kendaraan) => ({
-          value: kendaraan.no_polisi,
-          label: kendaraan.no_polisi,
-          description: kendaraan.customer.nama,
-        })}
+        itemToComboboxItem={(kendaraan) => {
+          return {
+            value: kendaraan.no_polisi,
+            label: kendaraan.no_polisi,
+            description: kendaraan.customer.nama,
+          };
+        }}
       />
       <FormField
         control={form.control}
