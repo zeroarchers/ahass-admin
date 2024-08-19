@@ -266,37 +266,40 @@ export function PendaftaranForm({
               form={form}
               label="Mekanik"
               name="mekanik"
-              apiEndpoint="/api/karyawan"
+              apiEndpoint="/api/karyawan/mekanik"
               itemToComboboxItem={(karyawan) => ({
                 value: karyawan.name,
                 label: karyawan.name,
                 description: karyawan.jabatan,
                 data: karyawan,
               })}
+              is_static_data
             />
             <Combobox
               form={form}
               label="Service Advisor"
               name="service_advisor"
-              apiEndpoint="/api/karyawan"
+              apiEndpoint="/api/karyawan/service-advisor"
               itemToComboboxItem={(karyawan) => ({
                 value: karyawan.name,
                 label: karyawan.name,
                 description: karyawan.jabatan,
                 data: karyawan,
               })}
+              is_static_data
             />
             <Combobox
               form={form}
               label="Final Inspector"
               name="final_inspector"
-              apiEndpoint="/api/karyawan"
+              apiEndpoint="/api/karyawan/mekanik-final-inspector"
               itemToComboboxItem={(karyawan) => ({
                 value: karyawan.name,
                 label: karyawan.name,
                 description: karyawan.jabatan,
                 data: karyawan,
               })}
+              is_static_data
             />
           </CardContent>
         </Card>

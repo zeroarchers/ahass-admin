@@ -80,7 +80,7 @@ export function CustomerForm({ initialValues }: CustomerFormProps) {
 
   async function onSubmit(values: z.infer<typeof customerFormSchema>) {
     setIsLoading(true);
-    const isCapitalized = /^[A-Z]+$/.test(values.provinsi);
+    const isCapitalized = /^[A-Z\s]+$/.test(values.provinsi);
     const provinsiName = isCapitalized
       ? values.provinsi
       : await fetchPlaceName(

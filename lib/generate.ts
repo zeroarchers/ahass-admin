@@ -29,7 +29,7 @@ export async function generateNoPkb({
   if (lastPkb) {
     console.log("lastPkb", lastPkb.no_pkb);
     const lastNumberStr = lastPkb.no_pkb.split("-")[2];
-    const lastNumber = parseInt(lastNumberStr.slice(2), 10); // Remove the year prefix
+    const lastNumber = parseInt(lastNumberStr.slice(2), 10);
     console.log("lastNumber", lastNumber);
     nextNumber = (lastNumber + 1).toString().padStart(6, "0");
   } else {
@@ -66,7 +66,8 @@ export async function generateNoBayar({
 
   let nextNumber;
   if (lastBayar && lastBayar.no_bayar) {
-    const lastNumber = parseInt(lastBayar.no_bayar.split("-")[2], 10);
+    const lastNumberStr = lastBayar.no_pkb.split("-")[2];
+    const lastNumber = parseInt(lastNumberStr.slice(2), 10);
     nextNumber = (lastNumber + 1).toString().padStart(6, "0");
   } else {
     nextNumber = "000001";

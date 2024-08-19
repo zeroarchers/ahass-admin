@@ -41,6 +41,7 @@ export function Combobox({
   searchParam = "search",
   itemToComboboxItem,
   onSelectItem,
+  is_static_data = false,
 }: {
   form: any;
   label: string;
@@ -49,6 +50,7 @@ export function Combobox({
   searchParam?: string;
   itemToComboboxItem: (item: any) => ComboboxItem;
   onSelectItem?: (item: any) => void;
+  is_static_data?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
   const [items, setItems] = React.useState<ComboboxItem[]>([]);
@@ -99,7 +101,7 @@ export function Combobox({
                 </FormControl>
               </PopoverTrigger>
               <PopoverContent className="w-96 p-0">
-                <Command shouldFilter={false}>
+                <Command shouldFilter={is_static_data}>
                   <CommandInput
                     placeholder={`Search ${label.toLowerCase()}...`}
                     className="h-9"

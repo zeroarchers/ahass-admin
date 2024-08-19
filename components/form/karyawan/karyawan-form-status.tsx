@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MultiSelect } from "@/components/ui/multiselect";
 
 export function KaryawanStatus({ form }: { form: any }) {
   return (
@@ -102,41 +103,33 @@ export function KaryawanStatus({ form }: { form: any }) {
             <FormItem>
               <FormLabel>Jabatan</FormLabel>
               <FormControl>
-                <Select
-                  onValueChange={field.onChange} // Use field.onChange to update form value
-                  defaultValue={field.value} // Set the default value from the form field
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Jabatan" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Asisten Mekanik">
-                      Asisten Mekanik
-                    </SelectItem>
-                    <SelectItem value="FrontDesk">FrontDesk</SelectItem>
-                    <SelectItem value="Kepala Bengkel">
-                      Kepala Bengkel
-                    </SelectItem>
-                    <SelectItem value="Kepala Mekanik">
-                      Kepala Mekanik
-                    </SelectItem>
-                    <SelectItem value="Mekanik">Mekanik</SelectItem>
-                    <SelectItem value="Salesman">Salesman</SelectItem>
-                    <SelectItem value="Service Advisor">
-                      Service Advisor
-                    </SelectItem>
-                    <SelectItem value="Staff">Staff</SelectItem>
-                    <SelectItem value="Partman">Partman</SelectItem>
-                    <SelectItem value="Partcounter">Partcounter</SelectItem>
-                    <SelectItem value="Feeder">Feeder</SelectItem>
-                    <SelectItem value="Mekanik Final Inspector">
-                      Mekanik Final Inspector
-                    </SelectItem>
-                    <SelectItem value="Mekanik Claim">Mekanik Claim</SelectItem>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="Cuci Motor">Cuci Motor</SelectItem>
-                  </SelectContent>
-                </Select>
+                <MultiSelect
+                  options={[
+                    { value: "Asisten Mekanik", label: "Asisten Mekanik" },
+                    { value: "FrontDesk", label: "FrontDesk" },
+                    { value: "Kepala Bengkel", label: "Kepala Bengkel" },
+                    { value: "Kepala Mekanik", label: "Kepala Mekanik" },
+                    { value: "Mekanik", label: "Mekanik" },
+                    { value: "Salesman", label: "Salesman" },
+                    { value: "Service Advisor", label: "Service Advisor" },
+                    { value: "Staff", label: "Staff" },
+                    { value: "Partman", label: "Partman" },
+                    { value: "Partcounter", label: "Partcounter" },
+                    { value: "Feeder", label: "Feeder" },
+                    {
+                      value: "Mekanik Final Inspector",
+                      label: "Mekanik Final Inspector",
+                    },
+                    { value: "Mekanik Claim", label: "Mekanik Claim" },
+                    { value: "Admin", label: "Admin" },
+                    { value: "Cuci Motor", label: "Cuci Motor" },
+                  ]}
+                  onValueChange={(selectedValues) => {
+                    field.onChange(selectedValues.join(","));
+                  }}
+                  defaultValue={field.value ? field.value.split(",") : []}
+                  placeholder="Select Jabatan"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
