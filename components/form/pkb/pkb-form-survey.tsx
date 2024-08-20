@@ -19,6 +19,9 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { generateHistoryPDF } from "@/components/misc/history-pkb";
+import { toast } from "sonner";
 
 const alasan_ke_ahass = [
   "Inisiatif Sendiri",
@@ -301,6 +304,31 @@ export function PkbFormSurvey({ form }: { form: any }) {
             </FormItem>
           )}
         />
+        <Button
+          className="max-w-32"
+          type="button"
+          onClick={async () => {
+            const no_polisi = form.getValues("no_polisi");
+            console.log(no_polisi);
+            const response = await fetch(
+              `/api/kendaraan/history?no_polisi=${no_polisi}`,
+            );
+            const data = await response.json();
+            if (data.error) {
+              toast("Error", {
+                description: data.error,
+                action: {
+                  label: "Oke!",
+                  onClick: () => toast.dismiss,
+                },
+              });
+            } else {
+              generateHistoryPDF(data);
+            }
+          }}
+        >
+          History
+        </Button>
       </div>
     </>
   );
