@@ -59,6 +59,9 @@ export function Combobox({
     try {
       const response = await fetch(
         `${apiEndpoint}?${searchParam}=${encodeURIComponent(search)}`,
+        {
+          cache: "no-cache",
+        },
       );
       if (!response.ok) {
         throw new Error(`Failed to fetch items from ${apiEndpoint}`);

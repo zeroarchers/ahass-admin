@@ -154,7 +154,6 @@ export const generateHistoryPDF = (pkb: PKBWithRelations[]) => {
     startY = (doc as any).lastAutoTable.finalY + 5;
     doc.line(10, startY - 5, 200, startY - 5);
     doc.line(10, startY - 5.1, 200, startY - 5.1);
-    // Add a page break if there's not enough space for the next PKB
     if (index < pkb.length - 1 && startY > doc.internal.pageSize.height - 50) {
       doc.addPage();
       startY = 10;

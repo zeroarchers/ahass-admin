@@ -5,9 +5,14 @@ export async function GET() {
   try {
     const customers = await prisma.karyawan.findMany({
       where: {
-        jabatan: {
-          contains: "Mekanik",
-        },
+        OR: [
+          {
+            jabatan: "Mekanik",
+          },
+          {
+            jabatan: "Asisten Mekanik",
+          },
+        ],
       },
       select: {
         id: true,
