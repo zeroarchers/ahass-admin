@@ -229,9 +229,7 @@ export function CustomerMain({ form }: { form: any }) {
           control={form.control}
           name="tanggal_lahir"
           render={({ field }) => {
-            field.value = field.value
-              ? field.value.toISOString().split("T")[0]
-              : "";
+            field.value = new Date(field.value).toISOString().split("T")[0];
             return (
               <FormItem>
                 <FormLabel>Tanggal Lahir</FormLabel>

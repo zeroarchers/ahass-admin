@@ -68,7 +68,7 @@ export function KaryawanStatus({ form }: { form: any }) {
           control={form.control}
           name="tanggal_masuk"
           render={({ field }) => {
-            field.value = field.value.toISOString().split("T")[0];
+            field.value = new Date(field.value).toISOString().split("T")[0];
             return (
               <FormItem>
                 <FormLabel>Tanggal Berhenti</FormLabel>
@@ -84,7 +84,7 @@ export function KaryawanStatus({ form }: { form: any }) {
           control={form.control}
           name="tanggal_berhenti"
           render={({ field }) => {
-            field.value = field.value.toISOString().split("T")[0];
+            field.value = new Date(field.value).toISOString().split("T")[0];
             return (
               <FormItem>
                 <FormLabel>Tanggal Berhenti</FormLabel>

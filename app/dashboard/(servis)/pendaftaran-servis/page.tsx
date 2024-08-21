@@ -26,6 +26,8 @@ export default async function Page({
     ? new Date(searchParams.endDate)
     : undefined;
   const pageSize = 10;
+  let where: any = { status_pkb: {} };
+  where.status_pkb.not = "selesai";
 
   const { data, totalCount } = await getItemsWithDate<PKBWithRelations>(
     "pKB",
@@ -34,6 +36,7 @@ export default async function Page({
     filterColumn,
     startDate,
     endDate,
+    where,
   );
 
   const pageCount = Math.ceil(totalCount / pageSize);
