@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { ComboboxDefault } from "@/components/ui/combobox-default";
 
 interface Wilayah {
   id: string;
@@ -267,127 +268,10 @@ export function CustomerMain({ form }: { form: any }) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="provinsi"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel>Provinsi</FormLabel>
-                <Select
-                  onValueChange={(value) => {
-                    field.onChange(value);
-                    form.setValue("kabupaten", "");
-                  }}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder={field.value ?? `Pilih provinsi karyawan`}
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {provinces.map((province) => (
-                      <SelectItem key={province.id} value={province.id}>
-                        {province.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
-        <FormField
-          control={form.control}
-          name="kabupaten"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kabupaten</FormLabel>
-              <Select
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  form.setValue("kecamatan", "");
-                }}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={field.value ?? `Pilih kabupaten karyawan`}
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {regencies.map((regency) => (
-                    <SelectItem key={regency.id} value={regency.id}>
-                      {regency.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="kecamatan"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kecamatan</FormLabel>
-              <Select
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  form.setValue("kelurahan", "");
-                }}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={field.value ?? `Pilih kecamatan karyawan`}
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {districts.map((district) => (
-                    <SelectItem key={district.id} value={district.id}>
-                      {district.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="kelurahan"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kelurahan</FormLabel>
-              <Select onValueChange={field.onChange}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={field.value ?? `Pilih kelurahan karyawan`}
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {villages.map((village) => (
-                    <SelectItem key={village.id} value={village.id}>
-                      {village.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <ComboboxDefault name="provinsi" form={form} items={provinces} />
+        <ComboboxDefault name="kabupaten" form={form} items={regencies} />
+        <ComboboxDefault name="kecamatan" form={form} items={districts} />
+        <ComboboxDefault name="kelurahan" form={form} items={villages} />
         <FormField
           control={form.control}
           name="kodepos"

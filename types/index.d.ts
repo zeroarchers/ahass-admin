@@ -9,6 +9,7 @@ import type {
   Jasa,
   SparePart,
   Kendaraan,
+  BAG,
 } from "@prisma/client";
 
 export type NavItem = {
@@ -117,4 +118,8 @@ export type PKBWithRelations = PKB & {
   jasaPKB: (JasaPKB & { jasa: Jasa })[];
   sparepartPKB: (SparepartPKB & { sparepart: SparePart })[];
   kendaraan: Kendaraan;
+};
+
+export type BAGWithSpareparts = BAG & {
+  spareparts: SparePart[];
 };

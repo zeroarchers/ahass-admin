@@ -44,6 +44,7 @@ import {
   Warehouse,
   CircleDollarSign,
   BookOpen,
+  Blocks,
 } from "lucide-react";
 
 export type Icon = typeof LucideIcon;
@@ -91,6 +92,7 @@ export const Icons = {
   warehouse: Warehouse,
   rekening: CircleDollarSign,
   openBook: BookOpen,
+  blocks: Blocks,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

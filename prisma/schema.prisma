@@ -49,8 +49,7 @@ model Account {
 
 model SparePart {
   id                 Int       @id @default(autoincrement())
-
-  kodeSparepart      String @unique
+  kodeSparepart      String    @unique
   aktif              Boolean
   namaSparepart      String
   namaLokalSparepart String?
@@ -60,6 +59,25 @@ model SparePart {
   uom                String
   grupKodeAHM        String?
   SparepartPKB       SparepartPKB[]
+  Stock              Stock[]
+  BAG    BAG[]
+}
+
+model Stock {
+  id            Int       @id @default(autoincrement())
+  kodeSparepart String
+  quantity      Int
+  updatedAt     DateTime  @updatedAt
+  SparePart     SparePart  @relation(fields: [kodeSparepart], references: [kodeSparepart])
+}
+
+model BAG {
+  id            String    @id
+  kodeSparepart String
+  isIncoming   Boolean
+  quantity      Int
+  tanggal    DateTime
+  SparePart     SparePart  @relation(fields: [kodeSparepart], references: [kodeSparepart])
 }
 
 model Jasa {
