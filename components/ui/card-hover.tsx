@@ -13,6 +13,7 @@ export const HoverEffect = ({
     title: string;
     link: string;
     icon?: keyof typeof Icons;
+    disabled?: boolean;
   }[];
   className?: string;
 }) => {
@@ -30,7 +31,7 @@ export const HoverEffect = ({
           <Link
             href={item?.link}
             key={item?.link}
-            className="relative group  block p-2 h-full w-full"
+            className={`${item.disabled ? "cursor-not-allowed" : ""} relative group  block p-2 h-full w-full`}
             onMouseEnter={() => setHoveredIndex(idx)}
             onMouseLeave={() => setHoveredIndex(null)}
           >
@@ -52,6 +53,9 @@ export const HoverEffect = ({
               )}
             </AnimatePresence>
             <Card className="flex items-center py-5">
+              {item.disabled && (
+                <span className="absolute inset-0 h-full w-full z-50 bg-black opacity-50  block  rounded-2xl" />
+              )}
               <Icon className="h-10 w-10 mr-2" />
               <CardTitle>{item.title}</CardTitle>
             </Card>

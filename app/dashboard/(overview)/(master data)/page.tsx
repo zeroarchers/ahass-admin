@@ -17,18 +17,47 @@ const content: Content = {
       description: "Menu utama tentang produk AHASS",
       cards: [
         { title: "Jasa", link: "/dashboard/jasa", icon: "service" },
-        { title: "Sparepart", link: "/dashboard/sparepart", icon: "settings" },
-        { title: "Vendor", link: "/dashboard/vendor", icon: "store" },
-        { title: "Karyawan", link: "/dashboard/karyawan", icon: "worker" },
-        { title: "PIT", link: "/dashboard/pit", icon: "pit" },
+        {
+          title: "Sparepart",
+          link: "/dashboard/sparepart",
+          icon: "settings",
+        },
+        {
+          title: "Vendor",
+          link: "/dashboard/vendor",
+          icon: "store",
+          disabled: true,
+        },
+        {
+          title: "Karyawan",
+          link: "/dashboard/karyawan",
+          icon: "worker",
+        },
+        { title: "PIT", link: "/dashboard/pit", icon: "pit", disabled: true },
         {
           title: "PIT Mekanik",
           link: "/dashboard/pit-mekanik",
           icon: "pitMechanic",
+          disabled: true,
         },
-        { title: "Gudang", link: "/dashboard/gudang", icon: "warehouse" },
-        { title: "Rekening", link: "/dashboard/rekening", icon: "rekening" },
-        { title: "SA Talk", link: "/dashboard/sat-alk", icon: "openBook" },
+        {
+          title: "Gudang",
+          link: "/dashboard/gudang",
+          icon: "warehouse",
+          disabled: true,
+        },
+        {
+          title: "Rekening",
+          link: "/dashboard/rekening",
+          icon: "rekening",
+          disabled: true,
+        },
+        {
+          title: "SA Talk",
+          link: "/dashboard/sat-alk",
+          icon: "openBook",
+          disabled: true,
+        },
       ],
     },
     {
@@ -36,7 +65,12 @@ const content: Content = {
       description: "Menu utama tentang pelanggan AHASS",
       cards: [
         { title: "Customer", link: "/dashboard/customer", icon: "user" },
-        { title: "Diskon", link: "/dashboard/diskon", icon: "discount" },
+        {
+          title: "Diskon",
+          link: "/dashboard/diskon",
+          icon: "discount",
+          disabled: true,
+        },
         { title: "Kendaraan", link: "/dashboard/kendaraan", icon: "vehicle" },
         {
           title: "Tipe Kendaraan",

@@ -81,6 +81,7 @@ export type Content = {
       title: string;
       link: string;
       icon?: keyof typeof Icons; // Icon should be optional and match Icons keys
+      disabled?: boolean;
     }[];
   }[];
 };

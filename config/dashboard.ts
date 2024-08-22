@@ -27,11 +27,13 @@ export const dashboardConfig: DashboardConfig = {
       title: "Penjualan",
       href: "/dashboard/penjualan",
       icon: "sell",
+      disabled: true,
     },
     {
       title: "Pembelian",
       href: "/dashboard/pembelian",
       icon: "buy",
+      disabled: true,
     },
     {
       title: "Persediaan",
@@ -42,36 +44,43 @@ export const dashboardConfig: DashboardConfig = {
       title: "Stock Opname",
       href: "/dashboard/stock-opname",
       icon: "opname",
+      disabled: true,
     },
     {
       title: "Absensi",
       href: "/dashboard/absensi",
       icon: "time",
+      disabled: true,
     },
     {
       title: "Keuangan",
       href: "/dashboard/keuangan",
       icon: "money",
+      disabled: true,
     },
     {
       title: "Board",
       href: "/dashboard/board",
       icon: "board",
+      disabled: true,
     },
     {
       title: "Reminder",
       href: "/dashboard/reminder",
       icon: "reminder",
+      disabled: true,
     },
     {
       title: "Report",
       href: "/dashboard/report",
       icon: "report",
+      disabled: true,
     },
     {
       title: "Pengaturan",
       href: "/dashboard/pengaturan",
       icon: "settings",
+      disabled: true,
     },
   ],
 };
