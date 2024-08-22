@@ -27,10 +27,8 @@ export async function generateNoPkb({
 
   let nextNumber;
   if (lastPkb) {
-    console.log("lastPkb", lastPkb.no_pkb);
     const lastNumberStr = lastPkb.no_pkb.split("-")[2];
     const lastNumber = parseInt(lastNumberStr.slice(2), 10);
-    console.log("lastNumber", lastNumber);
     nextNumber = (lastNumber + 1).toString().padStart(6, "0");
   } else {
     nextNumber = "000001";
@@ -66,7 +64,7 @@ export async function generateNoBayar({
 
   let nextNumber;
   if (lastBayar && lastBayar.no_bayar) {
-    const lastNumberStr = lastBayar.no_pkb.split("-")[2];
+    const lastNumberStr = lastBayar.no_bayar.split("-")[2];
     const lastNumber = parseInt(lastNumberStr.slice(2), 10);
     nextNumber = (lastNumber + 1).toString().padStart(6, "0");
   } else {
@@ -83,7 +81,6 @@ export async function generateNoAntrian(tipeAntrian: string): Promise<string> {
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   // Find the maximum queue number for today
-  console.log("startWith", tipeAntrian.charAt(0).toUpperCase());
   const maxAntrian = await prisma.pKB.findFirst({
     where: {
       tanggal: {

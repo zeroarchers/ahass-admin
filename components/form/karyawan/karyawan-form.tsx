@@ -76,7 +76,6 @@ export function KaryawanForm({ initialValues }: KaryawanFormProps) {
 
   async function onSubmit(values: z.infer<typeof karyawanFormSchema>) {
     const isCapitalized = /^[A-Z\s]+$/.test(values.provinsi);
-    console.log(values.provinsi, isCapitalized);
     const provinsiName = isCapitalized
       ? values.provinsi
       : await fetchPlaceName(
@@ -105,7 +104,6 @@ export function KaryawanForm({ initialValues }: KaryawanFormProps) {
       kelurahan: kelurahanName,
     };
     setIsLoading(true);
-    console.log(transformedValues);
     let response: { result: string; description: any };
     if (is_edit) {
       response = await updateKaryawan(transformedValues);

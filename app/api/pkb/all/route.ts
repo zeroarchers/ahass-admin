@@ -13,6 +13,7 @@ export async function GET(request: Request) {
           mode: "insensitive",
         },
         status_pkb: "selesai",
+        no_bayar: null,
       },
       select: {
         no_pkb: true,

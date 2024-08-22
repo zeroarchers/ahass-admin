@@ -19,7 +19,6 @@ export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
   const { jasaPKB, sparepartPKB, no_polisi, no_antrian, no_pkb, ...pkbData } =
     validatedData.data;
 
-  console.log(no_polisi);
   const existingVehicle = await prisma.kendaraan.findFirst({
     where: {
       no_polisi: {
@@ -38,10 +37,6 @@ export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
 
   const new_no_pkb = await generateNoPkb({ ahassId: "17168" }); // ahass id is manual because it hasn't been implemented yet.
   const new_no_antrian = await generateNoAntrian(pkbData.tipe_antrian);
-  console.log("old PKB", no_pkb);
-  console.log("old Antrian", no_antrian);
-  console.log("New PKB", new_no_pkb);
-  console.log("NEw Antrian", new_no_antrian);
 
   await prisma.pKB.create({
     data: {

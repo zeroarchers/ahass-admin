@@ -309,7 +309,6 @@ export function PkbFormSurvey({ form }: { form: any }) {
           type="button"
           onClick={async () => {
             const no_polisi = form.getValues("no_polisi");
-            console.log(no_polisi);
             const response = await fetch(
               `/api/kendaraan/history?no_polisi=${no_polisi}`,
             );

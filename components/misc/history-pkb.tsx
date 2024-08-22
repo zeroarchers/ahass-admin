@@ -5,7 +5,6 @@ import type { PKBWithRelations } from "@/types";
 
 export const generateHistoryPDF = (pkb: PKBWithRelations[]) => {
   const doc = new jsPDF();
-  console.log(pkb);
   doc.setFont("helvetica");
   doc.setFontSize(13);
   doc.text("RAHARDJO MOTOR 17168", 10, 10);
