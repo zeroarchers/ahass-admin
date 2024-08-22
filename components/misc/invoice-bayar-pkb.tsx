@@ -230,11 +230,11 @@ export const generatePDF = (pkb: PKBWithRelations) => {
 
   autoTable(doc, {
     startY: startYFooter2 + 5,
-    margin: { left: 140 },
-    tableWidth: 50,
+    margin: { left: 130 },
+    tableWidth: 60,
     theme: "plain",
     styles: {
-      fontSize: 7,
+      fontSize: 10,
       halign: "right",
       cellPadding: 1,
       minCellHeight: 1,
