@@ -7,7 +7,7 @@ export default async function Page() {
 
   return (
     <>
-      <h1 className="font-black text-4xl">Jasa</h1>
+      <h1 className="font-black text-4xl">BAG</h1>
       <DynamicTable data={data} columns={columns} />
     </>
   );

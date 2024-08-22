@@ -59,13 +59,33 @@ export const generatePDF = (pkb: PKBWithRelations) => {
     margin: { left: 10 },
     tableWidth: 190,
     styles: {
-      lineColor: "#000000",
-      fillColor: "#FFFFFF",
-      textColor: "#000000",
-      lineWidth: 0.3,
-      fontSize: 7,
+      fontSize: 9,
       cellPadding: 1,
       minCellHeight: 1,
+      lineWidth: 0,
+    },
+    theme: "plain",
+    willDrawCell: (data) => {
+      if (data.section == "foot") {
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.1);
+        doc.line(
+          10,
+          data.cell.y + data.row.height,
+          200,
+          data.cell.y + data.row.height,
+        );
+      } else if (data.section == "head") {
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.1);
+        doc.line(10, data.cell.y, 200, data.cell.y);
+        doc.line(
+          10,
+          data.cell.y + data.row.height,
+          200,
+          data.cell.y + data.row.height,
+        );
+      }
     },
     head: [["No", "Kode Jasa", "Nama Jasa", "Harga", "Diskon", "Jumlah"]],
     body: pkb.jasaPKB.map((jasa, index) => [
@@ -102,13 +122,32 @@ export const generatePDF = (pkb: PKBWithRelations) => {
     margin: { left: 10 },
     tableWidth: 190,
     styles: {
-      lineColor: "#000000",
-      fillColor: "#FFFFFF",
-      textColor: "#000000",
-      lineWidth: 0.3,
-      fontSize: 7,
+      fontSize: 9,
       cellPadding: 1,
       minCellHeight: 1,
+    },
+    theme: "plain",
+    willDrawCell: (data) => {
+      if (data.section == "foot") {
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.1);
+        doc.line(
+          10,
+          data.cell.y + data.row.height,
+          200,
+          data.cell.y + data.row.height,
+        );
+      } else if (data.section == "head") {
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.1);
+        doc.line(10, data.cell.y, 200, data.cell.y);
+        doc.line(
+          10,
+          data.cell.y + data.row.height,
+          200,
+          data.cell.y + data.row.height,
+        );
+      }
     },
     head: [
       [
@@ -153,7 +192,7 @@ export const generatePDF = (pkb: PKBWithRelations) => {
 
   const startYFooter2 = (doc as any).lastAutoTable.finalY + 5;
 
-  doc.setFontSize(7);
+  doc.setFontSize(8);
   doc.text(
     "ANDA MENDAPATKAN VOUCHER DARI MOTORKU X SEBESAR RP 0",
     200,
