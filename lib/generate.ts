@@ -99,8 +99,6 @@ export async function generateNoAntrian(tipeAntrian: string): Promise<string> {
     },
   });
 
-  console.log("maxAntrian", maxAntrian);
-
   let nextIncrement = 1;
   if (maxAntrian && maxAntrian.no_antrian) {
     const lastQueueNumber = parseInt(maxAntrian.no_antrian.slice(1), 10);

@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/popover";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,7 +31,7 @@ interface Wilayah {
   name: string;
 }
 
-export function ComboboxDefault({
+export function ComboboxStatic({
   items,
   form,
   name,
@@ -41,6 +40,8 @@ export function ComboboxDefault({
   form: any;
   name: string;
 }) {
+  const [open, setOpen] = React.useState(false);
+
   return (
     <FormField
       control={form.control}
@@ -48,7 +49,7 @@ export function ComboboxDefault({
       render={({ field }) => (
         <FormItem>
           <FormLabel>{name}</FormLabel>
-          <Popover>
+          <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
@@ -82,6 +83,7 @@ export function ComboboxDefault({
                         key={item.name}
                         onSelect={() => {
                           form.setValue(name, item.id);
+                          setOpen(false);
                         }}
                       >
                         {item.name}

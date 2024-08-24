@@ -16,6 +16,7 @@ export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
   const session = await auth();
+
   const user = session?.user!;
 
   const user_details = await getUserByEmail(user.email!);

@@ -44,7 +44,6 @@ const content: Content = {
           title: "Gudang",
           link: "/dashboard/gudang",
           icon: "warehouse",
-          disabled: true,
         },
         {
           title: "Rekening",

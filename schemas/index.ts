@@ -228,3 +228,37 @@ export const pkbFormSchema = z.object({
   uang_kembalian: z.coerce.number(),
   tipe_pembayaran: z.string().min(1),
 });
+
+export const gudangFormSchema = z.object({
+  kode: z.string().min(1, { message: "Kode harus diisi." }),
+  statusAktif: z.boolean().default(false),
+  nama: z.string().min(5, { message: "Nama harus setidaknya 5 karakter." }),
+  alamat: z.string().min(5, {
+    message: "Alamat harus setidaknya 5 karakter.",
+  }),
+  provinsi: z.string().min(1, {
+    message: "Provinsi harus diisi!",
+  }),
+  kabupaten: z.string().min(1, {
+    message: "Kabupaten harus diisi!",
+  }),
+  kecamatan: z.string().min(1, {
+    message: "Kecamatan Harus diisi!",
+  }),
+  kelurahan: z.string().min(1, {
+    message: "Kelurahan Harus diisi!",
+  }),
+  kodepos: z.string().min(5, {
+    message: "Kodepos harus setidaknya 5 karakter.",
+  }),
+  notelp: z.string().min(1, {
+    message: "Nomor Telpon harus setidaknya 5 karakter.",
+  }),
+  nohp: z.string().min(5, {
+    message: "Nomor HP harus setidaknya 5 karakter.",
+  }),
+  email: z.string().min(1, {
+    message: "Email harus diisi!",
+  }),
+  catatan: z.string().nullable().optional(),
+});

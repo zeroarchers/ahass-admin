@@ -8,7 +8,6 @@ async function main() {
   const dataPath = path.join(__dirname, "../../scraping/kendaraan.json");
   const kendaraanData = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
 
-  // Insert the data into the Prisma database
   await prisma.kendaraan.createMany({
     data: kendaraanData,
     skipDuplicates: true,

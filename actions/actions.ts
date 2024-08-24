@@ -42,8 +42,8 @@ export async function updateKaryawan(data: z.infer<typeof karyawanFormSchema>) {
 }
 
 export async function deleteKaryawan(id: string) {
-  const karyawan_exist = !getKaryawanById(id);
-  if (karyawan_exist) {
+  const karyawan_exist = getKaryawanById(id);
+  if (!karyawan_exist) {
     return { result: "Error!", description: "Input data tidak valid!" };
   }
 
@@ -86,8 +86,8 @@ export async function updateJasa(data: z.infer<typeof jasaFormSchema>) {
 }
 
 export async function deleteJasa(kode: string) {
-  const jasa_exist = !getJasaById(kode);
-  if (jasa_exist) {
+  const jasa_exist = getJasaById(kode);
+  if (!jasa_exist) {
     return { result: "Error!", description: "Input data tidak valid!" };
   }
 
@@ -134,8 +134,8 @@ export async function updateSparepart(
 }
 
 export async function deleteSparepart(kode: string) {
-  const sparepart_exist = !getSparepartById(kode);
-  if (sparepart_exist) {
+  const sparepart_exist = getSparepartById(kode);
+  if (!sparepart_exist) {
     return { result: "Error!", description: "Input data tidak valid!" };
   }
 

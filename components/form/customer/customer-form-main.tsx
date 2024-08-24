@@ -17,51 +17,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { ComboboxDefault } from "@/components/ui/combobox-default";
-
-interface Wilayah {
-  id: string;
-  name: string;
-}
+import { ComboboxStatic } from "@/components/ui/combobox-static";
+import { useLocationSelector } from "@/hooks/use-location-selector";
 
 export function CustomerMain({ form }: { form: any }) {
-  const [provinces, setProvinces] = useState<Wilayah[]>([]);
-  const [regencies, setRegencies] = useState<Wilayah[]>([]);
-  const [districts, setDistricts] = useState<Wilayah[]>([]);
-  const [villages, setVillages] = useState<Wilayah[]>([]);
-  const selectedProvince = form.watch("provinsi");
-  const selectedRegency = form.watch("kabupaten");
-  const selectedDistrict = form.watch("kecamatan");
-
-  useEffect(() => {
-    if (!selectedProvince && !selectedRegency && !selectedDistrict) {
-      fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setProvinces(data))
-        .catch((error) => console.error("Error fetching provinces:", error));
-    } else if (selectedProvince && !selectedRegency) {
-      fetch(
-        `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvince}.json`,
-      )
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setRegencies(data))
-        .catch((error) => console.error("Error fetching regencies:", error));
-    } else if (selectedRegency && !selectedDistrict) {
-      fetch(
-        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegency}.json`,
-      )
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setDistricts(data))
-        .catch((error) => console.error("Error fetching districts:", error));
-    } else if (selectedDistrict) {
-      fetch(
-        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedDistrict}.json`,
-      )
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setVillages(data))
-        .catch((error) => console.error("Error fetching villages:", error));
-    }
-  }, [selectedProvince, selectedRegency, selectedDistrict]);
+  const { provinces, regencies, districts, villages } =
+    useLocationSelector(form);
 
   return (
     <Card>
@@ -268,10 +229,10 @@ export function CustomerMain({ form }: { form: any }) {
             </FormItem>
           )}
         />
-        <ComboboxDefault name="provinsi" form={form} items={provinces} />
-        <ComboboxDefault name="kabupaten" form={form} items={regencies} />
-        <ComboboxDefault name="kecamatan" form={form} items={districts} />
-        <ComboboxDefault name="kelurahan" form={form} items={villages} />
+        <ComboboxStatic name="provinsi" form={form} items={provinces} />
+        <ComboboxStatic name="kabupaten" form={form} items={regencies} />
+        <ComboboxStatic name="kecamatan" form={form} items={districts} />
+        <ComboboxStatic name="kelurahan" form={form} items={villages} />
         <FormField
           control={form.control}
           name="kodepos"

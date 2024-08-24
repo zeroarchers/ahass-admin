@@ -39,14 +39,30 @@ export default function Page() {
   });
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    const { result, description } = await login(values);
-    toast(result, {
-      description,
-      action: {
-        label: "Oke!",
-        onClick: () => toast.dismiss,
-      },
-    });
+    try {
+      const response = await login(values);
+      if (response && "result" in response && "description" in response) {
+        const { result, description } = response;
+        toast(result, {
+          description,
+          action: {
+            label: "Oke!",
+            onClick: () => toast.dismiss(),
+          },
+        });
+      } else {
+        throw new Error("Invalid response from login function");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast("Login Error", {
+        description: "An error occurred during login. Please try again.",
+        action: {
+          label: "Oke!",
+          onClick: () => toast.dismiss(),
+        },
+      });
+    }
     form.reset();
   }
 

@@ -1,5 +1,5 @@
 import DynamicTable from "@/components/table/dynamic-table";
-import { columns } from "@/components/table/columns/jasa-columns";
+import { columns } from "@/components/table/columns/bag-columns";
 import { getAllJasa } from "@/data/jasa";
 
 export default async function Page() {

@@ -283,3 +283,20 @@ model SparepartPKB {
   nama_sparepart          String
   ref_jasa                String
 }
+
+model Gudang {
+    kode                String @id
+    statusAktif         Boolean
+    nama String
+    alamat String
+    provinsi String
+    kabupaten String
+    kecamatan String
+    kelurahan String
+    kodepos String
+    notelp String
+    nohp String
+    email String
+    catatan String?
+  
+  }

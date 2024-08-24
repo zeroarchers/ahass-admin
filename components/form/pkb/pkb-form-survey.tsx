@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FormControl,
   FormField,
@@ -35,6 +35,30 @@ const alasan_ke_ahass = [
 
 export function PkbFormSurvey({ form }: { form: any }) {
   const watch_km_sekarang = form.watch("km_sekarang");
+
+  const [gudangItems, setGudangItems] = useState([]);
+
+  useEffect(() => {
+    const fetchGudang = async () => {
+      try {
+        const response = await fetch("/api/gudang");
+        if (!response.ok) {
+          throw new Error("Failed to fetch gudang data");
+        }
+        const data = await response.json();
+        setGudangItems(data);
+
+        if (data.length > 0) {
+          form.setValue("gudang", data[0].kode);
+          console.log("Set gudang to:", data[0].kode);
+        }
+      } catch (error) {
+        console.error("Error fetching gudang data:", error);
+      }
+    };
+
+    fetchGudang();
+  }, [form]);
 
   useEffect(() => {
     if (watch_km_sekarang) {
@@ -206,7 +230,11 @@ export function PkbFormSurvey({ form }: { form: any }) {
                   <SelectValue placeholder="Select Gudang" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="GD01">GD01 - GUDANG AHASS</SelectItem>
+                  {gudangItems.map((gudang: any) => (
+                    <SelectItem key={gudang.kode} value={gudang.kode}>
+                      {gudang.kode} - {gudang.nama}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </FormControl>

@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useEffect, useState } from "react";
 
 import {
   FormControl,
@@ -8,59 +7,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { ComboboxStatic } from "@/components/ui/combobox-static";
+import { useLocationSelector } from "@/hooks/use-location-selector";
 
-interface Wilayah {
-  id: string;
-  name: string;
-}
 export function KaryawanMain({ form }: { form: any }) {
-  const [provinces, setProvinces] = useState<Wilayah[]>([]);
-  const [regencies, setRegencies] = useState<Wilayah[]>([]);
-  const [districts, setDistricts] = useState<Wilayah[]>([]);
-  const [villages, setVillages] = useState<Wilayah[]>([]);
-  const selectedProvince = form.watch("provinsi");
-  const selectedRegency = form.watch("kabupaten");
-  const selectedDistrict = form.watch("kecamatan");
-
-  useEffect(() => {
-    if (!selectedProvince && !selectedRegency && !selectedDistrict) {
-      fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setProvinces(data))
-        .catch((error) => console.error("Error fetching provinces:", error));
-    } else if (selectedProvince && !selectedRegency) {
-      fetch(
-        `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvince}.json`,
-      )
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setRegencies(data))
-        .catch((error) => console.error("Error fetching regencies:", error));
-    } else if (selectedRegency && !selectedDistrict) {
-      fetch(
-        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegency}.json`,
-      )
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setDistricts(data))
-        .catch((error) => console.error("Error fetching districts:", error));
-    } else if (selectedDistrict) {
-      fetch(
-        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedDistrict}.json`,
-      )
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setVillages(data))
-        .catch((error) => console.error("Error fetching villages:", error));
-    }
-  }, [selectedProvince, selectedRegency, selectedDistrict]);
+  const { provinces, regencies, districts, villages } =
+    useLocationSelector(form);
 
   return (
     <Card>
@@ -122,127 +77,10 @@ export function KaryawanMain({ form }: { form: any }) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="provinsi"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel>Provinsi</FormLabel>
-                <Select
-                  onValueChange={(value) => {
-                    field.onChange(value);
-                    form.setValue("kabupaten", "");
-                  }}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder={field.value ?? `Pilih provinsi karyawan`}
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {provinces.map((province) => (
-                      <SelectItem key={province.id} value={province.id}>
-                        {province.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
-        <FormField
-          control={form.control}
-          name="kabupaten"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kabupaten</FormLabel>
-              <Select
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  form.setValue("kecamatan", "");
-                }}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={field.value ?? `Pilih kabupaten karyawan`}
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {regencies.map((regency) => (
-                    <SelectItem key={regency.id} value={regency.id}>
-                      {regency.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="kecamatan"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kecamatan</FormLabel>
-              <Select
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  form.setValue("kelurahan", "");
-                }}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={field.value ?? `Pilih kecamatan karyawan`}
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {districts.map((district) => (
-                    <SelectItem key={district.id} value={district.id}>
-                      {district.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="kelurahan"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kelurahan</FormLabel>
-              <Select onValueChange={field.onChange}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={field.value ?? `Pilih kelurahan karyawan`}
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {villages.map((village) => (
-                    <SelectItem key={village.id} value={village.id}>
-                      {village.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <ComboboxStatic name="provinsi" form={form} items={provinces} />
+        <ComboboxStatic name="kabupaten" form={form} items={regencies} />
+        <ComboboxStatic name="kecamatan" form={form} items={districts} />
+        <ComboboxStatic name="kelurahan" form={form} items={villages} />
         <FormField
           control={form.control}
           name="kodepos"
