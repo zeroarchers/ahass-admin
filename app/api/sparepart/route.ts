@@ -3,13 +3,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  console.log("searchParams", searchParams);
   const nama_sparepart = searchParams.get("nama") || "";
   const gudangId = searchParams.get("gudangId") || "";
 
   try {
-    console.log("nama_sparepart", nama_sparepart);
-    console.log("gudangId", gudangId);
     const spareparts = await prisma.sparePart.findMany({
       where: {
         OR: [

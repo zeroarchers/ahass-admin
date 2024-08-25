@@ -29,9 +29,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 export function SparepartBAGModal({
   onAddItem,
   initialValues,
+  gudangId,
 }: {
   onAddItem: (item: any) => void;
   initialValues?: any;
+  gudangId: string;
 }) {
   const sparepartModalSchemaWithoutSparepart = sparepartBAGSchema.omit({
     sparepart: true,
@@ -63,7 +65,6 @@ export function SparepartBAGModal({
     };
     const result = sparepartBAGSchema.safeParse(selected);
     if (result.success) {
-      console.log("Adding...", result.data);
       onAddItem(result.data);
       setOpen(false);
     }
@@ -89,15 +90,14 @@ export function SparepartBAGModal({
                   form={form}
                   label="Kode Sparepart"
                   name="kode_sparepart"
-                  apiEndpoint="/api/sparepart?"
+                  apiEndpoint={`/api/sparepart?gudangId=${gudangId}&`}
                   searchParam="nama"
                   itemToComboboxItem={(
                     sparepart: SparePart & { stockCount: number },
                   ) => {
-                    console.log("stockcount", sparepart.stockCount);
                     return {
                       value: sparepart.kodeSparepart,
-                      label: sparepart.kodeSparepart,
+                      label: `${sparepart.kodeSparepart} - ${sparepart.namaSparepart}`,
                       description: sparepart.stockCount.toString(),
                       data: sparepart,
                     };

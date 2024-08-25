@@ -196,7 +196,12 @@ export function BAGForm({ initialValues }: BAGFormProps) {
               data={sparepartTableData}
               setData={setSparepartTableData}
               columns={BAGSparepartColumns}
-              ModalComponent={SparepartBAGModal}
+              ModalComponent={(props) => (
+                <SparepartBAGModal
+                  {...props}
+                  gudangId={form.watch("gudangId")}
+                />
+              )}
             />
           </CardContent>
         </Card>

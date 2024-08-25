@@ -4,7 +4,6 @@ import { getBagById } from "@/data/bag";
 export default async function Page({ params }: { params: { id: string } }) {
   const data = await getBagById(params.id);
 
-  console.log(data);
   if (data === null) return <div>PKB tidak ditemukan</div>;
 
   return (
