@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import {  DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import EditButton from "../edit-button";
 import DeleteButton from "../delete-button";
@@ -57,9 +57,11 @@ export const columns: ColumnDef<Customer>[] = [
     ),
   },
   {
-    accessorKey: "kota",
+    accessorKey: "kabupaten",
     header: "Kota",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("kota")}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("kabupaten")}</div>
+    ),
   },
   {
     accessorKey: "notelp",
@@ -77,7 +79,9 @@ export const columns: ColumnDef<Customer>[] = [
     accessorKey: "status",
     header: "Status Aktif",
     cell: ({ row }) => (
-      <div className="capitalize">{(row.getValue("status") as boolean) ? "Aktif" : "Tidak aktif"}</div>
+      <div className="capitalize">
+        {(row.getValue("status") as boolean) ? "Aktif" : "Tidak aktif"}
+      </div>
     ),
   },
   {

@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/form";
 
 import { pkbFormSchema } from "@/schemas";
-import { toast } from "sonner";
 import { CircularProgress } from "@/components/misc/circular-progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -42,6 +41,7 @@ import {
   SparepartCalculationsCard,
   TotalCalculationsCard,
 } from "./pkb-calculations";
+import { responseToast } from "@/lib/responseToast";
 
 interface PendaftaranFormProps {
   initialValues?: z.infer<typeof pkbFormSchema>;
@@ -76,15 +76,7 @@ export function PendaftaranForm({
     } else {
       response = await createPkb(validData);
     }
-    if (response) {
-      toast(response.result, {
-        description: response.description,
-        action: {
-          label: "Oke!",
-          onClick: () => toast.dismiss,
-        },
-      });
-    }
+    responseToast({ name: "PKB", is_edit, response: response });
     setIsLoading(false);
   }
 

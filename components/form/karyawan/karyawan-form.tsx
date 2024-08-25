@@ -15,8 +15,9 @@ import { KaryawanGaji } from "./karyawan-form-gaji";
 import { createKaryawan, updateKaryawan } from "@/actions/actions";
 
 import { karyawanFormSchema } from "@/schemas";
-import { toast } from "sonner";
 import { CircularProgress } from "@/components/misc/circular-progress";
+import { responseToast } from "@/lib/responseToast";
+import { transformLocations } from "@/lib/locationTransformer";
 
 interface KaryawanFormProps {
   initialValues?: z.infer<typeof karyawanFormSchema>;
@@ -63,62 +64,19 @@ export function KaryawanForm({ initialValues }: KaryawanFormProps) {
     },
   });
 
-  async function fetchPlaceName(url: string): Promise<string> {
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      return data.name;
-    } catch (error) {
-      console.error("Error fetching place name:", error);
-      return "";
-    }
-  }
-
   async function onSubmit(values: z.infer<typeof karyawanFormSchema>) {
-    const isCapitalized = /^[A-Z\s]+$/.test(values.provinsi);
-    const provinsiName = isCapitalized
-      ? values.provinsi
-      : await fetchPlaceName(
-          `https://www.emsifa.com/api-wilayah-indonesia/api/province/${values.provinsi}.json`,
-        );
-    const kabupatenName = isCapitalized
-      ? values.kabupaten
-      : await fetchPlaceName(
-          `https://www.emsifa.com/api-wilayah-indonesia/api/regency/${values.kabupaten}.json`,
-        );
-    const kecamatanName = isCapitalized
-      ? values.kecamatan
-      : await fetchPlaceName(
-          `https://www.emsifa.com/api-wilayah-indonesia/api/district/${values.kecamatan}.json`,
-        );
-    const kelurahanName = isCapitalized
-      ? values.kelurahan
-      : await fetchPlaceName(
-          `https://www.emsifa.com/api-wilayah-indonesia/api/village/${values.kelurahan}.json`,
-        );
-    const transformedValues = {
-      ...values,
-      provinsi: provinsiName,
-      kabupaten: kabupatenName,
-      kecamatan: kecamatanName,
-      kelurahan: kelurahanName,
-    };
     setIsLoading(true);
+
+    const transformedValues = await transformLocations(values);
+
     let response: { result: string; description: any };
     if (is_edit) {
       response = await updateKaryawan(transformedValues);
     } else {
       response = await createKaryawan(transformedValues);
     }
-    if (response) {
-      toast(response.result, {
-        description: response.description,
-        action: {
-          label: "Oke!",
-          onClick: () => toast.dismiss,
-        },
-      });
-    }
+
+    responseToast({ name: "Karyawan", is_edit, response: response });
     setIsLoading(false);
   }
 

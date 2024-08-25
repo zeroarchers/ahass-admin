@@ -10,11 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 
 import { kendaraanFormSchema } from "@/schemas";
-import { toast } from "sonner";
 import { CircularProgress } from "@/components/misc/circular-progress";
 import { KendaraanStnk } from "./kendaraan-form-stnk";
 import { KendaraanTipe } from "./kendaraan-form-tipe";
 import { createKendaraan, updateKendaraan } from "@/actions/kendaraan";
+import { responseToast } from "@/lib/responseToast";
 
 interface KendaraanFormProps {
   initialValues?: z.infer<typeof kendaraanFormSchema>;
@@ -34,17 +34,10 @@ export function KendaraanForm({ initialValues }: KendaraanFormProps) {
     } else {
       response = await createKendaraan(values);
     }
-    if (response) {
-      toast(response.result, {
-        description: response.description,
-        action: {
-          label: "Oke!",
-          onClick: () => toast.dismiss,
-        },
-      });
-    }
+    responseToast({ name: "Kendaraan", is_edit, response: response });
     setIsLoading(false);
   }
+
   const form = useForm<z.infer<typeof kendaraanFormSchema>>({
     resolver: zodResolver(kendaraanFormSchema),
     defaultValues: initialValues || {

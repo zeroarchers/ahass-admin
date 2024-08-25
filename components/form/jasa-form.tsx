@@ -31,7 +31,7 @@ import { jasaFormSchema } from "@/schemas";
 import { useEffect } from "react";
 
 import { CircularProgress } from "@/components/misc/circular-progress";
-import { toast } from "sonner";
+import { responseToast } from "@/lib/responseToast";
 
 interface JasaFormProps {
   initialValues?: z.infer<typeof jasaFormSchema>;
@@ -72,15 +72,7 @@ export function JasaForm({ initialValues }: JasaFormProps) {
     } else {
       response = await createJasa(values);
     }
-    if (response) {
-      toast(response.result, {
-        description: response.description,
-        action: {
-          label: "Oke!",
-          onClick: () => toast.dismiss,
-        },
-      });
-    }
+    responseToast({ name: "Jasa", is_edit, response: response });
     setIsLoading(false);
   }
 

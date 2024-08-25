@@ -28,8 +28,8 @@ import { createSparepart, updateSparepart } from "@/actions/actions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { sparepartFormSchema } from "@/schemas";
 import { useEffect } from "react";
-import { toast } from "sonner";
 import { CircularProgress } from "../misc/circular-progress";
+import { responseToast } from "@/lib/responseToast";
 
 interface SparepartFormProps {
   initialValues?: z.infer<typeof sparepartFormSchema>;
@@ -164,15 +164,7 @@ export function SparepartForm({ initialValues }: SparepartFormProps) {
     } else {
       response = await createSparepart(values);
     }
-    if (response) {
-      toast(response.result, {
-        description: response.description,
-        action: {
-          label: "Oke!",
-          onClick: () => toast.dismiss,
-        },
-      });
-    }
+    responseToast({ name: "Sparepart", is_edit, response: response });
     setIsLoading(false);
   }
 
