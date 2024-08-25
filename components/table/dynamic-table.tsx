@@ -30,9 +30,11 @@ import TableTemplate from "./table-template";
 export default function DynamicTable({
   data,
   columns,
+  disableCreate,
 }: {
   data: any[];
   columns: ColumnDef<any>[];
+  disableCreate?: boolean;
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -42,6 +44,7 @@ export default function DynamicTable({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [filterValue, setFilterValue] = React.useState("");
+  const currentPath = usePathname();
 
   const table = useReactTable({
     data,
@@ -110,14 +113,16 @@ export default function DynamicTable({
           </DropdownMenu>
         </div>
         <div className="flex justify-between md:justify-end">
-          <Link href={`${usePathname()}/create`}>
-            <Button className="me-5">
-              <div className="flex align-center justify-between">
-                <p className="leading-relaxed">Create</p>
-                <Plus />
-              </div>
-            </Button>
-          </Link>
+          {!disableCreate && (
+            <Link href={`${currentPath}/create`}>
+              <Button className="me-5">
+                <div className="flex align-center justify-between">
+                  <p className="leading-relaxed">Create</p>
+                  <Plus />
+                </div>
+              </Button>
+            </Link>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">

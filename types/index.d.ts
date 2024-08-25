@@ -127,6 +127,11 @@ export type SparepartWithQuantity = {
   quantity: number;
 };
 
-export type BAGItemWithSpareparts = BAGItem & {
-  spareparts: SparePart[];
+type SparepartWithStock = {
+  kodeSparepart: string;
+  namaSparepart: string;
+  gudang: string;
+  stok: number;
+  hargaLokal: number;
+  hargaNasional: number | null;
 };

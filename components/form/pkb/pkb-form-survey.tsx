@@ -101,7 +101,7 @@ export function PkbFormSurvey({ form }: { form: any }) {
             <FormLabel>Dari Dealer Sendiri</FormLabel>
             <FormControl>
               <RadioGroup
-                value={field.value ? "true" : "false"}
+                value={field.value ? "true" : ""}
                 onValueChange={field.onChange}
               >
                 <div className="flex items-center space-x-2">
@@ -109,7 +109,7 @@ export function PkbFormSurvey({ form }: { form: any }) {
                   <Label htmlFor="iya">Ya</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="false" id="tidak" />
+                  <RadioGroupItem value="" id="tidak" />
                   <Label htmlFor="tidak">Tidak</Label>
                 </div>
               </RadioGroup>
@@ -126,11 +126,11 @@ export function PkbFormSurvey({ form }: { form: any }) {
             <FormLabel>Konfirmasi Pergantian Part</FormLabel>
             <FormControl>
               <RadioGroup
-                value={field.value ? "true" : "false"}
+                value={field.value ? "true" : ""}
                 onValueChange={field.onChange}
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="false" id="langsung" />
+                  <RadioGroupItem value="" id="langsung" />
                   <Label htmlFor="langsung">Langsung</Label>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -151,7 +151,7 @@ export function PkbFormSurvey({ form }: { form: any }) {
             <FormLabel>Part Bekas Dibawa Pulang</FormLabel>
             <FormControl>
               <RadioGroup
-                value={field.value ? "true" : "false"}
+                value={field.value ? "true" : ""}
                 onValueChange={field.onChange}
               >
                 <div className="flex items-center space-x-2">
@@ -159,7 +159,7 @@ export function PkbFormSurvey({ form }: { form: any }) {
                   <Label htmlFor="iya">Ya</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="false" id="tidak" />
+                  <RadioGroupItem value="" id="tidak" />
                   <Label htmlFor="tidak">Tidak</Label>
                 </div>
               </RadioGroup>

@@ -18,7 +18,7 @@ const content: Content = {
       cards: [
         {
           title: "Informasi Stock",
-          link: "/dashboard/informasi-stock",
+          link: "/dashboard/informasi-stok",
           icon: "blocks",
         },
       ],

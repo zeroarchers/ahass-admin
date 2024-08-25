@@ -24,8 +24,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
 import { BAGFormSchema } from "@/schemas";
 import { useEffect } from "react";
 
@@ -35,7 +33,6 @@ import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "../ui/label";
 import { GenericPkbTable } from "./pkb/pkb-table";
-import { sparepartColumns } from "./pkb/pkb-sparepart-columns";
 import { SparepartBAGModal } from "./bag/bag-sparepart-modal";
 import { BAGSparepartColumns } from "./bag/bag-sparepart-columns";
 import { createBAG } from "@/actions/bag";
@@ -62,6 +59,7 @@ export function BAGForm({ initialValues }: BAGFormProps) {
   useEffect(() => {
     if (initialValues) {
       form.reset(initialValues);
+      setSparepartTableData(initialValues.sparepartBAG);
     }
   }, [initialValues, form]);
 
@@ -157,7 +155,7 @@ export function BAGForm({ initialValues }: BAGFormProps) {
                   <FormLabel>Tipe BAG</FormLabel>
                   <FormControl>
                     <RadioGroup
-                      value={field.value ? "true" : "false"}
+                      value={field.value ? "true" : ""}
                       onValueChange={field.onChange}
                     >
                       <div className="flex items-center space-x-2">
@@ -165,7 +163,7 @@ export function BAGForm({ initialValues }: BAGFormProps) {
                         <Label htmlFor="iya">Stock Masuk</Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="false" id="tidak" />
+                        <RadioGroupItem value="" id="tidak" />
                         <Label htmlFor="tidak">Stock Keluar</Label>
                       </div>
                     </RadioGroup>
@@ -204,7 +202,9 @@ export function BAGForm({ initialValues }: BAGFormProps) {
           </CardContent>
         </Card>
 
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={is_edit}>
+          Submit
+        </Button>
       </form>
     </Form>
   );

@@ -65,5 +65,6 @@ export async function createBAG(data: any) {
     });
   }
   revalidatePath("/dashboard/bag");
+  revalidatePath("/dashboard/informasi-stok");
   redirect("/dashboard/bag");
 }
