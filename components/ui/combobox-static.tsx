@@ -61,8 +61,11 @@ export function ComboboxStatic({
                   )}
                 >
                   {field.value
-                    ? items.find((item: Wilayah) => item.id === field.value)
-                        ?.name
+                    ? items.find(
+                        (item: Wilayah) =>
+                          item.id === field.value ||
+                          item.name === field.value.toUpperCase(),
+                      )?.name
                     : "Select " + name}
                   <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>

@@ -23,11 +23,11 @@ import { gudangFormSchema } from "@/schemas";
 import { useEffect } from "react";
 
 import { CircularProgress } from "@/components/misc/circular-progress";
-import { toast } from "sonner";
 import { ComboboxStatic } from "@/components/ui/combobox-static";
 import { useLocationSelector } from "@/hooks/use-location-selector";
 import { transformLocations } from "@/lib/locationTransformer";
 import { createGudang, updateGudang } from "@/actions/gudang";
+import { responseToast } from "@/lib/responseToast";
 
 interface GudangFormProps {
   initialValues?: z.infer<typeof gudangFormSchema>;
@@ -65,24 +65,13 @@ export function GudangForm({ initialValues }: GudangFormProps) {
 
     const transformedValues = await transformLocations(values);
     let response: { result: string; description: any };
-    console.log(values);
 
     if (is_edit) {
-      response = await updateGudang(values);
+      response = await updateGudang(transformedValues);
     } else {
-      response = await createGudang(values);
+      response = await createGudang(transformedValues);
     }
-    response = { result: "foo", description: "bar" };
-    if (response) {
-      toast(response.result, {
-        description: response.description,
-        action: {
-          label: "Oke!",
-          onClick: () => toast.dismiss,
-        },
-      });
-    }
-    console.log(transformedValues);
+    responseToast({ name: "Gudang", is_edit, response: response });
     setIsLoading(false);
   }
 

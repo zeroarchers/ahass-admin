@@ -11,46 +11,68 @@ export function useLocationSelector(form: any) {
   const [districts, setDistricts] = useState<Wilayah[]>([]);
   const [villages, setVillages] = useState<Wilayah[]>([]);
 
-  const selectedProvince = form.watch("provinsi");
-  const selectedRegency = form.watch("kabupaten");
-  const selectedDistrict = form.watch("kecamatan");
+  const selectedProvince = form.watch("provinsi").toUpperCase();
+  const selectedRegency = form.watch("kabupaten").toUpperCase();
+  const selectedDistrict = form.watch("kecamatan").toUpperCase();
+
   const apiEndpoint = "https://mozaldy.github.io/api-wilayah-indonesia/api";
 
   useEffect(() => {
-    if (!selectedProvince) {
-      fetch(`${apiEndpoint}/provinces.json`)
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setProvinces(data))
-        .catch((error) => console.error("Error fetching provinces:", error));
-    }
-  }, [selectedProvince, form]);
+    fetch(`${apiEndpoint}/provinces.json`)
+      .then((response) => response.json())
+      .then((data: Wilayah[]) => {
+        setProvinces(data);
+      })
+      .catch((error) => console.error("Error fetching provinces:", error));
+  }, []);
 
   useEffect(() => {
     if (selectedProvince) {
-      fetch(`${apiEndpoint}/regencies/${selectedProvince}.json`)
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setRegencies(data))
-        .catch((error) => console.error("Error fetching regencies:", error));
+      const provinceId = provinces.find(
+        (p) => p.id === selectedProvince || p.name === selectedProvince,
+      )?.id;
+      if (provinceId) {
+        fetch(`${apiEndpoint}/regencies/${provinceId}.json`)
+          .then((response) => response.json())
+          .then((data: Wilayah[]) => {
+            setRegencies(data);
+          })
+          .catch((error) => console.error("Error fetching regencies:", error));
+      }
     }
-  }, [selectedProvince, selectedRegency]);
+  }, [selectedProvince, provinces]);
 
   useEffect(() => {
     if (selectedRegency) {
-      fetch(`${apiEndpoint}/districts/${selectedRegency}.json`)
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setDistricts(data))
-        .catch((error) => console.error("Error fetching districts:", error));
+      const regencyId = regencies.find(
+        (r) => r.id === selectedRegency || r.name === selectedRegency,
+      )?.id;
+      if (regencyId) {
+        fetch(`${apiEndpoint}/districts/${regencyId}.json`)
+          .then((response) => response.json())
+          .then((data: Wilayah[]) => {
+            setDistricts(data);
+          })
+          .catch((error) => console.error("Error fetching districts:", error));
+      }
     }
-  }, [selectedRegency, selectedDistrict]);
+  }, [selectedRegency, regencies]);
 
   useEffect(() => {
     if (selectedDistrict) {
-      fetch(`${apiEndpoint}/villages/${selectedDistrict}.json`)
-        .then((response) => response.json())
-        .then((data: Wilayah[]) => setVillages(data))
-        .catch((error) => console.error("Error fetching villages:", error));
+      const districtId = districts.find(
+        (d) => d.id === selectedDistrict || d.name === selectedDistrict,
+      )?.id;
+      if (districtId) {
+        fetch(`${apiEndpoint}/villages/${districtId}.json`)
+          .then((response) => response.json())
+          .then((data: Wilayah[]) => {
+            setVillages(data);
+          })
+          .catch((error) => console.error("Error fetching villages:", error));
+      }
     }
-  }, [selectedDistrict]);
+  }, [selectedDistrict, districts]);
 
   return { provinces, regencies, districts, villages };
 }

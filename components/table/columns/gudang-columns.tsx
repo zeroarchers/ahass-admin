@@ -11,11 +11,11 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import EditButton from "../edit-button";
 import DeleteButton from "../delete-button";
-import { deleteJasa } from "@/actions/actions";
+import { deleteGudang } from "@/actions/gudang";
 
 export const columns: ColumnDef<Gudang>[] = [
   {
@@ -88,7 +88,7 @@ export const columns: ColumnDef<Gudang>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const jasa = row.original;
+      const gudang = row.original;
 
       return (
         <DropdownMenu>
@@ -101,13 +101,13 @@ export const columns: ColumnDef<Gudang>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(jasa.kode)}
+              onClick={() => navigator.clipboard.writeText(gudang.kode)}
             >
               Copy kode
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <EditButton id={jasa.kode.toString()} />
-            <DeleteButton id={jasa.kode} deleteAction={deleteJasa} />
+            <EditButton id={gudang.kode.toString()} />
+            <DeleteButton id={gudang.kode} deleteAction={deleteGudang} />
           </DropdownMenuContent>
         </DropdownMenu>
       );
