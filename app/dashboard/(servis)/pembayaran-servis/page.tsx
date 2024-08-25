@@ -30,6 +30,17 @@ export default async function Page({
 
   where.status_pkb = "selesai";
 
+  const select = {
+    status_pkb: true,
+    mekanik: true,
+    no_pkb: true,
+    no_polisi: true,
+    tanggal_bayar: true,
+    uang_bayar: true,
+    tipe_pembayaran: true,
+    no_bayar: true,
+  };
+
   const { data, totalCount } = await getItemsWithDate<PKBWithRelations>(
     "pKB",
     page,
@@ -37,6 +48,7 @@ export default async function Page({
     filterColumn,
     startDate,
     endDate,
+    select,
     where,
   );
   const pageCount = Math.ceil(totalCount / pageSize);

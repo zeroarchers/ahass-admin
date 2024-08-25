@@ -26,7 +26,7 @@ const content: Content = {
     {
       title: "BAG",
       description: "",
-      cards: [{ title: "Customer", link: "/dashboard/bag", icon: "user" }],
+      cards: [{ title: "BAG", link: "/dashboard/bag", icon: "warehouse" }],
     },
   ],
 };

@@ -80,7 +80,6 @@ export async function generateNoAntrian(tipeAntrian: string): Promise<string> {
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  // Find the maximum queue number for today
   const maxAntrian = await prisma.pKB.findFirst({
     where: {
       tanggal: {
@@ -108,4 +107,41 @@ export async function generateNoAntrian(tipeAntrian: string): Promise<string> {
   const prefix = tipeAntrian.charAt(0).toUpperCase();
   const queueNumber = nextIncrement.toString().padStart(3, "0");
   return `${prefix}${queueNumber}`;
+}
+
+export async function generateNoBag({
+  ahassId,
+}: {
+  ahassId: string;
+}): Promise<string> {
+  const today = new Date();
+  const year = today.getFullYear().toString().slice(-2);
+  const startOfYear = new Date(today.getFullYear(), 0, 1);
+  const endOfYear = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+
+  const lastBag = await prisma.bAG.findFirst({
+    where: {
+      tanggal: {
+        gte: startOfYear,
+        lte: endOfYear,
+      },
+      noBag: {
+        startsWith: `${ahassId}-BAG-${year}`,
+      },
+    },
+    orderBy: {
+      noBag: "desc",
+    },
+  });
+
+  let nextNumber;
+  if (lastBag) {
+    const lastNumberStr = lastBag.noBag.split("-")[2];
+    const lastNumber = parseInt(lastNumberStr.slice(2), 10);
+    nextNumber = (lastNumber + 1).toString().padStart(6, "0");
+  } else {
+    nextNumber = "000001";
+  }
+
+  return `${ahassId}-BAG-${year}${nextNumber}`;
 }

@@ -37,6 +37,7 @@ export const getItemsWithDate = unstable_cache(
     filterColumn: string,
     startDate?: Date,
     endDate?: Date,
+    select: Record<string, any> = {},
     additionalWhere: Record<string, any> = {},
   ): Promise<{ data: T[]; totalCount: number }> => {
     const pageSize = 10;
@@ -59,29 +60,7 @@ export const getItemsWithDate = unstable_cache(
 
     const [data, { _count }] = await Promise.all([
       (prisma[model] as any).findMany({
-        select: {
-          status_pkb: true,
-          mekanik: true,
-          pemilik: true,
-          no_antrian: true,
-          no_pkb: true,
-          no_polisi: true,
-          no_mesin: true,
-          tanggal_bayar: true,
-          tanggal: true,
-          jasaPKB: {
-            select: {
-              jasa: {
-                select: {
-                  jobType: true,
-                },
-              },
-            },
-          },
-          uang_bayar: true,
-          tipe_pembayaran: true,
-          no_bayar: true,
-        },
+        select,
         skip: offset,
         take: pageSize,
         where,

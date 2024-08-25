@@ -47,38 +47,6 @@ model Account {
   @@id([provider, providerAccountId])
 }
 
-model SparePart {
-  id                 Int       @id @default(autoincrement())
-  kodeSparepart      String    @unique
-  aktif              Boolean
-  namaSparepart      String
-  namaLokalSparepart String?
-  grupSparepart      String
-  hargaLokal         Int
-  hargaNasional      Int?
-  uom                String
-  grupKodeAHM        String?
-  SparepartPKB       SparepartPKB[]
-  Stock              Stock[]
-  BAG    BAG[]
-}
-
-model Stock {
-  id            Int       @id @default(autoincrement())
-  kodeSparepart String
-  quantity      Int
-  updatedAt     DateTime  @updatedAt
-  SparePart     SparePart  @relation(fields: [kodeSparepart], references: [kodeSparepart])
-}
-
-model BAG {
-  id            String    @id
-  kodeSparepart String
-  isIncoming   Boolean
-  quantity      Int
-  tanggal    DateTime
-  SparePart     SparePart  @relation(fields: [kodeSparepart], references: [kodeSparepart])
-}
 
 model Jasa {
   kode              String @id
@@ -284,19 +252,68 @@ model SparepartPKB {
   ref_jasa                String
 }
 
+model SparePart {
+  id                 Int       @id @default(autoincrement())
+  kodeSparepart      String    @unique
+  aktif              Boolean
+  namaSparepart      String
+  namaLokalSparepart String?
+  grupSparepart      String
+  hargaLokal         Int
+  hargaNasional      Int?
+  uom                String
+  grupKodeAHM        String?
+  SparepartPKB       SparepartPKB[]
+  Stock              Stock[]
+  SparepartBAG       SparepartBAG[]
+}
+
 model Gudang {
-    kode                String @id
-    statusAktif         Boolean
-    nama String
-    alamat String
-    provinsi String
-    kabupaten String
-    kecamatan String
-    kelurahan String
-    kodepos String
-    notelp String
-    nohp String
-    email String
-    catatan String?
+  kode          String @id
+  statusAktif   Boolean
+  nama          String
+  alamat        String
+  provinsi      String
+  kabupaten     String
+  kecamatan     String
+  kelurahan     String
+  kodepos       String
+  notelp        String
+  nohp          String
+  email         String
+  catatan       String?
+  BAGs          BAG[]
+  Stocks        Stock[]
+}
+
+model BAG {
+  noBag          String      @id
+  tanggal        DateTime
+  gudangId    String
+  tipeBagIsIncoming  Boolean
+  alasan      String
   
-  }
+  gudang      Gudang   @relation(fields: [gudangId], references: [kode])
+  sparepartBAG  SparepartBAG[]
+}
+
+model SparepartBAG {
+  id          Int       @id @default(autoincrement())
+  noBag       String
+  kodeSparepart String
+  quantity    Int
+
+  bag         BAG @relation(fields: [noBag], references: [noBag])
+  sparepart   SparePart @relation(fields: [kodeSparepart], references: [kodeSparepart])
+}
+
+model Stock {
+  id          Int       @id @default(autoincrement())
+  kodeSparepart String 
+  gudangId    String
+  quantity    Int
+
+  sparepart   SparePart @relation(fields: [kodeSparepart], references: [kodeSparepart])
+  gudang      Gudang    @relation(fields: [gudangId], references: [kode])
+  @@unique([kodeSparepart, gudangId])
+}

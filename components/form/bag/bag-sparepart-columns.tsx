@@ -1,8 +1,7 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { BAG } from "@prisma/client";
+import type { BAG, BAGItem } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -11,11 +10,11 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
-import EditButton from "../edit-button";
+import { SparepartWithQuantity } from "@/types";
 
-export const columns: ColumnDef<BAG>[] = [
+export const BAGSparepartColumns: ColumnDef<SparepartWithQuantity>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -39,49 +38,32 @@ export const columns: ColumnDef<BAG>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "noBag",
-    header: "No. BAG",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("noBag")}</div>
-    ),
-  },
-  {
-    accessorKey: "tanggal",
-    header: "Tanggal",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {new Date(row.getValue("tanggal")).toLocaleDateString()}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "tipeBagIsIncoming",
-    header: "Tipe BAG",
+    accessorKey: "sparepart.kodeSparepart",
+    header: "Kode",
     cell: ({ row }) => {
-      const value = row.getValue("tipeBagIsIncoming") ? "Masuk" : "Keluar";
-      return <div className="capitalize">{value}</div>;
+      const kode = row.original.sparepart.kodeSparepart;
+      return <div className="capitalize">{kode}</div>;
     },
   },
   {
-    accessorKey: "gudangId",
-    header: "ID Gudang",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("gudangId")}</div>
-    ),
+    accessorKey: "sparepart.namaSparepart",
+    header: "Nama",
+    cell: ({ row }) => {
+      const nama = row.original.sparepart.namaSparepart;
+      return <div className="capitalize">{nama}</div>;
+    },
   },
   {
-    accessorKey: "alasan",
-    header: "Alasan",
+    accessorKey: "quantity",
+    header: "Quantity",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("alasan")}</div>
+      <div className="capitalize">{row.getValue("quantity")}</div>
     ),
   },
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const bag = row.original;
-
+    cell: ({ row, table }) => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -93,12 +75,11 @@ export const columns: ColumnDef<BAG>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(bag.noBag)}
+              // @ts-ignore
+              onClick={() => table.options.meta?.deleteRow(row.original)}
             >
-              Copy kode
+              Delete
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <EditButton id={bag.noBag.toString()} />
           </DropdownMenuContent>
         </DropdownMenu>
       );

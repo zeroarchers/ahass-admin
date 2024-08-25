@@ -1,9 +1,9 @@
-import DynamicTable from "@/components/table/dynamic-table-pagination";
+import type { PKBWithRelations } from "@/types";
+import { updatePkbStatus } from "@/actions/pkb";
 import { columns } from "@/components/table/columns/pendaftaran-pkb-columns";
 
-import type { PKBWithRelations } from "@/types";
+import DynamicTable from "@/components/table/dynamic-table-pagination";
 import { getItemsWithDate } from "@/data/table";
-import { updatePkbStatus } from "@/actions/pkb";
 
 export default async function Page({
   searchParams,
@@ -29,6 +29,26 @@ export default async function Page({
   let where: any = { status_pkb: {} };
   where.status_pkb.not = "selesai";
 
+  const select = {
+    status_pkb: true,
+    mekanik: true,
+    pemilik: true,
+    no_antrian: true,
+    no_pkb: true,
+    no_polisi: true,
+    no_mesin: true,
+    tanggal: true,
+    jasaPKB: {
+      select: {
+        jasa: {
+          select: {
+            jobType: true,
+          },
+        },
+      },
+    },
+  };
+
   const { data, totalCount } = await getItemsWithDate<PKBWithRelations>(
     "pKB",
     page,
@@ -36,6 +56,7 @@ export default async function Page({
     filterColumn,
     startDate,
     endDate,
+    select,
     where,
   );
 

@@ -262,3 +262,17 @@ export const gudangFormSchema = z.object({
   }),
   catatan: z.string().nullable().optional(),
 });
+
+export const sparepartBAGSchema = z.object({
+  sparepart: sparepartFormSchema,
+  namaSparepart: z.string(),
+  quantity: z.coerce.number().gt(0, "Kuantitas harus lebih dari 0!"),
+});
+
+export const BAGFormSchema = z.object({
+  tanggal: z.coerce.date(),
+  gudangId: z.string().min(1, { message: "Gudang harus dipilih!" }),
+  tipeBagIsIncoming: z.coerce.boolean(),
+  alasan: z.string().min(1, { message: "Alasan harus diisi!" }),
+  sparepartBAG: z.array(sparepartBAGSchema),
+});
