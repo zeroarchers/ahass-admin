@@ -12,7 +12,6 @@ export async function createGudang(data: z.infer<typeof gudangFormSchema>) {
   if (!validatedData.success) {
     return { result: "Error!", description: "Input data tidak valid!" };
   }
-  console.log(validatedData.data);
   await prisma.gudang.create({ data: validatedData.data });
   revalidatePath("/dashboard/gudang");
   redirect("/dashboard/gudang");

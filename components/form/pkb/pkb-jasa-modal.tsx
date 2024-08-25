@@ -115,7 +115,7 @@ export function JasaModal({
                   form={form}
                   label="Kode Jasa"
                   name="kode_jasa"
-                  apiEndpoint="/api/jasa"
+                  apiEndpoint="/api/jasa?"
                   searchParam="nama"
                   itemToComboboxItem={(jasa: Jasa) => {
                     return {

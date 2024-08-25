@@ -5,8 +5,6 @@ import { getAllSparepartsWithStock } from "@/data/stok";
 export default async function Page() {
   const rawData = await getAllSparepartsWithStock();
 
-  console.log(rawData);
-
   const data = rawData.map((item: any) => ({
     kodeSparepart: item.sparepart.kodeSparepart,
     namaSparepart: item.sparepart.namaSparepart,

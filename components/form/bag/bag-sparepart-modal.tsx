@@ -89,18 +89,21 @@ export function SparepartBAGModal({
                   form={form}
                   label="Kode Sparepart"
                   name="kode_sparepart"
-                  apiEndpoint="/api/sparepart"
+                  apiEndpoint="/api/sparepart?"
                   searchParam="nama"
-                  itemToComboboxItem={(sparepart: SparePart) => {
+                  itemToComboboxItem={(
+                    sparepart: SparePart & { stockCount: number },
+                  ) => {
+                    console.log("stockcount", sparepart.stockCount);
                     return {
                       value: sparepart.kodeSparepart,
                       label: sparepart.kodeSparepart,
-                      description: sparepart.namaSparepart?.toString(),
+                      description: sparepart.stockCount.toString(),
                       data: sparepart,
                     };
                   }}
                   onSelectItem={(item) => {
-                    form.setValue("namaSparepart", item.description);
+                    form.setValue("namaSparepart", item.data.namaSparepart);
                     setSelectedItem(item.data);
                   }}
                 />

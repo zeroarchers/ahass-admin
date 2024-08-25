@@ -149,7 +149,7 @@ export function PkbFormCustomer({
         form={form}
         label="Nama Pembawa"
         name="pembawa"
-        apiEndpoint="/api/customer"
+        apiEndpoint="/api/customer?"
         searchParam="nama"
         itemToComboboxItem={(customer) => ({
           value: customer.nama,

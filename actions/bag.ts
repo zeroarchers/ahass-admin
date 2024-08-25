@@ -21,8 +21,6 @@ export async function createBAG(data: any) {
 
   const noBag = await generateNoBag({ ahassId: "17168" });
 
-  console.log("noBag", noBag);
-
   await prisma.bAG.create({
     data: {
       noBag,

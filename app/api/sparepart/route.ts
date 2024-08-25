@@ -3,10 +3,14 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
+  console.log("searchParams", searchParams);
   const nama_sparepart = searchParams.get("nama") || "";
+  const gudangId = searchParams.get("gudangId") || "";
 
   try {
-    const sparepart = await prisma.sparePart.findMany({
+    console.log("nama_sparepart", nama_sparepart);
+    console.log("gudangId", gudangId);
+    const spareparts = await prisma.sparePart.findMany({
       where: {
         OR: [
           {
@@ -23,10 +27,21 @@ export async function GET(request: NextRequest) {
           },
         ],
       },
+      include: {
+        Stock: true,
+      },
       take: 10,
     });
 
-    return NextResponse.json(sparepart);
+    const sparepartsWithStock = spareparts.map((sparepart) => ({
+      ...sparepart,
+      stockCount: sparepart.Stock.reduce(
+        (sum, stock) => sum + stock.quantity,
+        0,
+      ),
+    }));
+
+    return NextResponse.json(sparepartsWithStock);
   } catch (error) {
     console.error("API: Error fetching sparepart:", error);
     return NextResponse.json(

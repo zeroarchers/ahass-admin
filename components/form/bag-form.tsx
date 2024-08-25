@@ -94,7 +94,6 @@ export function BAGForm({ initialValues }: BAGFormProps) {
     response = await createBAG(values);
 
     responseToast({ name: "BAG", is_edit, response: response });
-    console.log(values);
     setIsLoading(false);
   }
 

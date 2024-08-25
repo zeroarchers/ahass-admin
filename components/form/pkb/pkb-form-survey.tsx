@@ -50,7 +50,6 @@ export function PkbFormSurvey({ form }: { form: any }) {
 
         if (data.length > 0) {
           form.setValue("gudang", data[0].kode);
-          console.log("Set gudang to:", data[0].kode);
         }
       } catch (error) {
         console.error("Error fetching gudang data:", error);

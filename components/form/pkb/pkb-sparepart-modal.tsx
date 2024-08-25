@@ -37,10 +37,12 @@ export function SparepartModal({
   onAddItem,
   jasaData,
   initialValues,
+  gudangId,
 }: {
   onAddItem: (item: any) => void;
   jasaData: any[];
   initialValues?: any;
+  gudangId?: string;
 }) {
   const sparepartModalSchemaWithoutSparepart = sparepartModalSchema.omit({
     sparepart: true,
@@ -113,7 +115,7 @@ export function SparepartModal({
           Tambah Sparepart
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] h-5/6 overflow-y-scroll">
+      <DialogContent className="sm:max-w-[625px] h-5/6 overflow-y-scroll">
         <DialogHeader>
           <DialogTitle>Tambah Sparepart</DialogTitle>
           <DialogDescription />
@@ -126,18 +128,20 @@ export function SparepartModal({
                   form={form}
                   label="Kode Sparepart"
                   name="kode_sparepart"
-                  apiEndpoint="/api/sparepart"
+                  apiEndpoint={`/api/sparepart?gudangId=${gudangId}&`}
                   searchParam="nama"
-                  itemToComboboxItem={(sparepart: SparePart) => {
+                  itemToComboboxItem={(
+                    sparepart: SparePart & { stockCount: number },
+                  ) => {
                     return {
                       value: sparepart.kodeSparepart,
-                      label: sparepart.kodeSparepart,
-                      description: sparepart.namaSparepart?.toString(),
+                      label: `${sparepart.kodeSparepart} - ${sparepart.namaSparepart}`,
+                      description: sparepart.stockCount.toString(),
                       data: sparepart,
                     };
                   }}
                   onSelectItem={(item) => {
-                    form.setValue("nama_sparepart", item.description);
+                    form.setValue("nama_sparepart", item.data.namaSparepart);
                     form.setValue("harga_sparepart", item.data.hargaLokal);
                     setSelectedItem(item.data);
                   }}

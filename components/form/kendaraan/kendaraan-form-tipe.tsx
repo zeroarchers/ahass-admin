@@ -25,7 +25,7 @@ export function KendaraanTipe({ form }: KendaraanTipeFormProps) {
           form={form}
           label="Vehicle Type"
           name="namaTipeKendaraan"
-          apiEndpoint="/api/tipe-kendaraan"
+          apiEndpoint="/api/tipe-kendaraan?"
           itemToComboboxItem={(vehicleType) => ({
             value: vehicleType.namaTipe,
             label: vehicleType.commercialName,

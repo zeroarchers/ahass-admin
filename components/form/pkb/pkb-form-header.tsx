@@ -25,7 +25,6 @@ export function PkbFormHeader({
 }) {
   const [selectedPkb, setSelectedPkb] = useState("");
 
-
   useEffect(() => {
     const fetchPkbData = async () => {
       if (selectedPkb) {
@@ -50,13 +49,7 @@ export function PkbFormHeader({
     };
 
     fetchPkbData();
-  }, [
-    selectedPkb,
-    form,
-    setJasaTableData,
-    setSparepartTableData,
-  ]);
-
+  }, [selectedPkb, form, setJasaTableData, setSparepartTableData]);
 
   return (
     <Card>
@@ -98,7 +91,7 @@ export function PkbFormHeader({
             form={form}
             label="No. PKB"
             name="no_pkb"
-            apiEndpoint="/api/pkb/all"
+            apiEndpoint="/api/pkb/all?"
             searchParam="no_pkb"
             itemToComboboxItem={(pkb) => ({
               value: pkb.no_pkb,

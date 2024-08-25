@@ -58,7 +58,7 @@ export function Combobox({
   const loadItems = useDebouncedCallback(async (search: string = "") => {
     try {
       const response = await fetch(
-        `${apiEndpoint}?${searchParam}=${encodeURIComponent(search)}`,
+        `${apiEndpoint}${searchParam}=${encodeURIComponent(search)}`,
         {
           cache: "no-cache",
         },
@@ -103,7 +103,7 @@ export function Combobox({
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className="w-96 p-0">
+              <PopoverContent className="popover-content-width-full p-0">
                 <Command shouldFilter={is_static_data}>
                   <CommandInput
                     placeholder={`Search ${label.toLowerCase()}...`}
@@ -114,32 +114,39 @@ export function Combobox({
                   />
                   <CommandList>
                     <CommandGroup>
-                      {items.map((item, index) => (
-                        <CommandItem
-                          value={item.label}
-                          key={index}
-                          onSelect={() => {
-                            form.setValue(name, item.value);
-                            setOpen(false);
-                            if (onSelectItem) {
-                              onSelectItem(item);
-                            }
-                          }}
-                        >
-                          {item.label}
-                          {item.description && (
-                            <Badge className="ms-3">{item.description}</Badge>
-                          )}
-                          <Check
-                            className={cn(
-                              "ml-auto h-4 w-4",
-                              item.value === field.value
-                                ? "opacity-100"
-                                : "opacity-0",
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
+                      {items.map((item, index) => {
+                        return (
+                          <CommandItem
+                            value={item.label}
+                            key={index}
+                            className="flex justify-between items-center w-full"
+                            onSelect={() => {
+                              form.setValue(name, item.value);
+                              setOpen(false);
+                              if (onSelectItem) {
+                                onSelectItem(item);
+                              }
+                            }}
+                          >
+                            <div className="flex items-center w-full justify-between">
+                              <div>{item.label}</div>
+                              {item.description && (
+                                <div>
+                                  <Badge>{item.description}</Badge>
+                                </div>
+                              )}
+                            </div>
+                            <Check
+                              className={cn(
+                                "ml-auto h-4 w-4",
+                                item.value === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0",
+                              )}
+                            />
+                          </CommandItem>
+                        );
+                      })}
                     </CommandGroup>
                   </CommandList>
                 </Command>

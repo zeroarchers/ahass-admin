@@ -71,7 +71,7 @@ export function ComboboxStatic({
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="p-0">
+            <PopoverContent className="popover-content-width-full p-0">
               <Command>
                 <CommandInput
                   placeholder={`Search ${name}...`}

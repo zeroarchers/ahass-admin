@@ -155,7 +155,7 @@ export function PkbFormMain({
         form={form}
         label="No. Polisi"
         name="no_polisi"
-        apiEndpoint="/api/kendaraan"
+        apiEndpoint="/api/kendaraan?"
         searchParam="no_polisi"
         itemToComboboxItem={(kendaraan) => {
           return {

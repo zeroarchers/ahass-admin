@@ -206,7 +206,11 @@ export function PendaftaranForm({
               setData={setSparepartTableData}
               columns={sparepartColumns}
               ModalComponent={(props) => (
-                <SparepartModal {...props} jasaData={jasaTableData} />
+                <SparepartModal
+                  {...props}
+                  gudangId={form.watch("gudang")}
+                  jasaData={jasaTableData}
+                />
               )}
             />
           </CardContent>
@@ -258,7 +262,7 @@ export function PendaftaranForm({
               form={form}
               label="Mekanik"
               name="mekanik"
-              apiEndpoint="/api/karyawan/mekanik"
+              apiEndpoint="/api/karyawan/mekanik?"
               itemToComboboxItem={(karyawan) => ({
                 value: karyawan.name,
                 label: karyawan.name,
@@ -271,7 +275,7 @@ export function PendaftaranForm({
               form={form}
               label="Service Advisor"
               name="service_advisor"
-              apiEndpoint="/api/karyawan/service-advisor"
+              apiEndpoint="/api/karyawan/service-advisor?"
               itemToComboboxItem={(karyawan) => ({
                 value: karyawan.name,
                 label: karyawan.name,
@@ -284,7 +288,7 @@ export function PendaftaranForm({
               form={form}
               label="Final Inspector"
               name="final_inspector"
-              apiEndpoint="/api/karyawan/mekanik-final-inspector"
+              apiEndpoint="/api/karyawan/mekanik-final-inspector?"
               itemToComboboxItem={(karyawan) => ({
                 value: karyawan.name,
                 label: karyawan.name,

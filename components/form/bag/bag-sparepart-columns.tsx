@@ -1,16 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { BAG, BAGItem } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuItem,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { SparepartWithQuantity } from "@/types";
 
