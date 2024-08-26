@@ -56,6 +56,7 @@ export function SparepartModal({
       quantity: 0,
       harga_sparepart: 0,
       nama_sparepart: "",
+      kode_sparepart: "",
     },
   });
   const handleSubmit = form.handleSubmit;
@@ -96,13 +97,15 @@ export function SparepartModal({
     };
   }
 
-  function onSubmit(data: any, e?: BaseSyntheticEvent) {
+  function onSubmit(data: any) {
     const selected = {
       ...data,
       sparepart: selectedItem,
     };
+
     const result = sparepartModalSchema.safeParse(selected);
     if (result.success) {
+      console.log(result.data);
       onAddItem(result.data);
       setOpen(false);
     }
@@ -128,16 +131,14 @@ export function SparepartModal({
                   form={form}
                   label="Kode Sparepart"
                   name="kode_sparepart"
-                  apiEndpoint={`/api/sparepart?gudangId=${gudangId}&`}
+                  apiEndpoint={`/api/stok?gudangId=${gudangId}&`}
                   searchParam="nama"
                   searchedItem="sparepart"
-                  itemToComboboxItem={(
-                    sparepart: SparePart & { stockCount: number },
-                  ) => {
+                  itemToComboboxItem={(sparepart: any) => {
                     return {
                       value: sparepart.kodeSparepart,
                       label: `${sparepart.kodeSparepart} - ${sparepart.namaSparepart}`,
-                      description: sparepart.stockCount.toString(),
+                      description: sparepart.quantity.toString(),
                       data: sparepart,
                     };
                   }}

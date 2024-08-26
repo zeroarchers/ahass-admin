@@ -144,9 +144,6 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
             >
               Copy No PKB
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <EditButton id={pkb.no_pkb} />
-            <DeleteButton id={pkb.no_pkb} deleteAction={deletePkb} />
             <DropdownMenuItem
               onClick={async () => {
                 const pkbDetail = await getPkbByIdClient(pkb.no_pkb);
@@ -156,6 +153,9 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
             >
               Print
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <EditButton id={pkb.no_pkb} />
+            <DeleteButton id={pkb.no_pkb} deleteAction={deletePkb} />
           </DropdownMenuContent>
         </DropdownMenu>
       );

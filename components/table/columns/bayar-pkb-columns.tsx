@@ -16,6 +16,8 @@ import { generatePDF } from "@/components/misc/invoice-bayar-pkb";
 import BayarButton from "../bayar-button";
 import { getPkbByIdClient } from "@/lib/pkb-getter";
 import { Badge } from "@/components/ui/badge";
+import { deletePkb } from "@/actions/pkb";
+import DeleteButton from "../delete-button";
 
 export const columns: ColumnDef<PKBWithRelations>[] = [
   {
@@ -72,6 +74,9 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
         ? new Date(preDate as string | number | Date).toLocaleString()
         : "Belum Bayar";
 
+      if (formattedDate === "Belum Bayar") {
+        return <Badge>{formattedDate}</Badge>;
+      }
       return <div className="capitalize">{formattedDate}</div>;
     },
   },
@@ -94,8 +99,6 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
             <DropdownMenuItem onClick={() => navigator.clipboard.writeText(id)}>
               Copy PKB ID
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <BayarButton id={id} />
             <DropdownMenuItem
               onClick={async () => {
                 const pkbDetail = await getPkbByIdClient(id);
@@ -106,6 +109,9 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
             >
               Print
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <BayarButton id={id} />
+            <DeleteButton id={pkb.no_pkb} deleteAction={deletePkb} />
           </DropdownMenuContent>
         </DropdownMenu>
       );

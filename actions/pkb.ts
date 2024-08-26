@@ -35,7 +35,9 @@ export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
     };
   }
 
-  const new_no_pkb = await generateNoPkb({ ahassId: "17168" }); // ahass id is manual because it hasn't been implemented yet.
+  console.log("sp pkb", sparepartPKB);
+
+  const new_no_pkb = await generateNoPkb({ ahassId: "17168" });
   const new_no_antrian = await generateNoAntrian(pkbData.tipe_antrian);
 
   await prisma.pKB.create({
@@ -69,6 +71,7 @@ export async function createPkb(data: z.infer<typeof pkbFormSchema>) {
       },
     },
   });
+
   revalidatePath("/dashboard/pendaftaran-servis");
   redirect("/dashboard/pendaftaran-servis");
 }
@@ -101,13 +104,29 @@ export async function updatePkb(data: z.infer<typeof pkbFormSchema>) {
         description: `PKB record with no_pkb ${no_pkb} not found!`,
       };
     }
+
     if (existingPKB.status_pkb === "selesai") {
-      if (pkbData.uang_kembalian >= 0) {
+      if (pkbData.uang_kembalian >= 0 && !no_bayar) {
         new_no_bayar = await generateNoBayar({ ahassId: "17168" });
+        for (const existingSparepartItem of sparepartPKB) {
+          await prisma.stock.update({
+            where: {
+              kodeSparepart_gudangId: {
+                kodeSparepart: existingSparepartItem.kode_sparepart,
+                gudangId: existingPKB.gudang,
+              },
+            },
+            data: {
+              quantity: {
+                decrement: existingSparepartItem.quantity,
+              },
+            },
+          });
+        }
       } else {
         return {
           result: "Error!",
-          description: `Pembayran kurang ${pkbData.uang_kembalian}`,
+          description: `Pembayaran kurang ${pkbData.uang_kembalian}`,
         };
       }
     }
@@ -155,14 +174,44 @@ export async function updatePkb(data: z.infer<typeof pkbFormSchema>) {
 
 export async function deletePkb(id: string) {
   try {
+    const pkbToDelete = await prisma.pKB.findUnique({
+      where: { no_pkb: id },
+      include: { sparepartPKB: true },
+    });
+
+    if (!pkbToDelete) {
+      return { result: "Error!", description: "PKB tidak ditemukan." };
+    }
+
+    if (pkbToDelete.no_bayar) {
+      for (const sparepartItem of pkbToDelete.sparepartPKB) {
+        await prisma.stock.update({
+          where: {
+            kodeSparepart_gudangId: {
+              kodeSparepart: sparepartItem.kode_sparepart,
+              gudangId: pkbToDelete.gudang,
+            },
+          },
+          data: {
+            quantity: {
+              increment: sparepartItem.quantity,
+            },
+          },
+        });
+      }
+    }
+
     await prisma.pKB.delete({
       where: {
         no_pkb: id,
       },
     });
+
     revalidatePath("/dashboard/pendaftaran-servis");
+    revalidatePath("/dashboard/pembayaran-servis");
     return { result: "Success!", description: "Berhasil menghapus PKB!" };
   } catch (error) {
+    console.error("Error deleting PKB:", error);
     return {
       result: "Error!",
       description: "Gagal menghapus PKB. Silakan coba lagi.",

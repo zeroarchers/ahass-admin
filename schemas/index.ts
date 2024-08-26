@@ -170,6 +170,7 @@ export const sparepartModalSchema = z.object({
   persentase_diskon: z.coerce.number(),
   quantity: z.coerce.number().gt(0, "Kuantitas harus lebih dari 0!"),
   nama_sparepart: z.string(),
+  kode_sparepart: z.string().min(1, "Input kode sparepart!"),
   ref_jasa: z.string().min(1, "Ref jasa harus dipilih!"),
 });
 

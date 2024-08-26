@@ -1,7 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { unstable_cache } from "next/cache";
-
-export const getAllSparepartsWithStock = unstable_cache(async () => {
+export const getAllSparepartsWithStock = async () => {
   return await prisma.stock.findMany({
     select: {
       quantity: true,
@@ -20,4 +18,4 @@ export const getAllSparepartsWithStock = unstable_cache(async () => {
       },
     },
   });
-});
+};

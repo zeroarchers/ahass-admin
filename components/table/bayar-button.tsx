@@ -8,7 +8,7 @@ export default function BayarButton({ id }: { id: string }) {
     <Link href={path}>
       {" "}
       <DropdownMenuItem className="bg-green-400 rounded-b-none">
-        Bayar
+        Bayar/Edit
       </DropdownMenuItem>
     </Link>
   );

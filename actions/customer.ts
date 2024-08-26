@@ -16,8 +16,6 @@ export async function createCustomer(data: z.infer<typeof customerFormSchema>) {
 
   validatedData.data.kode = String(await getNewCustomerId());
 
-  console.log(validatedData.data.kode);
-
   await prisma.customer.create({ data: validatedData.data });
   revalidatePath("/dashboard/customer");
   redirect("/dashboard/customer");

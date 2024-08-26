@@ -60,7 +60,6 @@ export function CustomerForm({ initialValues }: CustomerFormProps) {
     setIsLoading(true);
 
     const transformedValues = await transformLocations(values);
-    console.log(transformedValues);
 
     let response: { result: string; description: any };
 

@@ -70,6 +70,7 @@ export function PendaftaranForm({
       jasaPKB: jasaTableData,
       sparepartPKB: sparepartTableData,
     };
+    console.log(validData);
     let response: { result: string; description: any };
     if (is_edit || !is_pendaftaran) {
       response = await updatePkb(validData);
@@ -322,7 +323,9 @@ export function PendaftaranForm({
           </Card>
         )}
         <CircularProgress className={isLoading ? "flex" : "hidden"} />
-        <Button type="submit">Submit</Button>
+        <Button disabled={!!form.watch("no_bayar")} type="submit">
+          Submit
+        </Button>
       </form>
     </Form>
   );
