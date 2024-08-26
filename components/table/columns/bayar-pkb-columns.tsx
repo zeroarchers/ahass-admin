@@ -15,13 +15,16 @@ import { ColumnDef } from "@tanstack/react-table";
 import { generatePDF } from "@/components/misc/invoice-bayar-pkb";
 import BayarButton from "../bayar-button";
 import { getPkbByIdClient } from "@/lib/pkb-getter";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<PKBWithRelations>[] = [
   {
     accessorKey: "status_pkb",
     header: "Status",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status_pkb")}</div>
+      <div className="capitalize">
+        <Badge className="bg-green-800">{row.getValue("status_pkb")}</Badge>
+      </div>
     ),
   },
   {

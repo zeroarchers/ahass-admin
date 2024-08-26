@@ -31,6 +31,7 @@ export function KendaraanStnk({
             name="kode_pemilik"
             apiEndpoint="/api/customer?"
             searchParam="nama"
+            searchedItem="customer"
             itemToComboboxItem={(customer) => ({
               value: customer.kode,
               label: customer.nama,
@@ -88,6 +89,7 @@ export function KendaraanStnk({
           name="kode_customer"
           apiEndpoint="/api/customer?"
           searchParam="nama"
+          searchedItem="customer"
           itemToComboboxItem={(customer) => ({
             value: customer.kode,
             label: customer.nama,

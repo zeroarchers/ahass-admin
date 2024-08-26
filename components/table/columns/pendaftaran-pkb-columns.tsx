@@ -17,6 +17,27 @@ import { deletePkb } from "@/actions/pkb";
 import type { PKBWithRelations } from "@/types";
 import { generatePDF } from "@/components/misc/invoice-pkb";
 import { getPkbByIdClient } from "@/lib/pkb-getter";
+import { Badge } from "@/components/ui/badge";
+
+const getStatusBadgeProps = (status: string) => {
+  switch (status.toLowerCase()) {
+    case "menunggu":
+      return { variant: "destructive" as const, className: "bg-red-500" };
+    case "proses":
+      return { variant: "default" as const, className: "bg-yellow-500" };
+    case "pause":
+      return {
+        variant: "outline" as const,
+        className: "text-red-500 border-red-500",
+      };
+    case "selesai":
+      return { variant: "default" as const, className: "bg-green-500" };
+    case "batal":
+      return { variant: "default" as const, className: "bg-black" };
+    default:
+      return { variant: "default" as const, className: "" };
+  }
+};
 
 export const columns: ColumnDef<PKBWithRelations>[] = [
   {
@@ -44,7 +65,17 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
   {
     accessorKey: "status_pkb",
     header: "Status PKB",
-    cell: ({ row }) => <div>{row.getValue("status_pkb")}</div>,
+    cell: ({ row }) => {
+      const status = row.getValue("status_pkb") as string;
+      const { variant, className } = getStatusBadgeProps(status);
+      return (
+        <div>
+          <Badge variant={variant} className={className}>
+            {status}
+          </Badge>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "mekanik",

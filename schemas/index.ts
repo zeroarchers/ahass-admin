@@ -121,9 +121,7 @@ export const customerFormSchema = z.object({
     message: "Harus diisi!",
   }),
   kodepos: z.string().nullable().optional(),
-  notelp: z.string().min(1, {
-    message: "Nomor Telpon harus setidaknya 5 karakter.",
-  }),
+  notelp: z.string(),
   nohp: z.string().min(5, {
     message: "Nomor HP harus setidaknya 5 karakter.",
   }),

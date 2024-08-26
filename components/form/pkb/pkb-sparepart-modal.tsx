@@ -130,6 +130,7 @@ export function SparepartModal({
                   name="kode_sparepart"
                   apiEndpoint={`/api/sparepart?gudangId=${gudangId}&`}
                   searchParam="nama"
+                  searchedItem="sparepart"
                   itemToComboboxItem={(
                     sparepart: SparePart & { stockCount: number },
                   ) => {

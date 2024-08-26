@@ -151,6 +151,7 @@ export function PkbFormCustomer({
         name="pembawa"
         apiEndpoint="/api/customer?"
         searchParam="nama"
+        searchedItem="customer"
         itemToComboboxItem={(customer) => ({
           value: customer.nama,
           label: customer.nama,

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -25,6 +26,7 @@ import {
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useDebouncedCallback } from "use-debounce";
 import { Badge } from "./badge";
+import Link from "next/link";
 
 type ComboboxItem = {
   value: string;
@@ -42,6 +44,7 @@ export function Combobox({
   itemToComboboxItem,
   onSelectItem,
   is_static_data = false,
+  searchedItem,
 }: {
   form: any;
   label: string;
@@ -51,6 +54,7 @@ export function Combobox({
   itemToComboboxItem: (item: any) => ComboboxItem;
   onSelectItem?: (item: any) => void;
   is_static_data?: boolean;
+  searchedItem?: string;
 }) {
   const [open, setOpen] = React.useState(false);
   const [items, setItems] = React.useState<ComboboxItem[]>([]);
@@ -113,6 +117,20 @@ export function Combobox({
                     }}
                   />
                   <CommandList>
+                    <CommandEmpty>
+                      <div className="w-10/12 mx-auto">
+                        {searchedItem ?? "Item"} tersebut tidak ditemukan.{" "}
+                        {searchedItem && (
+                          <Link
+                            target="_blank"
+                            href={`/dashboard/${searchedItem}/create`}
+                            className="text-primary"
+                          >
+                            Buat {searchedItem} baru.
+                          </Link>
+                        )}
+                      </div>
+                    </CommandEmpty>
                     <CommandGroup>
                       {items.map((item, index) => {
                         return (

@@ -157,6 +157,7 @@ export function PkbFormMain({
         name="no_polisi"
         apiEndpoint="/api/kendaraan?"
         searchParam="no_polisi"
+        searchedItem="kendaraan"
         itemToComboboxItem={(kendaraan) => {
           return {
             value: kendaraan.no_polisi,

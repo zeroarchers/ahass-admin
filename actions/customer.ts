@@ -14,6 +14,10 @@ export async function createCustomer(data: z.infer<typeof customerFormSchema>) {
     return { result: "Error!", description: "Input data tidak valid!" };
   }
 
+  validatedData.data.kode = String(await getNewCustomerId());
+
+  console.log(validatedData.data.kode);
+
   await prisma.customer.create({ data: validatedData.data });
   revalidatePath("/dashboard/customer");
   redirect("/dashboard/customer");

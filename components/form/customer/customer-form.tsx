@@ -23,6 +23,8 @@ interface CustomerFormProps {
   initialValues?: z.infer<typeof customerFormSchema>;
 }
 
+const customerFormSchemaWithoutKode = customerFormSchema.omit({ kode: true });
+
 export function CustomerForm({ initialValues }: CustomerFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,8 +32,8 @@ export function CustomerForm({ initialValues }: CustomerFormProps) {
   const form = useForm<z.infer<typeof customerFormSchema>>({
     resolver: zodResolver(customerFormSchema),
     defaultValues: initialValues || {
-      kode: "",
       status: true,
+      kode: "",
       title: "",
       nama: "",
       noktp: "",
@@ -52,24 +54,13 @@ export function CustomerForm({ initialValues }: CustomerFormProps) {
     },
   });
 
-  useEffect(() => {
-    async function fetchNewCustomerId() {
-      const newCustomerId = await getNewCustomerId();
-      form.reset({
-        ...form.getValues(),
-        kode: newCustomerId.toString(),
-      });
-    }
-
-    if (!initialValues) {
-      fetchNewCustomerId();
-    }
-  }, [initialValues, form]);
-
-  async function onSubmit(values: z.infer<typeof customerFormSchema>) {
+  async function onSubmit(
+    values: z.infer<typeof customerFormSchemaWithoutKode>,
+  ) {
     setIsLoading(true);
 
     const transformedValues = await transformLocations(values);
+    console.log(transformedValues);
 
     let response: { result: string; description: any };
 
