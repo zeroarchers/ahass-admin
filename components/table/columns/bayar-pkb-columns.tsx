@@ -86,6 +86,7 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
     cell: ({ row }) => {
       const pkb = row.original;
       const id = pkb.no_pkb.toString();
+      const terbayar = pkb.no_bayar !== null;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -110,7 +111,7 @@ export const columns: ColumnDef<PKBWithRelations>[] = [
               Print
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <BayarButton id={id} />
+            <BayarButton id={id} terbayar={terbayar} />
             <DeleteButton id={pkb.no_pkb} deleteAction={deletePkb} />
           </DropdownMenuContent>
         </DropdownMenu>
