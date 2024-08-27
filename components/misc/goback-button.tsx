@@ -10,7 +10,7 @@ export default function GoBackBtn() {
   const path = usePathname();
   if (path == "/dashboard") return null;
   return (
-    <div>
+    <div className="h-fit">
       <Button variant="outline" onClick={() => router.back()}>
         <ArrowLeft className="mr-2" />
         Go Back

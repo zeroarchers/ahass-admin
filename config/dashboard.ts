@@ -27,7 +27,6 @@ export const dashboardConfig: DashboardConfig = {
       title: "Penjualan",
       href: "/dashboard/penjualan",
       icon: "sell",
-      disabled: true,
     },
     {
       title: "Pembelian",

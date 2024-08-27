@@ -51,7 +51,7 @@ export default async function DashboardLayout({
         </aside>
 
         <div></div>
-        <main className="grid grid-cols-1 gap-5 p-1 pb-20  overflow-scroll">
+        <main className="grid h-fit grid-cols-1 gap-5 p-1 pb-20 overflow-scroll">
           <GoBackBtn />
           {children}
         </main>
